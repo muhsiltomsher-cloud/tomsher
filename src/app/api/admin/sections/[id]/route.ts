@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 import connectDB from '@/lib/mongodb';
-import Page from '@/models/Page';
+import Section from '@/models/Section';
 
 export async function GET(
   request: NextRequest,
@@ -10,22 +10,20 @@ export async function GET(
 ) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await connectDB();
+    const section = await Section.findById(params.id);
 
-    const page = await Page.findById(params.id);
-
-    if (!page) {
-      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+    if (!section) {
+      return NextResponse.json({ error: 'Section not found' }, { status: 404 });
     }
 
-    return NextResponse.json(page);
+    return NextResponse.json(section);
   } catch (error) {
-    console.error('Error fetching page:', error);
+    console.error('Error fetching section:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -36,22 +34,20 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await connectDB();
+    const section = await Section.findByIdAndDelete(params.id);
 
-    const page = await Page.findByIdAndDelete(params.id);
-
-    if (!page) {
-      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+    if (!section) {
+      return NextResponse.json({ error: 'Section not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ message: 'Page deleted successfully' });
+    return NextResponse.json({ message: 'Section deleted successfully' });
   } catch (error) {
-    console.error('Error deleting page:', error);
+    console.error('Error deleting section:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -62,23 +58,21 @@ export async function PUT(
 ) {
   try {
     const session = await getServerSession(authOptions);
-
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     await connectDB();
-
     const body = await request.json();
-    const page = await Page.findByIdAndUpdate(params.id, body, { new: true });
+    const section = await Section.findByIdAndUpdate(params.id, body, { new: true });
 
-    if (!page) {
-      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+    if (!section) {
+      return NextResponse.json({ error: 'Section not found' }, { status: 404 });
     }
 
-    return NextResponse.json(page);
+    return NextResponse.json(section);
   } catch (error) {
-    console.error('Error updating page:', error);
+    console.error('Error updating section:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
