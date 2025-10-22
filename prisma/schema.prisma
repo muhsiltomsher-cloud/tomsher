@@ -1,0 +1,266 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  pages     Page[]
+  sections  Section[]
+  media     Media[]
+
+  @@map("users")
+}
+
+model Page {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String   @unique
+  description String?
+  metaTitle   String?
+  metaDescription String?
+  status      PageStatus @default(DRAFT)
+  type        PageType @default(SERVICE)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+  
+  // Relations
+  authorId    String   @db.ObjectId
+  author      User     @relation(fields: [authorId], references: [id])
+  sections    PageSection[]
+  
+  @@map("pages")
+}
+
+model Section {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  type        SectionType
+  component   String   // Component name to render
+  schema      Json     // JSON schema for the section
+  variants    Json[]   // Different design variants
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  createdById String   @db.ObjectId
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  pagesSections PageSection[]
+  
+  @@map("sections")
+}
+
+model PageSection {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  order     Int
+  content   Json     // Section content data
+  variant   String?  // Which variant to use
+  isVisible Boolean  @default(true)
+  
+  // Relations
+  pageId    String   @db.ObjectId
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  sectionId String   @db.ObjectId
+  section   Section  @relation(fields: [sectionId], references: [id])
+  
+  @@map("page_sections")
+}
+
+model Media {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  url         String
+  alt         String?
+  caption     String?
+  folder      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  uploadedById String  @db.ObjectId
+  uploadedBy   User    @relation(fields: [uploadedById], references: [id])
+  
+  @@map("media")
+}
+
+model Service {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String   @unique
+  description String
+  shortDescription String?
+  icon        String?
+  image       String?
+  category    String
+  features    String[]
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("services")
+}
+
+model Portfolio {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String   @unique
+  description String
+  shortDescription String?
+  image       String?
+  gallery     String[]
+  category    String
+  client      String?
+  projectUrl  String?
+  technologies String[]
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("portfolio")
+}
+
+model Testimonial {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  position    String?
+  company     String?
+  content     String
+  rating      Int      @default(5)
+  avatar      String?
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("testimonials")
+}
+
+model BlogPost {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  slug        String   @unique
+  content     String
+  excerpt     String?
+  featuredImage String?
+  category    String
+  tags        String[]
+  status      PostStatus @default(DRAFT)
+  views       Int      @default(0)
+  readTime    Int?     // in minutes
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+  
+  @@map("blog_posts")
+}
+
+model Contact {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  service   String?
+  message   String
+  status    ContactStatus @default(NEW)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("contacts")
+}
+
+model Settings {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String   @unique
+  value     Json
+  type      SettingType @default(STRING)
+  group     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("settings")
+}
+
+// Enums
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PageType {
+  HOME
+  SERVICE
+  ABOUT
+  CONTACT
+  PORTFOLIO
+  BLOG
+  CUSTOM
+}
+
+enum SectionType {
+  HERO
+  ABOUT
+  SERVICES
+  PORTFOLIO
+  TESTIMONIALS
+  CONTACT
+  CTA
+  FEATURES
+  STATS
+  TEAM
+  FAQ
+  BLOG
+  CUSTOM
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  SPAM
+}
+
+enum SettingType {
+  STRING
+  NUMBER
+  BOOLEAN
+  JSON
+  ARRAY
+}
