@@ -1,0 +1,43 @@
+import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../auth/[...nextauth]/route';
+import connectDB from '@/lib/mongodb';
+import Page from '@/models/Page';
+import Service from '@/models/Service';
+import Portfolio from '@/models/Portfolio';
+import Testimonial from '@/models/Testimonial';
+import BlogPost from '@/models/BlogPost';
+import Contact from '@/models/Contact';
+
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    await connectDB();
+
+    const [pages, services, portfolio, testimonials, blog, contacts] = await Promise.all([
+      Page.countDocuments(),
+      Service.countDocuments(),
+      Portfolio.countDocuments(),
+      Testimonial.countDocuments(),
+      BlogPost.countDocuments(),
+      Contact.countDocuments(),
+    ]);
+
+    return NextResponse.json({
+      pages,
+      services,
+      portfolio,
+      testimonials,
+      blog,
+      contacts,
+    });
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
