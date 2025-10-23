@@ -9,12 +9,14 @@ export default function TypographyLoader() {
         const response = await fetch('/api/settings');
         if (response.ok) {
           const settings = await response.json();
+          console.log('Typography settings loaded:', settings.typography);
           
           if (settings.typography) {
             const root = document.documentElement;
             
             if (settings.typography.baseFontSize) {
               root.style.setProperty('--font-size-base', settings.typography.baseFontSize);
+              console.log('Set base font size:', settings.typography.baseFontSize);
             }
             
             if (settings.typography.bodyFontWeight) {
@@ -27,6 +29,7 @@ export default function TypographyLoader() {
             
             if (settings.typography.h1Size) {
               root.style.setProperty('--font-size-h1', settings.typography.h1Size);
+              console.log('Set H1 size:', settings.typography.h1Size);
             }
             
             if (settings.typography.h2Size) {
@@ -48,6 +51,10 @@ export default function TypographyLoader() {
             if (settings.typography.h6Size) {
               root.style.setProperty('--font-size-h6', settings.typography.h6Size);
             }
+            
+            console.log('Typography CSS variables applied successfully');
+          } else {
+            console.log('No typography settings found in response');
           }
         }
       } catch (error) {

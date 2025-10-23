@@ -87,7 +87,7 @@ export default function AdminSidebar({
     { title: 'Pages', icon: <Pages />, href: '/admin/pages' },
     { title: 'Page Builder', icon: <Build />, href: '/admin/page-builder' },
     { title: 'Sections', icon: <ViewModule />, href: '/admin/sections' },
-    { title: 'Menu', icon: <MenuBook />, href: '/admin/menu' },
+    { title: 'Menu Builder', icon: <MenuBook />, href: '/admin/menu-builder' },
     { divider: true },
     { title: 'Business', header: true },
     { title: 'Services', icon: <Business />, href: '/admin/services' },
