@@ -46,11 +46,21 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
+interface PageSuggestion {
+  _id: string;
+  title: string;
+  slug: string;
+  type: string;
+}
+
 export default function MenuManagement() {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+  const [pageSuggestions, setPageSuggestions] = useState<PageSuggestion[]>([]);
+  const [showTitleSuggestions, setShowTitleSuggestions] = useState(false);
+  const [showUrlSuggestions, setShowUrlSuggestions] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     url: '',
@@ -68,6 +78,7 @@ export default function MenuManagement() {
 
   useEffect(() => {
     fetchMenuItems();
+    fetchPageSuggestions();
   }, []);
 
   const fetchMenuItems = async () => {
@@ -82,6 +93,18 @@ export default function MenuManagement() {
       toast.error('Failed to load menu items');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPageSuggestions = async () => {
+    try {
+      const response = await fetch('/api/admin/pages');
+      if (response.ok) {
+        const data = await response.json();
+        setPageSuggestions(data);
+      }
+    } catch (error) {
+      console.error('Error fetching page suggestions:', error);
     }
   };
 
@@ -350,21 +373,124 @@ export default function MenuManagement() {
           <DialogTitle>{editingItem ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
           <DialogContent>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-              <TextField
-                label="Title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                fullWidth
-                required
-              />
-              <TextField
-                label="URL"
-                value={formData.url}
-                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                fullWidth
-                required
-                helperText="e.g., /services, /about, https://external.com"
-              />
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="Title"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  onFocus={() => setShowTitleSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowTitleSuggestions(false), 200)}
+                  fullWidth
+                  required
+                  helperText="Start typing or select from available pages below"
+                />
+                {showTitleSuggestions && pageSuggestions.length > 0 && (
+                  <Paper
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      zIndex: 1000,
+                      maxHeight: '200px',
+                      overflow: 'auto',
+                      mt: 0.5,
+                    }}
+                  >
+                    {pageSuggestions
+                      .filter(page => 
+                        page.title.toLowerCase().includes(formData.title.toLowerCase())
+                      )
+                      .slice(0, 10)
+                      .map((page) => (
+                        <Box
+                          key={page._id}
+                          sx={{
+                            p: 1.5,
+                            cursor: 'pointer',
+                            '&:hover': { bgcolor: 'action.hover' },
+                            borderBottom: '1px solid',
+                            borderColor: 'divider',
+                          }}
+                          onClick={() => {
+                            setFormData({ 
+                              ...formData, 
+                              title: page.title,
+                              url: `/${page.slug}`
+                            });
+                            setShowTitleSuggestions(false);
+                          }}
+                        >
+                          <Typography variant="body2" fontWeight="bold">
+                            {page.title}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            /{page.slug} • {page.type}
+                          </Typography>
+                        </Box>
+                      ))}
+                  </Paper>
+                )}
+              </Box>
+              <Box sx={{ position: 'relative' }}>
+                <TextField
+                  label="URL"
+                  value={formData.url}
+                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  onFocus={() => setShowUrlSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowUrlSuggestions(false), 200)}
+                  fullWidth
+                  required
+                  helperText="e.g., /services, /about, https://external.com"
+                />
+                {showUrlSuggestions && pageSuggestions.length > 0 && (
+                  <Paper
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: 0,
+                      right: 0,
+                      zIndex: 1000,
+                      maxHeight: '200px',
+                      overflow: 'auto',
+                      mt: 0.5,
+                    }}
+                  >
+                    {pageSuggestions
+                      .filter(page => 
+                        `/${page.slug}`.toLowerCase().includes(formData.url.toLowerCase())
+                      )
+                      .slice(0, 10)
+                      .map((page) => (
+                        <Box
+                          key={page._id}
+                          sx={{
+                            p: 1.5,
+                            cursor: 'pointer',
+                            '&:hover': { bgcolor: 'action.hover' },
+                            borderBottom: '1px solid',
+                            borderColor: 'divider',
+                          }}
+                          onClick={() => {
+                            setFormData({ 
+                              ...formData, 
+                              url: `/${page.slug}`,
+                              title: formData.title || page.title
+                            });
+                            setShowUrlSuggestions(false);
+                          }}
+                        >
+                          <Typography variant="body2" fontWeight="bold" sx={{ fontFamily: 'monospace' }}>
+                            /{page.slug}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {page.title} • {page.type}
+                          </Typography>
+                        </Box>
+                      ))}
+                  </Paper>
+                )}
+              </Box>
               <TextField
                 select
                 label="Parent Menu Item"
