@@ -23,13 +23,26 @@ interface BlogPost {
   createdAt: string
 }
 
+interface PageContent {
+  title: string
+  subtitle?: string
+  heroImage?: string
+  heroTitle?: string
+  heroSubtitle?: string
+}
+
 export default function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const [pageContent, setPageContent] = useState<PageContent>({
+    title: 'Our Blog',
+    subtitle: 'Insights, tutorials, and stories about web development, design, and technology'
+  })
 
   useEffect(() => {
     fetchPosts()
+    fetchPageContent()
   }, [])
 
   const fetchPosts = async () => {
@@ -43,6 +56,22 @@ export default function BlogPage() {
       console.error('Error fetching blog posts:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchPageContent = async () => {
+    try {
+      const response = await fetch('/api/page-content/BLOG')
+      if (response.ok) {
+        const data = await response.json()
+        setPageContent({
+          title: data.heroTitle || data.title || 'Our Blog',
+          subtitle: data.heroSubtitle || data.subtitle || 'Insights, tutorials, and stories about web development, design, and technology',
+          heroImage: data.heroImage,
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching page content:', error)
     }
   }
 
@@ -87,20 +116,38 @@ export default function BlogPage() {
       <Header />
       <main className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 py-20 lg:py-32">
-          <div className="container mx-auto px-4">
+        <section 
+          className="relative bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 py-20 lg:py-32"
+          style={{
+            backgroundImage: pageContent.heroImage ? `url(${pageContent.heroImage})` : undefined,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          {pageContent.heroImage && (
+            <div className="absolute inset-0 bg-black/50" />
+          )}
+          <div className="container mx-auto px-4 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="text-center max-w-3xl mx-auto"
             >
-              <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-                Our <span className="gradient-text">Blog</span>
+              <h1 className={`text-4xl lg:text-6xl font-bold mb-6 ${pageContent.heroImage ? 'text-white' : ''}`}>
+                {pageContent.title.includes('Blog') ? (
+                  <>
+                    {pageContent.title.split('Blog')[0]}<span className="gradient-text">Blog</span>
+                  </>
+                ) : (
+                  pageContent.title
+                )}
               </h1>
-              <p className="text-xl text-gray-600 mb-8">
-                Insights, tutorials, and stories about web development, design, and technology
-              </p>
+              {pageContent.subtitle && (
+                <p className={`text-xl mb-8 ${pageContent.heroImage ? 'text-gray-200' : 'text-gray-600'}`}>
+                  {pageContent.subtitle}
+                </p>
+              )}
             </motion.div>
           </div>
         </section>

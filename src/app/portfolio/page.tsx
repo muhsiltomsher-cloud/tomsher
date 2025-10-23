@@ -23,13 +23,26 @@ interface Portfolio {
   createdAt: string
 }
 
+interface PageContent {
+  title: string
+  subtitle?: string
+  heroImage?: string
+  heroTitle?: string
+  heroSubtitle?: string
+}
+
 export default function PortfolioPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const [pageContent, setPageContent] = useState<PageContent>({
+    title: 'Our Portfolio',
+    subtitle: 'Explore our collection of successful projects that showcase our expertise in creating innovative digital solutions'
+  })
 
   useEffect(() => {
     fetchPortfolios()
+    fetchPageContent()
   }, [])
 
   const fetchPortfolios = async () => {
@@ -43,6 +56,22 @@ export default function PortfolioPage() {
       console.error('Error fetching portfolios:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchPageContent = async () => {
+    try {
+      const response = await fetch('/api/page-content/PORTFOLIO')
+      if (response.ok) {
+        const data = await response.json()
+        setPageContent({
+          title: data.heroTitle || data.title || 'Our Portfolio',
+          subtitle: data.heroSubtitle || data.subtitle || 'Explore our collection of successful projects that showcase our expertise in creating innovative digital solutions',
+          heroImage: data.heroImage,
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching page content:', error)
     }
   }
 
@@ -78,20 +107,38 @@ export default function PortfolioPage() {
       <Header />
       <main className="min-h-screen">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 py-20 lg:py-32">
-          <div className="container mx-auto px-4">
+        <section 
+          className="relative bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 py-20 lg:py-32"
+          style={{
+            backgroundImage: pageContent.heroImage ? `url(${pageContent.heroImage})` : undefined,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        >
+          {pageContent.heroImage && (
+            <div className="absolute inset-0 bg-black/50" />
+          )}
+          <div className="container mx-auto px-4 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="text-center max-w-3xl mx-auto"
             >
-              <h1 className="text-4xl lg:text-6xl font-bold mb-6">
-                Our <span className="gradient-text">Portfolio</span>
+              <h1 className={`text-4xl lg:text-6xl font-bold mb-6 ${pageContent.heroImage ? 'text-white' : ''}`}>
+                {pageContent.title.includes('Portfolio') ? (
+                  <>
+                    {pageContent.title.split('Portfolio')[0]}<span className="gradient-text">Portfolio</span>
+                  </>
+                ) : (
+                  pageContent.title
+                )}
               </h1>
-              <p className="text-xl text-gray-600 mb-8">
-                Explore our collection of successful projects that showcase our expertise in creating innovative digital solutions
-              </p>
+              {pageContent.subtitle && (
+                <p className={`text-xl mb-8 ${pageContent.heroImage ? 'text-gray-200' : 'text-gray-600'}`}>
+                  {pageContent.subtitle}
+                </p>
+              )}
             </motion.div>
           </div>
         </section>
