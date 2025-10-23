@@ -35,9 +35,11 @@ import {
   Save,
   ArrowBack,
   Image as ImageIcon,
+  Preview as PreviewIcon,
+  Code as CodeIcon,
 } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
-import { sectionDefinitions } from '@/components/sections'
+import { sectionDefinitions, sectionRegistry } from '@/components/sections'
 import ImagePicker from '@/components/admin/ImagePicker'
 
 interface PageSection {
@@ -78,6 +80,8 @@ export default function PageBuilderEditor() {
   const [success, setSuccess] = useState('')
   const [imagePickerOpen, setImagePickerOpen] = useState(false)
   const [currentImageField, setCurrentImageField] = useState<string>('')
+  const [showPreview, setShowPreview] = useState(false)
+  const [previewData, setPreviewData] = useState<any>({})
 
   useEffect(() => {
     const fetchPage = async () => {
@@ -112,7 +116,10 @@ export default function PageBuilderEditor() {
 
   const handleSelectSectionType = (sectionDef: any) => {
     setSelectedSection(sectionDef)
-    setSectionData(sectionDef.defaultData || {})
+    const defaultData = sectionDef.defaultData || {}
+    setSectionData(defaultData)
+    setPreviewData(defaultData)
+    setShowPreview(true)
   }
 
   const handleSaveNewSection = async () => {
@@ -133,7 +140,10 @@ export default function PageBuilderEditor() {
 
   const handleEditSection = (section: PageSection) => {
     setEditingSection(section)
-    setSectionData(section.data || {})
+    const data = section.data || {}
+    setSectionData(data)
+    setPreviewData(data)
+    setShowPreview(true)
     setOpenEditDialog(true)
   }
 
@@ -218,12 +228,36 @@ export default function PageBuilderEditor() {
   }
 
   const handleImageSelect = (imageUrl: string, alt?: string) => {
-    setSectionData({ ...sectionData, [currentImageField]: imageUrl })
+    const newData = { ...sectionData, [currentImageField]: imageUrl }
+    setSectionData(newData)
+    setPreviewData(newData)
     setImagePickerOpen(false)
+  }
+
+  const renderLivePreview = (sectionDef: any, data: any) => {
+    if (!sectionDef || !data) return null
+
+    const SectionComponent = sectionRegistry[sectionDef.component]
+    if (!SectionComponent) return null
+
+    try {
+      return <SectionComponent {...data} />
+    } catch (error) {
+      return (
+        <Alert severity="warning">
+          Preview unavailable. Please fill in required fields.
+        </Alert>
+      )
+    }
   }
 
   const renderSectionForm = (sectionDef: any, data: any, onChange: (data: any) => void) => {
     if (!sectionDef) return null
+
+    const handleChange = (newData: any) => {
+      onChange(newData)
+      setPreviewData(newData)
+    }
 
     return (
       <Box sx={{ mt: 2 }}>
@@ -235,7 +269,7 @@ export default function PageBuilderEditor() {
                 fullWidth
                 label={field.label}
                 value={data[key] || ''}
-                onChange={(e) => onChange({ ...data, [key]: e.target.value })}
+                onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
                 margin="normal"
                 required={field.required}
               />
@@ -249,7 +283,7 @@ export default function PageBuilderEditor() {
                 fullWidth
                 label={field.label}
                 value={data[key] || ''}
-                onChange={(e) => onChange({ ...data, [key]: e.target.value })}
+                onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
                 margin="normal"
                 multiline
                 rows={3}
@@ -264,7 +298,7 @@ export default function PageBuilderEditor() {
                 <InputLabel>{field.label}</InputLabel>
                 <Select
                   value={data[key] || field.options[0]}
-                  onChange={(e) => onChange({ ...data, [key]: e.target.value })}
+                  onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
                   label={field.label}
                 >
                   {field.options.map((option: string) => (
@@ -305,7 +339,7 @@ export default function PageBuilderEditor() {
                 {data[key] && (
                   <Button
                     size="small"
-                    onClick={() => onChange({ ...data, [key]: '' })}
+                    onClick={() => handleChange({ ...data, [key]: '' })}
                     sx={{ ml: 1 }}
                   >
                     Remove
@@ -475,9 +509,28 @@ export default function PageBuilderEditor() {
       </Grid>
 
       {/* Add Section Dialog */}
-      <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} maxWidth="md" fullWidth>
+      <Dialog 
+        open={openAddDialog} 
+        onClose={() => {
+          setOpenAddDialog(false)
+          setShowPreview(false)
+        }} 
+        maxWidth="xl" 
+        fullWidth
+      >
         <DialogTitle>
-          {selectedSection ? `Add ${selectedSection.name}` : 'Select Section Type'}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>{selectedSection ? `Add ${selectedSection.name}` : 'Select Section Type'}</span>
+            {selectedSection && (
+              <Button
+                startIcon={showPreview ? <CodeIcon /> : <PreviewIcon />}
+                onClick={() => setShowPreview(!showPreview)}
+                size="small"
+              >
+                {showPreview ? 'Hide Preview' : 'Show Preview'}
+              </Button>
+            )}
+          </Box>
         </DialogTitle>
         <DialogContent>
           {!selectedSection ? (
@@ -498,11 +551,64 @@ export default function PageBuilderEditor() {
               ))}
             </Box>
           ) : (
-            renderSectionForm(selectedSection, sectionData, setSectionData)
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={showPreview ? 6 : 12}>
+                <Paper sx={{ p: 2, bgcolor: 'grey.50', maxHeight: '70vh', overflow: 'auto' }}>
+                  <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CodeIcon /> Configuration
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                  {renderSectionForm(selectedSection, sectionData, setSectionData)}
+                </Paper>
+              </Grid>
+              {showPreview && (
+                <Grid item xs={12} md={6}>
+                  <Paper 
+                    sx={{ 
+                      p: 2, 
+                      bgcolor: 'white',
+                      maxHeight: '70vh', 
+                      overflow: 'auto',
+                      border: '2px solid',
+                      borderColor: 'primary.main',
+                      borderRadius: 2,
+                      position: 'relative'
+                    }}
+                  >
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 1, 
+                      mb: 2,
+                      pb: 2,
+                      borderBottom: '2px solid',
+                      borderColor: 'primary.main'
+                    }}>
+                      <PreviewIcon color="primary" />
+                      <Typography variant="h6" color="primary">
+                        Live Preview
+                      </Typography>
+                      <Chip label="Real-time" size="small" color="success" />
+                    </Box>
+                    <Box sx={{ 
+                      minHeight: 200,
+                      '& > *': { width: '100%' }
+                    }}>
+                      {renderLivePreview(selectedSection, previewData)}
+                    </Box>
+                  </Paper>
+                </Grid>
+              )}
+            </Grid>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenAddDialog(false)}>Cancel</Button>
+          <Button onClick={() => {
+            setOpenAddDialog(false)
+            setShowPreview(false)
+          }}>
+            Cancel
+          </Button>
           {selectedSection && (
             <Button onClick={handleSaveNewSection} variant="contained" disabled={saving}>
               Add Section
@@ -512,24 +618,97 @@ export default function PageBuilderEditor() {
       </Dialog>
 
       {/* Edit Section Dialog */}
-      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Edit Section</DialogTitle>
+      <Dialog 
+        open={openEditDialog} 
+        onClose={() => {
+          setOpenEditDialog(false)
+          setShowPreview(false)
+        }} 
+        maxWidth="xl" 
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>Edit Section</span>
+            <Button
+              startIcon={showPreview ? <CodeIcon /> : <PreviewIcon />}
+              onClick={() => setShowPreview(!showPreview)}
+              size="small"
+            >
+              {showPreview ? 'Hide Preview' : 'Show Preview'}
+            </Button>
+          </Box>
+        </DialogTitle>
         <DialogContent>
           {editingSection && (
-            <>
-              <Typography variant="subtitle1" gutterBottom>
-                {editingSection.componentName}
-              </Typography>
-              {renderSectionForm(
-                sectionDefinitions.find(d => d.component === editingSection.componentName),
-                sectionData,
-                setSectionData
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={showPreview ? 6 : 12}>
+                <Paper sx={{ p: 2, bgcolor: 'grey.50', maxHeight: '70vh', overflow: 'auto' }}>
+                  <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CodeIcon /> Configuration
+                  </Typography>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    {editingSection.componentName}
+                  </Typography>
+                  <Divider sx={{ mb: 2 }} />
+                  {renderSectionForm(
+                    sectionDefinitions.find(d => d.component === editingSection.componentName),
+                    sectionData,
+                    setSectionData
+                  )}
+                </Paper>
+              </Grid>
+              {showPreview && (
+                <Grid item xs={12} md={6}>
+                  <Paper 
+                    sx={{ 
+                      p: 2, 
+                      bgcolor: 'white',
+                      maxHeight: '70vh', 
+                      overflow: 'auto',
+                      border: '2px solid',
+                      borderColor: 'primary.main',
+                      borderRadius: 2,
+                      position: 'relative'
+                    }}
+                  >
+                    <Box sx={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: 1, 
+                      mb: 2,
+                      pb: 2,
+                      borderBottom: '2px solid',
+                      borderColor: 'primary.main'
+                    }}>
+                      <PreviewIcon color="primary" />
+                      <Typography variant="h6" color="primary">
+                        Live Preview
+                      </Typography>
+                      <Chip label="Real-time" size="small" color="success" />
+                    </Box>
+                    <Box sx={{ 
+                      minHeight: 200,
+                      '& > *': { width: '100%' }
+                    }}>
+                      {renderLivePreview(
+                        sectionDefinitions.find(d => d.component === editingSection.componentName),
+                        previewData
+                      )}
+                    </Box>
+                  </Paper>
+                </Grid>
               )}
-            </>
+            </Grid>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
+          <Button onClick={() => {
+            setOpenEditDialog(false)
+            setShowPreview(false)
+          }}>
+            Cancel
+          </Button>
           <Button onClick={handleSaveEditSection} variant="contained" disabled={saving}>
             Save Changes
           </Button>
