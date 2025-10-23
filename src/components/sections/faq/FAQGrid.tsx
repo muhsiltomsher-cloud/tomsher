@@ -1,0 +1,30 @@
+import React from 'react'
+import { FAQVariantProps } from './types'
+
+export default function FAQGrid({ title, subtitle, faqs }: FAQVariantProps) {
+  return (
+    <section style={{ padding: '80px 20px', backgroundColor: 'white' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>{title}</h2>
+          <p style={{ fontSize: '1.2rem', color: '#666' }}>{subtitle}</p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
+          {faqs.map((faq, index) => (
+            <div key={index} style={{ 
+              padding: '2rem',
+              background: '#f8f9fa',
+              borderRadius: '12px',
+              borderLeft: '4px solid #667eea'
+            }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', fontWeight: 'bold', color: '#333' }}>
+                {faq.question}
+              </h3>
+              <p style={{ color: '#666', lineHeight: '1.6' }}>{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
