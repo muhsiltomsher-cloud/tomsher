@@ -32,7 +32,7 @@ export const sectionDefinitions = [
     name: 'Hero Section',
     component: 'HeroSection',
     description: 'Large header section with title, description, and CTA buttons',
-    variants: ['default', 'centered', 'split', 'minimal'],
+    variants: ['default', 'centered', 'split', 'minimal', 'glassmorphism', 'dark', 'animated', 'video'],
     defaultData: {
       title: 'Welcome to Our Website',
       subtitle: 'Building Digital Excellence',
@@ -50,7 +50,7 @@ export const sectionDefinitions = [
       secondaryCtaText: { type: 'text', label: 'Secondary CTA Text' },
       secondaryCtaLink: { type: 'text', label: 'Secondary CTA Link' },
       backgroundImage: { type: 'image', label: 'Background Image' },
-      variant: { type: 'select', label: 'Variant', options: ['default', 'centered', 'split', 'minimal'] }
+      variant: { type: 'select', label: 'Variant', options: ['default', 'centered', 'split', 'minimal', 'glassmorphism', 'dark', 'animated', 'video'] }
     }
   },
   {
@@ -235,7 +235,7 @@ export const sectionDefinitions = [
     name: 'Stats Section',
     component: 'StatsSection',
     description: 'Display impressive statistics and numbers',
-    variants: ['default', 'gradient', 'minimal', 'cards'],
+    variants: ['default', 'gradient', 'minimal', 'cards', 'dark', 'modern'],
     defaultData: {
       title: 'Our Impact in Numbers',
       subtitle: 'Trusted by leading companies worldwide',
@@ -250,7 +250,7 @@ export const sectionDefinitions = [
     schema: {
       title: { type: 'text', label: 'Title', required: true },
       subtitle: { type: 'text', label: 'Subtitle' },
-      variant: { type: 'select', label: 'Variant', options: ['default', 'gradient', 'minimal', 'cards'] },
+      variant: { type: 'select', label: 'Variant', options: ['default', 'gradient', 'minimal', 'cards', 'dark', 'modern'] },
       backgroundColor: { type: 'text', label: 'Background Color' },
       stats: {
         type: 'array',
