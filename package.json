@@ -14,6 +14,9 @@
     "db:seed": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} scripts/seed.ts"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",
@@ -36,6 +39,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
     "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.5.0",
     "react-quill": "^2.0.0",
     "recharts": "^2.8.0",
     "sharp": "^0.33.1",
