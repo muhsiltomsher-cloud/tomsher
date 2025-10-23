@@ -4,6 +4,7 @@ import './globals.css'
 import { Providers } from '@/components/providers'
 import { Toaster } from 'react-hot-toast'
 import ThemeProvider from '@/components/ThemeProvider'
+import TypographyLoader from '@/components/TypographyLoader'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -96,6 +97,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
+        <TypographyLoader />
         <ThemeProvider>
           <Providers>
             {children}
