@@ -11,54 +11,41 @@ export default function TypographyLoader() {
           const settings = await response.json();
           console.log('Typography settings loaded:', settings.typography);
           
-          if (settings.typography) {
-            const root = document.documentElement;
-            
-            if (settings.typography.baseFontSize) {
-              root.style.setProperty('--font-size-base', settings.typography.baseFontSize);
-              console.log('Set base font size:', settings.typography.baseFontSize);
-            }
-            
-            if (settings.typography.bodyFontWeight) {
-              root.style.setProperty('--font-weight-body', settings.typography.bodyFontWeight);
-            }
-            
-            if (settings.typography.headingFontWeight) {
-              root.style.setProperty('--font-weight-heading', settings.typography.headingFontWeight);
-            }
-            
-            if (settings.typography.h1Size) {
-              root.style.setProperty('--font-size-h1', settings.typography.h1Size);
-              console.log('Set H1 size:', settings.typography.h1Size);
-            }
-            
-            if (settings.typography.h2Size) {
-              root.style.setProperty('--font-size-h2', settings.typography.h2Size);
-            }
-            
-            if (settings.typography.h3Size) {
-              root.style.setProperty('--font-size-h3', settings.typography.h3Size);
-            }
-            
-            if (settings.typography.h4Size) {
-              root.style.setProperty('--font-size-h4', settings.typography.h4Size);
-            }
-            
-            if (settings.typography.h5Size) {
-              root.style.setProperty('--font-size-h5', settings.typography.h5Size);
-            }
-            
-            if (settings.typography.h6Size) {
-              root.style.setProperty('--font-size-h6', settings.typography.h6Size);
-            }
-            
-            console.log('Typography CSS variables applied successfully');
-          } else {
-            console.log('No typography settings found in response');
-          }
+          const root = document.documentElement;
+          const typography = settings.typography || {};
+          
+          root.style.setProperty('--font-size-base', typography.baseFontSize || '16px');
+          root.style.setProperty('--font-weight-body', typography.bodyFontWeight || '400');
+          root.style.setProperty('--font-weight-heading', typography.headingFontWeight || '700');
+          root.style.setProperty('--font-size-h1', typography.h1Size || '3rem');
+          root.style.setProperty('--font-size-h2', typography.h2Size || '2.25rem');
+          root.style.setProperty('--font-size-h3', typography.h3Size || '1.875rem');
+          root.style.setProperty('--font-size-h4', typography.h4Size || '1.5rem');
+          root.style.setProperty('--font-size-h5', typography.h5Size || '1.25rem');
+          root.style.setProperty('--font-size-h6', typography.h6Size || '1rem');
+          
+          console.log('Typography CSS variables applied:', {
+            baseFontSize: typography.baseFontSize || '16px (fallback)',
+            h1Size: typography.h1Size || '3rem (fallback)',
+            h2Size: typography.h2Size || '2.25rem (fallback)',
+            h3Size: typography.h3Size || '1.875rem (fallback)',
+            h4Size: typography.h4Size || '1.5rem (fallback)',
+            h5Size: typography.h5Size || '1.25rem (fallback)',
+            h6Size: typography.h6Size || '1rem (fallback)',
+          });
         }
       } catch (error) {
         console.error('Error loading typography settings:', error);
+        const root = document.documentElement;
+        root.style.setProperty('--font-size-base', '16px');
+        root.style.setProperty('--font-weight-body', '400');
+        root.style.setProperty('--font-weight-heading', '700');
+        root.style.setProperty('--font-size-h1', '3rem');
+        root.style.setProperty('--font-size-h2', '2.25rem');
+        root.style.setProperty('--font-size-h3', '1.875rem');
+        root.style.setProperty('--font-size-h4', '1.5rem');
+        root.style.setProperty('--font-size-h5', '1.25rem');
+        root.style.setProperty('--font-size-h6', '1rem');
       }
     };
     

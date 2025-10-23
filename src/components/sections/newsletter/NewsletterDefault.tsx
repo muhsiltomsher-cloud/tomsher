@@ -32,16 +32,15 @@ export default function NewsletterDefault({ title, subtitle, placeholder, button
   return (
     <section style={{ padding: '80px 20px', backgroundColor }}>
       <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>{title}</h2>
-        <p style={{ fontSize: '1.2rem', color: '#666', marginBottom: '2rem' }}>{subtitle}</p>
+        <h2 style={{ marginBottom: '1rem', fontWeight: 'bold' }}>{title}</h2>
+        <p style={{ color: '#666', marginBottom: '2rem' }}>{subtitle}</p>
         
         {status === 'success' ? (
           <div style={{ 
             padding: '2rem',
             background: '#d4edda',
             color: '#155724',
-            borderRadius: '12px',
-            fontSize: '1.1rem'
+            borderRadius: '12px'
           }}>
             🎉 Thank you for subscribing! Check your email for confirmation.
           </div>
@@ -65,7 +64,6 @@ export default function NewsletterDefault({ title, subtitle, placeholder, button
                 padding: '1rem',
                 border: '2px solid #e9ecef',
                 borderRadius: '8px',
-                fontSize: '1rem',
                 outline: 'none',
               }}
             />
@@ -78,7 +76,6 @@ export default function NewsletterDefault({ title, subtitle, placeholder, button
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
-                fontSize: '1rem',
                 fontWeight: 'bold',
                 cursor: status === 'loading' ? 'not-allowed' : 'pointer',
                 opacity: status === 'loading' ? 0.7 : 1,
@@ -95,7 +92,7 @@ export default function NewsletterDefault({ title, subtitle, placeholder, button
           </p>
         )}
         
-        <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '1rem' }}>
+        <p style={{ color: '#666', marginTop: '1rem' }}>
           No spam, unsubscribe at any time.
         </p>
       </div>

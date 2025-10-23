@@ -6,8 +6,8 @@ export default function FAQGrid({ title, subtitle, faqs }: FAQVariantProps) {
     <section style={{ padding: '80px 20px', backgroundColor: 'white' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>{title}</h2>
-          <p style={{ fontSize: '1.2rem', color: '#666' }}>{subtitle}</p>
+          <h2 style={{ marginBottom: '1rem', fontWeight: 'bold' }}>{title}</h2>
+          <p style={{ color: '#666' }}>{subtitle}</p>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
           {faqs.map((faq, index) => (
@@ -17,7 +17,7 @@ export default function FAQGrid({ title, subtitle, faqs }: FAQVariantProps) {
               borderRadius: '12px',
               borderLeft: '4px solid #667eea'
             }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', fontWeight: 'bold', color: '#333' }}>
+              <h3 style={{ marginBottom: '1rem', fontWeight: 'bold', color: '#333' }}>
                 {faq.question}
               </h3>
               <p style={{ color: '#666', lineHeight: '1.6' }}>{faq.answer}</p>
