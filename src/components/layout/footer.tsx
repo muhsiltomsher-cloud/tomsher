@@ -12,7 +12,16 @@ import {
   Instagram, 
   Linkedin,
   Youtube,
-  ArrowRight
+  ArrowRight,
+  Github,
+  MessageCircle,
+  Send,
+  Camera,
+  Music2,
+  Dribbble,
+  Palette,
+  BookOpen,
+  MessageSquare
 } from 'lucide-react'
 
 interface Settings {
@@ -233,6 +242,106 @@ export function Footer() {
                   className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
                 >
                   <Youtube className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.pinterest && (
+                <Link
+                  href={settings.pinterest}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Camera className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.tiktok && (
+                <Link
+                  href={settings.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Music2 className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.snapchat && (
+                <Link
+                  href={settings.snapchat}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Camera className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.whatsapp && (
+                <Link
+                  href={settings.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.telegram && (
+                <Link
+                  href={settings.telegram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Send className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.github && (
+                <Link
+                  href={settings.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Github className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.dribbble && (
+                <Link
+                  href={settings.dribbble}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Dribbble className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.behance && (
+                <Link
+                  href={settings.behance}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Palette className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.medium && (
+                <Link
+                  href={settings.medium}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <BookOpen className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.reddit && (
+                <Link
+                  href={settings.reddit}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <MessageSquare className="h-5 w-5" />
                 </Link>
               )}
             </div>

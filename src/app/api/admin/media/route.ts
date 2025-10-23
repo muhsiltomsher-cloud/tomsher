@@ -46,8 +46,12 @@ export async function POST(request: NextRequest) {
       }, { status: 500 });
     }
 
-    const blob = await put(file.name, file, {
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    const blob = await put(file.name, buffer, {
       access: 'public',
+      contentType: file.type,
     });
 
     const media = await Media.create({

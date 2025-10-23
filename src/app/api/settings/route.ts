@@ -22,7 +22,29 @@ export async function GET() {
       });
     }
     
-    return NextResponse.json(settings);
+    const response = {
+      ...settings.toObject(),
+      phone: settings.contactPhone,
+      email: settings.contactEmail,
+      description: settings.siteDescription,
+      facebook: settings.socialMedia?.facebook,
+      twitter: settings.socialMedia?.twitter,
+      instagram: settings.socialMedia?.instagram,
+      linkedin: settings.socialMedia?.linkedin,
+      youtube: settings.socialMedia?.youtube,
+      pinterest: settings.socialMedia?.pinterest,
+      tiktok: settings.socialMedia?.tiktok,
+      snapchat: settings.socialMedia?.snapchat,
+      whatsapp: settings.socialMedia?.whatsapp,
+      telegram: settings.socialMedia?.telegram,
+      github: settings.socialMedia?.github,
+      dribbble: settings.socialMedia?.dribbble,
+      behance: settings.socialMedia?.behance,
+      medium: settings.socialMedia?.medium,
+      reddit: settings.socialMedia?.reddit,
+    };
+    
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching settings:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
