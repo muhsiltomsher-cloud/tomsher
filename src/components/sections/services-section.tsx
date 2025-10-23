@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -15,50 +16,14 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-const services = [
-  {
-    icon: Code,
-    title: 'Web Development',
-    description: 'Custom websites built with modern technologies like React, Next.js, and Node.js for optimal performance.',
-    features: ['Responsive Design', 'Fast Loading', 'SEO Optimized', 'Secure'],
-    href: '/services/web-development'
-  },
-  {
-    icon: ShoppingCart,
-    title: 'E-commerce Development',
-    description: 'Complete online store solutions with payment integration, inventory management, and user-friendly interfaces.',
-    features: ['Shopify', 'WooCommerce', 'Custom Solutions', 'Payment Gateway'],
-    href: '/services/ecommerce-development'
-  },
-  {
-    icon: Smartphone,
-    title: 'Mobile App Development',
-    description: 'Native and hybrid mobile applications for iOS and Android platforms with seamless user experience.',
-    features: ['iOS Apps', 'Android Apps', 'Hybrid Apps', 'App Store Optimization'],
-    href: '/services/mobile-app-development'
-  },
-  {
-    icon: TrendingUp,
-    title: 'Digital Marketing',
-    description: 'Comprehensive digital marketing strategies to boost your online presence and drive business growth.',
-    features: ['Social Media', 'Google Ads', 'Content Marketing', 'Analytics'],
-    href: '/services/digital-marketing'
-  },
-  {
-    icon: Search,
-    title: 'SEO Services',
-    description: 'Search engine optimization to improve your website visibility and organic traffic from search engines.',
-    features: ['On-page SEO', 'Technical SEO', 'Link Building', 'Local SEO'],
-    href: '/services/seo-services'
-  },
-  {
-    icon: Palette,
-    title: 'Web Design',
-    description: 'Creative and user-centered web designs that reflect your brand identity and engage your audience.',
-    features: ['UI/UX Design', 'Brand Identity', 'Prototyping', 'User Research'],
-    href: '/services/web-design'
-  }
-]
+interface Service {
+  _id: string
+  title: string
+  description: string
+  features: string[]
+  icon: string
+  slug: string
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -81,7 +46,55 @@ const itemVariants = {
   }
 }
 
+const iconMap: Record<string, any> = {
+  Code,
+  ShoppingCart,
+  Smartphone,
+  TrendingUp,
+  Search,
+  Palette,
+  Database,
+  Cloud,
+}
+
 export function ServicesSection() {
+  const [services, setServices] = useState<Service[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('/api/admin/services')
+        if (response.ok) {
+          const data = await response.json()
+          setServices(data.slice(0, 6))
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchServices()
+  }, [])
+
+  if (loading) {
+    return (
+      <section className="section-padding bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <p className="text-gray-600">Loading services...</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (services.length === 0) {
+    return null
+  }
+
   return (
     <section className="section-padding bg-white">
       <div className="container mx-auto px-4">
@@ -111,10 +124,10 @@ export function ServicesSection() {
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {services.map((service, index) => {
-            const IconComponent = service.icon
+            const IconComponent = iconMap[service.icon] || Code
             return (
               <motion.div
-                key={index}
+                key={service._id}
                 variants={itemVariants}
                 className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 card-hover"
               >
@@ -133,20 +146,22 @@ export function ServicesSection() {
                 </p>
 
                 {/* Features */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {service.features.map((feature, featureIndex) => (
-                    <span
-                      key={featureIndex}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
-                    >
-                      {feature}
-                    </span>
-                  ))}
-                </div>
+                {service.features && service.features.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {service.features.map((feature, featureIndex) => (
+                      <span
+                        key={featureIndex}
+                        className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
                 {/* CTA */}
                 <Link
-                  href={service.href}
+                  href={`/services/${service.slug}`}
                   className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors duration-200 group/link"
                 >
                   Learn More
