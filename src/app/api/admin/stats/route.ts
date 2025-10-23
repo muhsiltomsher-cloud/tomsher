@@ -8,6 +8,8 @@ import Portfolio from '@/models/Portfolio';
 import Testimonial from '@/models/Testimonial';
 import BlogPost from '@/models/BlogPost';
 import Contact from '@/models/Contact';
+import TeamMember from '@/models/TeamMember';
+import Media from '@/models/Media';
 
 export async function GET() {
   try {
@@ -19,13 +21,15 @@ export async function GET() {
 
     await connectDB();
 
-    const [pages, services, portfolio, testimonials, blog, contacts] = await Promise.all([
+    const [pages, services, portfolio, testimonials, blog, contacts, team, media] = await Promise.all([
       Page.countDocuments(),
       Service.countDocuments(),
       Portfolio.countDocuments(),
       Testimonial.countDocuments(),
       BlogPost.countDocuments(),
       Contact.countDocuments(),
+      TeamMember.countDocuments(),
+      Media.countDocuments(),
     ]);
 
     return NextResponse.json({
@@ -35,6 +39,8 @@ export async function GET() {
       testimonials,
       blog,
       contacts,
+      team,
+      media,
     });
   } catch (error) {
     console.error('Error fetching stats:', error);

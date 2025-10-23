@@ -31,7 +31,11 @@ export default function AdminDashboard() {
     testimonials: 0,
     blog: 0,
     contacts: 0,
+    team: 0,
+    media: 0,
   })
+  const [recentActivity, setRecentActivity] = useState<any[]>([])
+  const [loadingActivity, setLoadingActivity] = useState(true)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -41,6 +45,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchStats()
+    fetchRecentActivity()
   }, [])
 
   const fetchStats = async () => {
@@ -53,6 +58,90 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error('Error fetching stats:', error)
     }
+  }
+
+  const fetchRecentActivity = async () => {
+    try {
+      const [pagesRes, blogRes, servicesRes, portfolioRes] = await Promise.all([
+        fetch('/api/admin/pages'),
+        fetch('/api/admin/blog'),
+        fetch('/api/admin/services'),
+        fetch('/api/admin/portfolio'),
+      ])
+
+      const activities = []
+
+      if (pagesRes.ok) {
+        const pages = await pagesRes.json()
+        pages.slice(0, 2).forEach((page: any) => {
+          activities.push({
+            name: 'Page Created',
+            desc: page.title,
+            avatar: '📄',
+            time: getTimeAgo(page.createdAt),
+            timestamp: new Date(page.createdAt).getTime(),
+          })
+        })
+      }
+
+      if (blogRes.ok) {
+        const blogs = await blogRes.json()
+        blogs.slice(0, 2).forEach((blog: any) => {
+          activities.push({
+            name: 'Blog Post Published',
+            desc: blog.title,
+            avatar: '📝',
+            time: getTimeAgo(blog.createdAt),
+            timestamp: new Date(blog.createdAt).getTime(),
+          })
+        })
+      }
+
+      if (servicesRes.ok) {
+        const services = await servicesRes.json()
+        services.slice(0, 1).forEach((service: any) => {
+          activities.push({
+            name: 'Service Added',
+            desc: service.title,
+            avatar: '💼',
+            time: getTimeAgo(service.createdAt),
+            timestamp: new Date(service.createdAt).getTime(),
+          })
+        })
+      }
+
+      if (portfolioRes.ok) {
+        const portfolio = await portfolioRes.json()
+        portfolio.slice(0, 1).forEach((item: any) => {
+          activities.push({
+            name: 'Portfolio Updated',
+            desc: item.title,
+            avatar: '🎨',
+            time: getTimeAgo(item.createdAt),
+            timestamp: new Date(item.createdAt).getTime(),
+          })
+        })
+      }
+
+      activities.sort((a, b) => b.timestamp - a.timestamp)
+      setRecentActivity(activities.slice(0, 4))
+    } catch (error) {
+      console.error('Error fetching recent activity:', error)
+    } finally {
+      setLoadingActivity(false)
+    }
+  }
+
+  const getTimeAgo = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+    if (seconds < 60) return 'Just now'
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`
+    return date.toLocaleDateString()
   }
 
   if (status === 'loading') {
@@ -95,12 +184,9 @@ export default function AdminDashboard() {
                     <Typography variant="h4" fontWeight={700} sx={{ mb: 0.5 }}>
                       {stats.pages}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <TrendingUp sx={{ fontSize: 16, color: '#10b981' }} />
-                      <Typography variant="caption" sx={{ color: '#10b981' }}>
-                        15.54% grow this month
-                      </Typography>
-                    </Box>
+                    <Typography variant="caption" color="text.secondary">
+                      Published pages
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -114,12 +200,9 @@ export default function AdminDashboard() {
                     <Typography variant="h4" fontWeight={700} sx={{ mb: 0.5 }}>
                       {stats.services}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <TrendingUp sx={{ fontSize: 16, color: '#10b981' }} />
-                      <Typography variant="caption" sx={{ color: '#10b981' }}>
-                        156 this month
-                      </Typography>
-                    </Box>
+                    <Typography variant="caption" color="text.secondary">
+                      Active services
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -133,12 +216,9 @@ export default function AdminDashboard() {
                     <Typography variant="h4" fontWeight={700} sx={{ mb: 0.5 }}>
                       {stats.portfolio}
                     </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <TrendingUp sx={{ fontSize: 16, color: '#f59e0b' }} />
-                      <Typography variant="caption" sx={{ color: '#f59e0b' }}>
-                        49 this week
-                      </Typography>
-                    </Box>
+                    <Typography variant="caption" color="text.secondary">
+                      Portfolio projects
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -150,12 +230,11 @@ export default function AdminDashboard() {
                   Content Overview
                 </Typography>
                 <Typography variant="h3" fontWeight={700} sx={{ mb: 0.5 }}>
-                  ${(stats.pages * 100 + stats.services * 50 + stats.portfolio * 75).toLocaleString()}
+                  {(stats.pages + stats.services + stats.portfolio + stats.blog).toLocaleString()} Items
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 3 }}>
-                  <TrendingUp sx={{ fontSize: 16, color: '#10b981' }} />
-                  <Typography variant="caption" sx={{ color: '#10b981' }}>
-                    +25.2%
+                  <Typography variant="caption" color="text.secondary">
+                    Total content across all sections
                   </Typography>
                 </Box>
 
@@ -224,12 +303,15 @@ export default function AdminDashboard() {
                   </Typography>
                 </Box>
 
-                {[
-                  { name: 'New Page Created', time: '2hrs ago', desc: 'About Us page published', avatar: '📄' },
-                  { name: 'Blog Post Updated', time: 'Just now', desc: 'Latest news article', avatar: '📝' },
-                  { name: 'Service Added', time: '4hrs ago', desc: 'Web Development service', avatar: '💼' },
-                  { name: 'Portfolio Updated', time: '5hrs ago', desc: 'New project showcase', avatar: '🎨' },
-                ].map((activity, index) => (
+                {loadingActivity ? (
+                  <Box sx={{ py: 4, textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary">Loading...</Typography>
+                  </Box>
+                ) : recentActivity.length === 0 ? (
+                  <Box sx={{ py: 4, textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary">No recent activity</Typography>
+                  </Box>
+                ) : recentActivity.map((activity, index) => (
                   <Box
                     key={index}
                     sx={{
@@ -263,10 +345,10 @@ export default function AdminDashboard() {
           <Grid item xs={12} lg={4}>
             <Grid container spacing={2} sx={{ mb: 3 }}>
               {[
-                { label: 'Users', emoji: '👥', value: '19K', progress: 75, color: '#3b82f6', bg: '#dbeafe' },
-                { label: 'Clicks', emoji: '👆', value: '2.5M', progress: 85, color: '#f59e0b', bg: '#fef3c7' },
-                { label: 'Sales', emoji: '💰', value: '41$', progress: 60, color: '#8b5cf6', bg: '#e0e7ff' },
-                { label: 'Items', emoji: '📦', value: '78', progress: 90, color: '#14b8a6', bg: '#ccfbf1' },
+                { label: 'Testimonials', emoji: '⭐', value: stats.testimonials, progress: (stats.testimonials / 10) * 100, color: '#3b82f6', bg: '#dbeafe' },
+                { label: 'Contacts', emoji: '📧', value: stats.contacts, progress: (stats.contacts / 20) * 100, color: '#f59e0b', bg: '#fef3c7' },
+                { label: 'Team Members', emoji: '👥', value: stats.team, progress: (stats.team / 15) * 100, color: '#8b5cf6', bg: '#e0e7ff' },
+                { label: 'Media Files', emoji: '📦', value: stats.media, progress: (stats.media / 50) * 100, color: '#14b8a6', bg: '#ccfbf1' },
               ].map((item, index) => (
                 <Grid item xs={6} key={index}>
                   <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
