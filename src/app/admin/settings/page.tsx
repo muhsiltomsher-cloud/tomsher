@@ -56,6 +56,13 @@ interface Settings {
     h5Size?: string;
     h6Size?: string;
   };
+  footer?: {
+    description?: string;
+    newsletterTitle?: string;
+    newsletterDescription?: string;
+    copyrightText?: string;
+    showNewsletter?: boolean;
+  };
 }
 
 export default function SettingsManagement() {
@@ -709,6 +716,70 @@ export default function SettingsManagement() {
                 })}
                 fullWidth
                 placeholder="1rem"
+              />
+            </Grid>
+          </Grid>
+
+          <Divider sx={{ my: 4 }} />
+
+          <Typography variant="h6" gutterBottom>
+            Footer Settings
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Customize footer content including newsletter section and copyright text
+          </Typography>
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid item xs={12}>
+              <TextField
+                label="Footer Description"
+                value={settings.footer?.description || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  footer: { ...settings.footer, description: e.target.value }
+                })}
+                fullWidth
+                multiline
+                rows={2}
+                helperText="Brief description shown in footer"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Newsletter Title"
+                value={settings.footer?.newsletterTitle || 'Stay Updated'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  footer: { ...settings.footer, newsletterTitle: e.target.value }
+                })}
+                fullWidth
+                helperText="Title for newsletter section"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Newsletter Description"
+                value={settings.footer?.newsletterDescription || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  footer: { ...settings.footer, newsletterDescription: e.target.value }
+                })}
+                fullWidth
+                multiline
+                rows={2}
+                helperText="Description for newsletter section"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Copyright Text"
+                value={settings.footer?.copyrightText || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  footer: { ...settings.footer, copyrightText: e.target.value }
+                })}
+                fullWidth
+                helperText="Copyright text shown in footer (year will be added automatically)"
+                placeholder="All rights reserved by Tomsher Technologies."
               />
             </Grid>
           </Grid>
