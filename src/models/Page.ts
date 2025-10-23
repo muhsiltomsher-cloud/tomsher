@@ -16,6 +16,14 @@ export enum PageType {
   CUSTOM = 'CUSTOM',
 }
 
+export interface IPageSection {
+  sectionId: string;
+  componentName: string;
+  order: number;
+  data: any;
+  isVisible: boolean;
+}
+
 export interface IPage extends Document {
   title: string;
   slug: string;
@@ -27,6 +35,7 @@ export interface IPage extends Document {
   authorId: mongoose.Types.ObjectId;
   parentId?: mongoose.Types.ObjectId;
   order?: number;
+  sections?: IPageSection[];
   settings?: {
     enableSkeletonLoaders?: boolean;
     enablePageTransitions?: boolean;
@@ -38,6 +47,29 @@ export interface IPage extends Document {
   updatedAt: Date;
   publishedAt?: Date;
 }
+
+const PageSectionSchema = new Schema({
+  sectionId: {
+    type: String,
+    required: true,
+  },
+  componentName: {
+    type: String,
+    required: true,
+  },
+  order: {
+    type: Number,
+    default: 0,
+  },
+  data: {
+    type: Schema.Types.Mixed,
+    default: {},
+  },
+  isVisible: {
+    type: Boolean,
+    default: true,
+  },
+});
 
 const PageSchema = new Schema<IPage>(
   {
@@ -83,6 +115,10 @@ const PageSchema = new Schema<IPage>(
     order: {
       type: Number,
       default: 0,
+    },
+    sections: {
+      type: [PageSectionSchema],
+      default: [],
     },
     settings: {
       type: Schema.Types.Mixed,

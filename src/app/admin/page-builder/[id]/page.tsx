@@ -2,46 +2,29 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Paper,
-  TextField,
-  Typography,
-  Alert,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Divider,
-} from '@mui/material'
-import {
-  Add,
-  ArrowUpward,
-  ArrowDownward,
-  Edit,
-  Delete,
-  Visibility,
-  VisibilityOff,
-  Save,
-  ArrowBack,
-  Image as ImageIcon,
-  Preview as PreviewIcon,
-  Code as CodeIcon,
-} from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 import { sectionDefinitions, sectionRegistry } from '@/components/sections'
 import ImagePicker from '@/components/admin/ImagePicker'
 import RichTextEditor from '@/components/editor/RichTextEditor'
+import { useNotification } from '@/contexts/NotificationContext'
+import {
+  ArrowLeft,
+  Plus,
+  ChevronUp,
+  ChevronDown,
+  Edit2,
+  Trash2,
+  Eye,
+  EyeOff,
+  Save,
+  ExternalLink,
+  Image as ImageIcon,
+  X,
+  Layers,
+  Settings,
+  Monitor,
+  Code,
+} from 'lucide-react'
 
 interface PageSection {
   _id?: string
@@ -63,25 +46,76 @@ interface CustomPage {
   seoDescription?: string
 }
 
+function DatabaseMultiSelect({ field, fieldKey, value, onChange }: any) {
+  const [options, setOptions] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const response = await fetch(field.apiEndpoint)
+        if (response.ok) {
+          const data = await response.json()
+          setOptions(data)
+        }
+      } catch (error) {
+        console.error('Error fetching options:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchOptions()
+  }, [field.apiEndpoint])
+
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        {field.label}
+      </label>
+      <select
+        multiple
+        value={value}
+        onChange={(e) => {
+          const selected = Array.from(e.target.selectedOptions, option => option.value)
+          onChange(selected)
+        }}
+        disabled={loading}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        style={{ minHeight: '120px' }}
+      >
+        {loading ? (
+          <option disabled>Loading...</option>
+        ) : (
+          options.map((option) => (
+            <option key={option[field.valueField]} value={option[field.valueField]}>
+              {option[field.displayField]}
+            </option>
+          ))
+        )}
+      </select>
+      <p className="mt-1 text-xs text-gray-500">Hold Ctrl/Cmd to select multiple</p>
+    </div>
+  )
+}
+
 export default function PageBuilderEditor() {
   const router = useRouter()
   const params = useParams()
   const pageId = params.id as string
   const { data: session, status } = useSession()
+  const notification = useNotification()
   
   const [page, setPage] = useState<CustomPage | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [openAddDialog, setOpenAddDialog] = useState(false)
-  const [openEditDialog, setOpenEditDialog] = useState(false)
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
   const [selectedSection, setSelectedSection] = useState<any>(null)
   const [editingSection, setEditingSection] = useState<PageSection | null>(null)
   const [sectionData, setSectionData] = useState<any>({})
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [imagePickerOpen, setImagePickerOpen] = useState(false)
   const [currentImageField, setCurrentImageField] = useState<string>('')
-  const [showPreview, setShowPreview] = useState(false)
+  const [showPreview, setShowPreview] = useState(true)
   const [previewData, setPreviewData] = useState<any>({})
 
   useEffect(() => {
@@ -92,11 +126,11 @@ export default function PageBuilderEditor() {
           const data = await response.json()
           setPage(data)
         } else {
-          setError('Failed to load page')
+          notification.error('Failed to load page')
         }
       } catch (error) {
         console.error('Error fetching page:', error)
-        setError('An error occurred while loading the page')
+        notification.error('An error occurred while loading the page')
       } finally {
         setLoading(false)
       }
@@ -107,12 +141,12 @@ export default function PageBuilderEditor() {
     } else if (status === 'authenticated') {
       fetchPage()
     }
-  }, [status, router, pageId])
+  }, [status, router, pageId, notification])
 
   const handleAddSection = () => {
     setSelectedSection(null)
     setSectionData({})
-    setOpenAddDialog(true)
+    setShowAddModal(true)
   }
 
   const handleSelectSectionType = (sectionDef: any) => {
@@ -120,7 +154,6 @@ export default function PageBuilderEditor() {
     const defaultData = sectionDef.defaultData || {}
     setSectionData(defaultData)
     setPreviewData(defaultData)
-    setShowPreview(true)
   }
 
   const handleSaveNewSection = async () => {
@@ -136,7 +169,8 @@ export default function PageBuilderEditor() {
 
     const updatedSections = [...page.sections, newSection]
     await savePage({ sections: updatedSections })
-    setOpenAddDialog(false)
+    setShowAddModal(false)
+    notification.success(`${selectedSection.name} added successfully!`)
   }
 
   const handleEditSection = (section: PageSection) => {
@@ -144,8 +178,7 @@ export default function PageBuilderEditor() {
     const data = section.data || {}
     setSectionData(data)
     setPreviewData(data)
-    setShowPreview(true)
-    setOpenEditDialog(true)
+    setShowEditModal(true)
   }
 
   const handleSaveEditSection = async () => {
@@ -156,7 +189,8 @@ export default function PageBuilderEditor() {
     )
 
     await savePage({ sections: updatedSections })
-    setOpenEditDialog(false)
+    setShowEditModal(false)
+    notification.success('Section updated successfully!')
   }
 
   const handleDeleteSection = async (section: PageSection) => {
@@ -168,6 +202,7 @@ export default function PageBuilderEditor() {
       .map((s, index) => ({ ...s, order: index }))
 
     await savePage({ sections: updatedSections })
+    notification.success('Section deleted successfully!')
   }
 
   const handleToggleVisibility = async (section: PageSection) => {
@@ -178,6 +213,7 @@ export default function PageBuilderEditor() {
     )
 
     await savePage({ sections: updatedSections })
+    notification.info(`Section ${section.isVisible ? 'hidden' : 'shown'}`)
   }
 
   const handleMoveSection = async (section: PageSection, direction: 'up' | 'down') => {
@@ -198,12 +234,11 @@ export default function PageBuilderEditor() {
     }))
 
     await savePage({ sections: reorderedSections })
+    notification.success('Section reordered')
   }
 
   const savePage = async (updates: Partial<CustomPage>) => {
     setSaving(true)
-    setError('')
-    setSuccess('')
 
     try {
       const response = await fetch(`/api/admin/page-builder/${pageId}`, {
@@ -215,41 +250,57 @@ export default function PageBuilderEditor() {
       if (response.ok) {
         const updatedPage = await response.json()
         setPage(updatedPage)
-        setSuccess('Changes saved successfully!')
-        setTimeout(() => setSuccess(''), 3000)
       } else {
-        setError('Failed to save changes')
+        notification.error('Failed to save changes')
       }
     } catch (error) {
       console.error('Error saving page:', error)
-      setError('An error occurred while saving')
+      notification.error('An error occurred while saving')
     } finally {
       setSaving(false)
     }
   }
 
   const handleImageSelect = (imageUrl: string, alt?: string) => {
-    const newData = { ...sectionData, [currentImageField]: imageUrl }
-    setSectionData(newData)
-    setPreviewData(newData)
+    if (currentImageField.includes('.')) {
+      const parts = currentImageField.split('.')
+      const newData = { ...sectionData }
+      
+      if (parts.length === 3) {
+        const [arrayKey, indexStr, fieldKey] = parts
+        const index = parseInt(indexStr)
+        const array = [...(newData[arrayKey] || [])]
+        array[index] = { ...array[index], [fieldKey]: imageUrl }
+        newData[arrayKey] = array
+      } else {
+        newData[currentImageField] = imageUrl
+      }
+      
+      setSectionData(newData)
+      setPreviewData(newData)
+    } else {
+      const newData = { ...sectionData, [currentImageField]: imageUrl }
+      setSectionData(newData)
+      setPreviewData(newData)
+    }
     setImagePickerOpen(false)
   }
 
   const renderLivePreview = (sectionDef: any, data: any) => {
     if (!sectionDef || !data) {
       return (
-        <Alert severity="info">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700">
           No section selected or data is empty.
-        </Alert>
+        </div>
       )
     }
 
     const SectionComponent = sectionRegistry[sectionDef.component]
     if (!SectionComponent) {
       return (
-        <Alert severity="error">
-          Component "{sectionDef.component}" not found in registry. Available components: {Object.keys(sectionRegistry).join(', ')}
-        </Alert>
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          Component "{sectionDef.component}" not found in registry.
+        </div>
       )
     }
 
@@ -258,9 +309,9 @@ export default function PageBuilderEditor() {
     } catch (error) {
       console.error('Preview error:', error)
       return (
-        <Alert severity="warning">
+        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700">
           Preview error: {error instanceof Error ? error.message : 'Please fill in required fields'}
-        </Alert>
+        </div>
       )
     }
   }
@@ -274,499 +325,794 @@ export default function PageBuilderEditor() {
     }
 
     return (
-      <Box sx={{ mt: 2 }}>
+      <div className="space-y-4">
         {Object.entries(sectionDef.schema).map(([key, field]: [string, any]) => {
           if (field.type === 'text') {
             return (
-              <TextField
-                key={key}
-                fullWidth
-                label={field.label}
-                value={data[key] || ''}
-                onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
-                margin="normal"
-                required={field.required}
-              />
+              <div key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {field.label} {field.required && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                  type="text"
+                  value={data[key] || ''}
+                  onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required={field.required}
+                />
+              </div>
             )
           }
 
           if (field.type === 'textarea') {
             return (
-              <Box key={key} sx={{ my: 2 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  {field.label} {field.required && <span style={{ color: 'red' }}>*</span>}
-                </Typography>
+              <div key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {field.label} {field.required && <span className="text-red-500">*</span>}
+                </label>
                 <RichTextEditor
                   value={data[key] || ''}
                   onChange={(value) => handleChange({ ...data, [key]: value })}
                   placeholder={`Enter ${field.label.toLowerCase()}...`}
                   height="200px"
                 />
-              </Box>
+              </div>
             )
           }
 
           if (field.type === 'select') {
             return (
-              <FormControl fullWidth margin="normal" key={key}>
-                <InputLabel>{field.label}</InputLabel>
-                <Select
+              <div key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {field.label}
+                </label>
+                <select
                   value={data[key] || field.options[0]}
                   onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
-                  label={field.label}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   {field.options.map((option: string) => (
-                    <MenuItem key={option} value={option}>
+                    <option key={option} value={option}>
                       {option}
-                    </MenuItem>
+                    </option>
                   ))}
-                </Select>
-              </FormControl>
+                </select>
+              </div>
             )
           }
 
           if (field.type === 'image') {
             return (
-              <Box key={key} sx={{ my: 2 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+              <div key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   {field.label}
-                </Typography>
+                </label>
                 {data[key] && (
-                  <Box sx={{ mb: 1 }}>
+                  <div className="mb-2">
                     <img 
                       src={data[key]} 
                       alt={field.label}
-                      style={{ maxWidth: '200px', maxHeight: '150px', objectFit: 'cover', borderRadius: '8px' }}
+                      className="w-48 h-32 object-cover rounded-lg border-2 border-gray-200"
                     />
-                  </Box>
+                  </div>
                 )}
-                <Button
-                  variant="outlined"
-                  startIcon={<ImageIcon />}
-                  onClick={() => {
-                    setCurrentImageField(key)
-                    setImagePickerOpen(true)
-                  }}
-                >
-                  {data[key] ? 'Change Image' : 'Select Image'}
-                </Button>
-                {data[key] && (
-                  <Button
-                    size="small"
-                    onClick={() => handleChange({ ...data, [key]: '' })}
-                    sx={{ ml: 1 }}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentImageField(key)
+                      setImagePickerOpen(true)
+                    }}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
                   >
-                    Remove
-                  </Button>
-                )}
-              </Box>
+                    <ImageIcon className="h-4 w-4" />
+                    {data[key] ? 'Change Image' : 'Select Image'}
+                  </button>
+                  {data[key] && (
+                    <button
+                      type="button"
+                      onClick={() => handleChange({ ...data, [key]: '' })}
+                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              </div>
             )
           }
 
           if (field.type === 'color') {
             return (
-              <Box key={key} sx={{ my: 2 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  {field.label} {field.required && <span style={{ color: 'red' }}>*</span>}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+              <div key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {field.label} {field.required && <span className="text-red-500">*</span>}
+                </label>
+                <div className="flex gap-2 items-center">
                   <input
                     type="color"
                     value={data[key] || '#000000'}
                     onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
-                    style={{
-                      width: '60px',
-                      height: '40px',
-                      border: '2px solid #ddd',
-                      borderRadius: '8px',
-                      cursor: 'pointer'
-                    }}
+                    className="w-16 h-10 border-2 border-gray-300 rounded-lg cursor-pointer"
                   />
-                  <TextField
+                  <input
+                    type="text"
                     value={data[key] || '#000000'}
                     onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
                     placeholder="#000000"
-                    size="small"
-                    sx={{ flex: 1 }}
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   {data[key] && (
-                    <Button
-                      size="small"
+                    <button
+                      type="button"
                       onClick={() => handleChange({ ...data, [key]: '' })}
+                      className="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
                     >
                       Reset
-                    </Button>
+                    </button>
                   )}
-                </Box>
-              </Box>
+                </div>
+              </div>
+            )
+          }
+
+          if (field.type === 'number') {
+            return (
+              <div key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {field.label} {field.required && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                  type="number"
+                  value={data[key] || ''}
+                  onChange={(e) => handleChange({ ...data, [key]: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required={field.required}
+                />
+              </div>
+            )
+          }
+
+          if (field.type === 'checkbox') {
+            return (
+              <div key={key} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={data[key] || false}
+                  onChange={(e) => handleChange({ ...data, [key]: e.target.checked })}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label className="text-sm font-medium text-gray-700">{field.label}</label>
+              </div>
+            )
+          }
+
+          if (field.type === 'tags') {
+            return (
+              <div key={key}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {field.label} {field.required && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                  type="text"
+                  value={Array.isArray(data[key]) ? data[key].join(', ') : ''}
+                  onChange={(e) => {
+                    const tags = e.target.value.split(',').map(t => t.trim()).filter(t => t)
+                    handleChange({ ...data, [key]: tags })
+                  }}
+                  placeholder="Enter tags separated by commas"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="mt-1 text-xs text-gray-500">Separate tags with commas</p>
+              </div>
+            )
+          }
+
+          if (field.type === 'multiselect-db') {
+            return (
+              <DatabaseMultiSelect
+                key={key}
+                field={field}
+                fieldKey={key}
+                value={data[key] || []}
+                onChange={(value) => handleChange({ ...data, [key]: value })}
+              />
+            )
+          }
+
+          if (field.type === 'array') {
+            const arrayData = data[key] || []
+            return (
+              <div key={key} className="border-2 border-gray-200 rounded-lg p-4 space-y-4">
+                <h3 className="text-lg font-semibold text-gray-800">{field.label}</h3>
+                {arrayData.map((item: any, index: number) => (
+                  <div key={index} className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm font-medium text-gray-700">Item {index + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newArray = arrayData.filter((_: any, i: number) => i !== index)
+                          handleChange({ ...data, [key]: newArray })
+                        }}
+                        className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                    {Object.entries(field.itemSchema).map(([itemKey, itemField]: [string, any]) => {
+                      if (itemField.type === 'text') {
+                        return (
+                          <div key={itemKey}>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">
+                              {itemField.label}
+                            </label>
+                            <input
+                              type="text"
+                              value={item[itemKey] || ''}
+                              onChange={(e) => {
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: e.target.value }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                          </div>
+                        )
+                      }
+                      if (itemField.type === 'textarea') {
+                        return (
+                          <div key={itemKey}>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">
+                              {itemField.label}
+                            </label>
+                            <RichTextEditor
+                              value={item[itemKey] || ''}
+                              onChange={(value) => {
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: value }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              placeholder={`Enter ${itemField.label.toLowerCase()}...`}
+                              height="150px"
+                            />
+                          </div>
+                        )
+                      }
+                      if (itemField.type === 'select') {
+                        return (
+                          <div key={itemKey}>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">
+                              {itemField.label}
+                            </label>
+                            <select
+                              value={item[itemKey] || itemField.options[0]}
+                              onChange={(e) => {
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: e.target.value }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            >
+                              {itemField.options.map((option: string) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )
+                      }
+                      if (itemField.type === 'image') {
+                        return (
+                          <div key={itemKey}>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">
+                              {itemField.label}
+                            </label>
+                            {item[itemKey] && (
+                              <div className="mb-2">
+                                <img 
+                                  src={item[itemKey]} 
+                                  alt={itemField.label}
+                                  className="w-32 h-20 object-cover rounded border border-gray-200"
+                                />
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setCurrentImageField(`${key}.${index}.${itemKey}`)
+                                setImagePickerOpen(true)
+                              }}
+                              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-1"
+                            >
+                              <ImageIcon className="h-3 w-3" />
+                              {item[itemKey] ? 'Change' : 'Select'}
+                            </button>
+                          </div>
+                        )
+                      }
+                      if (itemField.type === 'tags') {
+                        return (
+                          <div key={itemKey}>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">
+                              {itemField.label}
+                            </label>
+                            <input
+                              type="text"
+                              value={Array.isArray(item[itemKey]) ? item[itemKey].join(', ') : ''}
+                              onChange={(e) => {
+                                const tags = e.target.value.split(',').map(t => t.trim()).filter(t => t)
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: tags }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              placeholder="Enter tags separated by commas"
+                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                          </div>
+                        )
+                      }
+                      if (itemField.type === 'number') {
+                        return (
+                          <div key={itemKey}>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">
+                              {itemField.label}
+                            </label>
+                            <input
+                              type="number"
+                              value={item[itemKey] || ''}
+                              onChange={(e) => {
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: Number(e.target.value) }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                          </div>
+                        )
+                      }
+                      if (itemField.type === 'checkbox') {
+                        return (
+                          <div key={itemKey} className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={item[itemKey] || false}
+                              onChange={(e) => {
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: e.target.checked }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              className="w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                            />
+                            <label className="text-xs font-medium text-gray-600">{itemField.label}</label>
+                          </div>
+                        )
+                      }
+                      return null
+                    })}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const newItem = {}
+                    handleChange({ ...data, [key]: [...arrayData, newItem] })
+                  }}
+                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add {field.label}
+                </button>
+              </div>
             )
           }
 
           return null
         })}
-      </Box>
+      </div>
     )
   }
 
   if (status === 'loading' || loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-        <Typography>Loading...</Typography>
-      </Box>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading page builder...</p>
+        </div>
+      </div>
     )
   }
 
   if (!page) {
     return (
-      <Box sx={{ p: 4 }}>
-        <Alert severity="error">Page not found</Alert>
-      </Box>
+      <div className="p-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          Page not found
+        </div>
+      </div>
     )
   }
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <IconButton onClick={() => router.push('/admin/page-builder')}>
-            <ArrowBack />
-          </IconButton>
-          <Box>
-            <Typography variant="h4" component="h1">
-              {page.title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              /{page.slug}
-            </Typography>
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Chip
-            label={page.isPublished ? 'Published' : 'Draft'}
-            color={page.isPublished ? 'success' : 'default'}
-          />
-          <Button
-            variant="outlined"
-            onClick={() => window.open(`/${page.slug}`, '_blank')}
-            disabled={!page.isPublished}
-          >
-            Preview
-          </Button>
-        </Box>
-      </Box>
-
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-      {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
-          <Paper sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-              <Typography variant="h6">Page Sections</Typography>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                onClick={handleAddSection}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => router.push('/admin/page-builder')}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
               >
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
+              </button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">{page.title}</h1>
+                <p className="text-sm text-gray-500">/{page.slug}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                page.isPublished 
+                  ? 'bg-green-100 text-green-800' 
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {page.isPublished ? 'Published' : 'Draft'}
+              </span>
+              <button
+                onClick={() => window.open(`/${page.slug}`, '_blank')}
+                disabled={!page.isPublished}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Preview
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex">
+        {/* Main Content */}
+        <div className="flex-1 p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <Layers className="h-5 w-5 text-gray-600" />
+                <h2 className="text-xl font-semibold text-gray-900">Page Sections</h2>
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                  {page.sections.length}
+                </span>
+              </div>
+              <button
+                onClick={handleAddSection}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
                 Add Section
-              </Button>
-            </Box>
+              </button>
+            </div>
 
             {page.sections.length === 0 ? (
-              <Alert severity="info">
-                No sections yet. Click "Add Section" to start building your page.
-              </Alert>
+              <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <Layers className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                <p className="text-gray-600 mb-4">No sections yet. Start building your page!</p>
+                <button
+                  onClick={handleAddSection}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+                >
+                  <Plus className="h-5 w-5" />
+                  Add Your First Section
+                </button>
+              </div>
             ) : (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <div className="space-y-3">
                 {page.sections.map((section, index) => (
-                  <Card key={index} sx={{ opacity: section.isVisible ? 1 : 0.5 }}>
-                    <CardContent>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Box>
-                          <Typography variant="h6">{section.componentName}</Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Order: {section.order}
-                          </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <IconButton
-                            size="small"
+                  <div
+                    key={index}
+                    className={`border-2 rounded-lg p-4 transition-all ${
+                      section.isVisible 
+                        ? 'border-gray-200 bg-white' 
+                        : 'border-gray-200 bg-gray-50 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex flex-col gap-1">
+                          <button
                             onClick={() => handleMoveSection(section, 'up')}
                             disabled={index === 0}
+                            className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                           >
-                            <ArrowUpward />
-                          </IconButton>
-                          <IconButton
-                            size="small"
+                            <ChevronUp className="h-4 w-4 text-gray-600" />
+                          </button>
+                          <button
                             onClick={() => handleMoveSection(section, 'down')}
                             disabled={index === page.sections.length - 1}
+                            className="p-1 hover:bg-gray-100 rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                           >
-                            <ArrowDownward />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleToggleVisibility(section)}
-                          >
-                            {section.isVisible ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleEditSection(section)}
-                          >
-                            <Edit />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleDeleteSection(section)}
-                            color="error"
-                          >
-                            <Delete />
-                          </IconButton>
-                        </Box>
-                      </Box>
-                    </CardContent>
-                  </Card>
+                            <ChevronDown className="h-4 w-4 text-gray-600" />
+                          </button>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{section.componentName}</h3>
+                          <p className="text-sm text-gray-500">Position: {section.order + 1}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleToggleVisibility(section)}
+                          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                          title={section.isVisible ? 'Hide section' : 'Show section'}
+                        >
+                          {section.isVisible ? (
+                            <Eye className="h-4 w-4 text-gray-600" />
+                          ) : (
+                            <EyeOff className="h-4 w-4 text-gray-400" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => handleEditSection(section)}
+                          className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Edit section"
+                        >
+                          <Edit2 className="h-4 w-4 text-blue-600" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSection(section)}
+                          className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Delete section"
+                        >
+                          <Trash2 className="h-4 w-4 text-red-600" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 ))}
-              </Box>
+              </div>
             )}
-          </Paper>
-        </Grid>
+          </div>
+        </div>
 
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Available Sections
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        {/* Sidebar */}
+        <div className="w-80 bg-white border-l border-gray-200">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Settings className="h-5 w-5 text-gray-600" />
+                <h3 className="font-semibold text-gray-900">Available Sections</h3>
+              </div>
+            </div>
+            <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
               {sectionDefinitions.map((def) => (
-                <Card key={def.id} sx={{ cursor: 'pointer' }} onClick={() => handleSelectSectionType(def)}>
-                  <CardContent>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                      {def.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {def.description}
-                    </Typography>
-                    <Box sx={{ mt: 1 }}>
-                      {def.variants.map((variant) => (
-                        <Chip key={variant} label={variant} size="small" sx={{ mr: 0.5, mt: 0.5 }} />
-                      ))}
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-
-      {/* Add Section Dialog */}
-      <Dialog 
-        open={openAddDialog} 
-        onClose={() => {
-          setOpenAddDialog(false)
-          setShowPreview(false)
-        }} 
-        maxWidth="xl" 
-        fullWidth
-      >
-        <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>{selectedSection ? `Add ${selectedSection.name}` : 'Select Section Type'}</span>
-            {selectedSection && (
-              <Button
-                startIcon={showPreview ? <CodeIcon /> : <PreviewIcon />}
-                onClick={() => setShowPreview(!showPreview)}
-                size="small"
-              >
-                {showPreview ? 'Hide Preview' : 'Show Preview'}
-              </Button>
-            )}
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          {!selectedSection ? (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-              {sectionDefinitions.map((def) => (
-                <Card
+                <button
                   key={def.id}
-                  sx={{ cursor: 'pointer', '&:hover': { bgcolor: 'action.hover' } }}
-                  onClick={() => handleSelectSectionType(def)}
+                  onClick={() => {
+                    handleSelectSectionType(def)
+                    setShowAddModal(true)
+                  }}
+                  className="w-full text-left p-3 border border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group"
                 >
-                  <CardContent>
-                    <Typography variant="h6">{def.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {def.description}
-                    </Typography>
-                  </CardContent>
-                </Card>
+                  <h4 className="font-medium text-gray-900 group-hover:text-blue-600 mb-1">
+                    {def.name}
+                  </h4>
+                  <p className="text-xs text-gray-500 mb-2">{def.description}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {def.variants.slice(0, 3).map((variant) => (
+                      <span key={variant} className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
+                        {variant}
+                      </span>
+                    ))}
+                    {def.variants.length > 3 && (
+                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
+                        +{def.variants.length - 3}
+                      </span>
+                    )}
+                  </div>
+                </button>
               ))}
-            </Box>
-          ) : (
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={showPreview ? 6 : 12}>
-                <Paper sx={{ p: 2, bgcolor: 'grey.50', maxHeight: '70vh', overflow: 'auto' }}>
-                  <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <CodeIcon /> Configuration
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
-                  {renderSectionForm(selectedSection, sectionData, setSectionData)}
-                </Paper>
-              </Grid>
-              {showPreview && (
-                <Grid item xs={12} md={6}>
-                  <Paper 
-                    sx={{ 
-                      p: 2, 
-                      bgcolor: 'white',
-                      maxHeight: '70vh', 
-                      overflow: 'auto',
-                      border: '2px solid',
-                      borderColor: 'primary.main',
-                      borderRadius: 2,
-                      position: 'relative'
-                    }}
-                  >
-                    <Box sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 1, 
-                      mb: 2,
-                      pb: 2,
-                      borderBottom: '2px solid',
-                      borderColor: 'primary.main'
-                    }}>
-                      <PreviewIcon color="primary" />
-                      <Typography variant="h6" color="primary">
-                        Live Preview
-                      </Typography>
-                      <Chip label="Real-time" size="small" color="success" />
-                    </Box>
-                    <Box sx={{ 
-                      minHeight: 200,
-                      '& > *': { width: '100%' }
-                    }}>
-                      {renderLivePreview(selectedSection, previewData)}
-                    </Box>
-                  </Paper>
-                </Grid>
-              )}
-            </Grid>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {
-            setOpenAddDialog(false)
-            setShowPreview(false)
-          }}>
-            Cancel
-          </Button>
-          {selectedSection && (
-            <Button onClick={handleSaveNewSection} variant="contained" disabled={saving}>
-              Add Section
-            </Button>
-          )}
-        </DialogActions>
-      </Dialog>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      {/* Edit Section Dialog */}
-      <Dialog 
-        open={openEditDialog} 
-        onClose={() => {
-          setOpenEditDialog(false)
-          setShowPreview(false)
-        }} 
-        maxWidth="xl" 
-        fullWidth
-      >
-        <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>Edit Section</span>
-            <Button
-              startIcon={showPreview ? <CodeIcon /> : <PreviewIcon />}
-              onClick={() => setShowPreview(!showPreview)}
-              size="small"
-            >
-              {showPreview ? 'Hide Preview' : 'Show Preview'}
-            </Button>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          {editingSection && (
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={showPreview ? 6 : 12}>
-                <Paper sx={{ p: 2, bgcolor: 'grey.50', maxHeight: '70vh', overflow: 'auto' }}>
-                  <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <CodeIcon /> Configuration
-                  </Typography>
-                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                    {editingSection.componentName}
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
-                  {renderSectionForm(
-                    sectionDefinitions.find(d => d.component === editingSection.componentName),
-                    sectionData,
-                    setSectionData
-                  )}
-                </Paper>
-              </Grid>
-              {showPreview && (
-                <Grid item xs={12} md={6}>
-                  <Paper 
-                    sx={{ 
-                      p: 2, 
-                      bgcolor: 'white',
-                      maxHeight: '70vh', 
-                      overflow: 'auto',
-                      border: '2px solid',
-                      borderColor: 'primary.main',
-                      borderRadius: 2,
-                      position: 'relative'
-                    }}
+      {/* Add Section Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-7xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {selectedSection ? `Add ${selectedSection.name}` : 'Select Section Type'}
+                </h2>
+                {selectedSection && (
+                  <button
+                    onClick={() => setShowPreview(!showPreview)}
+                    className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors flex items-center gap-2 text-sm"
                   >
-                    <Box sx={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: 1, 
-                      mb: 2,
-                      pb: 2,
-                      borderBottom: '2px solid',
-                      borderColor: 'primary.main'
-                    }}>
-                      <PreviewIcon color="primary" />
-                      <Typography variant="h6" color="primary">
-                        Live Preview
-                      </Typography>
-                      <Chip label="Real-time" size="small" color="success" />
-                    </Box>
-                    <Box sx={{ 
-                      minHeight: 200,
-                      '& > *': { width: '100%' }
-                    }}>
-                      {renderLivePreview(
-                        sectionDefinitions.find(d => d.component === editingSection.componentName),
-                        previewData
-                      )}
-                    </Box>
-                  </Paper>
-                </Grid>
+                    {showPreview ? <Code className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+                    {showPreview ? 'Hide Preview' : 'Show Preview'}
+                  </button>
+                )}
+              </div>
+              <button
+                onClick={() => {
+                  setShowAddModal(false)
+                  setShowPreview(true)
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-600" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              {!selectedSection ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {sectionDefinitions.map((def) => (
+                    <button
+                      key={def.id}
+                      onClick={() => handleSelectSectionType(def)}
+                      className="text-left p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+                    >
+                      <h3 className="font-semibold text-gray-900 mb-2">{def.name}</h3>
+                      <p className="text-sm text-gray-600 mb-3">{def.description}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {def.variants.map((variant) => (
+                          <span key={variant} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                            {variant}
+                          </span>
+                        ))}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className={showPreview ? '' : 'lg:col-span-2'}>
+                    <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Settings className="h-5 w-5 text-gray-600" />
+                        <h3 className="font-semibold text-gray-900">Configuration</h3>
+                      </div>
+                      {renderSectionForm(selectedSection, sectionData, setSectionData)}
+                    </div>
+                  </div>
+                  {showPreview && (
+                    <div>
+                      <div className="bg-white rounded-lg p-4 border-2 border-blue-500">
+                        <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-blue-500">
+                          <Monitor className="h-5 w-5 text-blue-600" />
+                          <h3 className="font-semibold text-blue-600">Live Preview</h3>
+                          <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                            Real-time
+                          </span>
+                        </div>
+                        <div className="min-h-[200px]">
+                          {renderLivePreview(selectedSection, previewData)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
-            </Grid>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {
-            setOpenEditDialog(false)
-            setShowPreview(false)
-          }}>
-            Cancel
-          </Button>
-          <Button onClick={handleSaveEditSection} variant="contained" disabled={saving}>
-            Save Changes
-          </Button>
-        </DialogActions>
-      </Dialog>
+            </div>
+
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowAddModal(false)
+                  setShowPreview(true)
+                }}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              {selectedSection && (
+                <button
+                  onClick={handleSaveNewSection}
+                  disabled={saving}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  <Save className="h-4 w-4" />
+                  {saving ? 'Adding...' : 'Add Section'}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Section Modal */}
+      {showEditModal && editingSection && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-7xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-semibold text-gray-900">Edit Section</h2>
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg">
+                  {editingSection.componentName}
+                </span>
+                <button
+                  onClick={() => setShowPreview(!showPreview)}
+                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors flex items-center gap-2 text-sm"
+                >
+                  {showPreview ? <Code className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+                  {showPreview ? 'Hide Preview' : 'Show Preview'}
+                </button>
+              </div>
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setShowPreview(true)
+                }}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-600" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className={showPreview ? '' : 'lg:col-span-2'}>
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Settings className="h-5 w-5 text-gray-600" />
+                      <h3 className="font-semibold text-gray-900">Configuration</h3>
+                    </div>
+                    {renderSectionForm(
+                      sectionDefinitions.find(d => d.component === editingSection.componentName),
+                      sectionData,
+                      setSectionData
+                    )}
+                  </div>
+                </div>
+                {showPreview && (
+                  <div>
+                    <div className="bg-white rounded-lg p-4 border-2 border-blue-500">
+                      <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-blue-500">
+                        <Monitor className="h-5 w-5 text-blue-600" />
+                        <h3 className="font-semibold text-blue-600">Live Preview</h3>
+                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                          Real-time
+                        </span>
+                      </div>
+                      <div className="min-h-[200px]">
+                        {renderLivePreview(
+                          sectionDefinitions.find(d => d.component === editingSection.componentName),
+                          previewData
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setShowPreview(true)
+                }}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveEditSection}
+                disabled={saving}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <Save className="h-4 w-4" />
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Image Picker Dialog */}
       <ImagePicker
@@ -775,6 +1121,6 @@ export default function PageBuilderEditor() {
         onSelect={handleImageSelect}
         title="Select Image"
       />
-    </Box>
+    </div>
   )
 }

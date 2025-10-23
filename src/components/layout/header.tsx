@@ -15,40 +15,35 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-const navigation = [
-  { name: 'Home', href: '/' },
-  {
-    name: 'Services',
-    href: '/services',
-    children: [
-      { name: 'Web Development', href: '/services/web-development' },
-      { name: 'E-commerce Development', href: '/services/ecommerce-development' },
-      { name: 'Mobile App Development', href: '/services/mobile-app-development' },
-      { name: 'Digital Marketing', href: '/services/digital-marketing' },
-      { name: 'SEO Services', href: '/services/seo-services' },
-      { name: 'Web Design', href: '/services/web-design' },
-    ]
-  },
-  {
-    name: 'Solutions',
-    href: '/solutions',
-    children: [
-      { name: 'Custom Web Applications', href: '/solutions/custom-web-applications' },
-      { name: 'E-commerce Solutions', href: '/solutions/ecommerce-solutions' },
-      { name: 'CMS Development', href: '/solutions/cms-development' },
-      { name: 'API Development', href: '/solutions/api-development' },
-    ]
-  },
-  { name: 'Portfolio', href: '/portfolio' },
-  { name: 'About', href: '/about' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Contact', href: '/contact' },
-]
+interface MenuItem {
+  _id: string
+  label: string
+  url: string
+  children?: MenuItem[]
+}
+
+interface Settings {
+  siteName: string
+  logo: string
+  phone: string
+  email: string
+  address: string
+  description: string
+}
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [navigation, setNavigation] = useState<MenuItem[]>([])
+  const [settings, setSettings] = useState<Settings>({
+    siteName: 'Tomsher Technologies',
+    logo: '/logo.svg',
+    phone: '+971 4 123 4567',
+    email: 'info@tomsher.com',
+    address: 'Dubai, UAE',
+    description: '30+ Countries Served'
+  })
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,6 +51,31 @@ export function Header() {
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const fetchMenuAndSettings = async () => {
+      try {
+        const [menuRes, settingsRes] = await Promise.all([
+          fetch('/api/menu'),
+          fetch('/api/settings')
+        ])
+        
+        if (menuRes.ok) {
+          const menuData = await menuRes.json()
+          setNavigation(menuData)
+        }
+        
+        if (settingsRes.ok) {
+          const settingsData = await settingsRes.json()
+          setSettings(settingsData)
+        }
+      } catch (error) {
+        console.error('Error fetching menu and settings:', error)
+      }
+    }
+    
+    fetchMenuAndSettings()
   }, [])
 
   const handleDropdownToggle = (name: string) => {
@@ -69,27 +89,35 @@ export function Header() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4" />
-                <span>+971 4 123 4567</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4" />
-                <span>info@tomsher.com</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4" />
-                <span>Dubai, UAE</span>
-              </div>
+              {settings.phone && (
+                <div className="flex items-center space-x-2">
+                  <Phone className="h-4 w-4" />
+                  <span>{settings.phone}</span>
+                </div>
+              )}
+              {settings.email && (
+                <div className="flex items-center space-x-2">
+                  <Mail className="h-4 w-4" />
+                  <span>{settings.email}</span>
+                </div>
+              )}
+              {settings.address && (
+                <div className="flex items-center space-x-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>{settings.address}</span>
+                </div>
+              )}
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/get-quote" className="hover:underline">
                 Get Free Quote
               </Link>
-              <div className="flex items-center space-x-2">
-                <Globe className="h-4 w-4" />
-                <span>30+ Countries Served</span>
-              </div>
+              {settings.description && (
+                <div className="flex items-center space-x-2">
+                  <Globe className="h-4 w-4" />
+                  <span>{settings.description}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -108,8 +136,8 @@ export function Header() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/logo.svg"
-                alt="Tomsher Technologies"
+                src={settings.logo || '/logo.svg'}
+                alt={settings.siteName || 'Tomsher Technologies'}
                 width={180}
                 height={45}
                 className="h-8 lg:h-10 w-auto"
@@ -120,18 +148,18 @@ export function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-8">
               {navigation.map((item) => (
-                <div key={item.name} className="relative group">
-                  {item.children ? (
+                <div key={item._id} className="relative group">
+                  {item.children && item.children.length > 0 ? (
                     <div>
                       <button
                         className="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors duration-200 font-medium"
-                        onClick={() => handleDropdownToggle(item.name)}
+                        onClick={() => handleDropdownToggle(item._id)}
                       >
-                        <span>{item.name}</span>
+                        <span>{item.label}</span>
                         <ChevronDown className="h-4 w-4" />
                       </button>
                       <AnimatePresence>
-                        {activeDropdown === item.name && (
+                        {activeDropdown === item._id && (
                           <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -140,12 +168,12 @@ export function Header() {
                           >
                             {item.children.map((child) => (
                               <Link
-                                key={child.name}
-                                href={child.href}
+                                key={child._id}
+                                href={child.url}
                                 className="block px-4 py-2 text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors duration-200"
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                {child.name}
+                                {child.label}
                               </Link>
                             ))}
                           </motion.div>
@@ -154,10 +182,10 @@ export function Header() {
                     </div>
                   ) : (
                     <Link
-                      href={item.href}
+                      href={item.url}
                       className="text-gray-700 hover:text-primary transition-colors duration-200 font-medium"
                     >
-                      {item.name}
+                      {item.label}
                     </Link>
                   )}
                 </div>
@@ -197,22 +225,22 @@ export function Header() {
               <div className="container mx-auto px-4 py-4">
                 <nav className="space-y-4">
                   {navigation.map((item) => (
-                    <div key={item.name}>
-                      {item.children ? (
+                    <div key={item._id}>
+                      {item.children && item.children.length > 0 ? (
                         <div>
                           <button
                             className="flex items-center justify-between w-full text-left text-gray-700 hover:text-primary transition-colors duration-200 font-medium py-2"
-                            onClick={() => handleDropdownToggle(item.name)}
+                            onClick={() => handleDropdownToggle(item._id)}
                           >
-                            <span>{item.name}</span>
+                            <span>{item.label}</span>
                             <ChevronDown 
                               className={`h-4 w-4 transition-transform duration-200 ${
-                                activeDropdown === item.name ? 'rotate-180' : ''
+                                activeDropdown === item._id ? 'rotate-180' : ''
                               }`} 
                             />
                           </button>
                           <AnimatePresence>
-                            {activeDropdown === item.name && (
+                            {activeDropdown === item._id && (
                               <motion.div
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
@@ -221,15 +249,15 @@ export function Header() {
                               >
                                 {item.children.map((child) => (
                                   <Link
-                                    key={child.name}
-                                    href={child.href}
+                                    key={child._id}
+                                    href={child.url}
                                     className="block text-gray-600 hover:text-primary transition-colors duration-200 py-1"
                                     onClick={() => {
                                       setIsMobileMenuOpen(false)
                                       setActiveDropdown(null)
                                     }}
                                   >
-                                    {child.name}
+                                    {child.label}
                                   </Link>
                                 ))}
                               </motion.div>
@@ -238,11 +266,11 @@ export function Header() {
                         </div>
                       ) : (
                         <Link
-                          href={item.href}
+                          href={item.url}
                           className="block text-gray-700 hover:text-primary transition-colors duration-200 font-medium py-2"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          {item.name}
+                          {item.label}
                         </Link>
                       )}
                     </div>

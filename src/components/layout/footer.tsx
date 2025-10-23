@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { 
@@ -14,32 +15,56 @@ import {
   ArrowRight
 } from 'lucide-react'
 
-const services = [
-  { name: 'Web Development', href: '/services/web-development' },
-  { name: 'E-commerce Development', href: '/services/ecommerce-development' },
-  { name: 'Mobile App Development', href: '/services/mobile-app-development' },
-  { name: 'Digital Marketing', href: '/services/digital-marketing' },
-  { name: 'SEO Services', href: '/services/seo-services' },
-  { name: 'Web Design', href: '/services/web-design' }
-]
+interface Settings {
+  siteName?: string
+  logo?: string
+  logoWhite?: string
+  phone?: string
+  email?: string
+  address?: string
+  description?: string
+  facebook?: string
+  twitter?: string
+  instagram?: string
+  linkedin?: string
+  youtube?: string
+}
 
-const company = [
-  { name: 'About Us', href: '/about' },
-  { name: 'Our Team', href: '/team' },
-  { name: 'Careers', href: '/careers' },
-  { name: 'Portfolio', href: '/portfolio' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Contact', href: '/contact' }
-]
-
-const solutions = [
-  { name: 'Custom Web Applications', href: '/solutions/custom-web-applications' },
-  { name: 'E-commerce Solutions', href: '/solutions/ecommerce-solutions' },
-  { name: 'CMS Development', href: '/solutions/cms-development' },
-  { name: 'API Development', href: '/solutions/api-development' }
-]
+interface MenuItem {
+  _id: string
+  label: string
+  url: string
+  children?: MenuItem[]
+}
 
 export function Footer() {
+  const [settings, setSettings] = useState<Settings>({})
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [settingsRes, menuRes] = await Promise.all([
+          fetch('/api/settings'),
+          fetch('/api/menu')
+        ])
+        
+        if (settingsRes.ok) {
+          const data = await settingsRes.json()
+          setSettings(data)
+        }
+        
+        if (menuRes.ok) {
+          const data = await menuRes.json()
+          setMenuItems(data)
+        }
+      } catch (error) {
+        console.error('Error fetching footer data:', error)
+      }
+    }
+    
+    fetchData()
+  }, [])
   return (
     <footer className="bg-gray-900 text-white">
       {/* Main Footer */}
@@ -49,88 +74,81 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-6">
               <Image
-                src="/logo-white.svg"
-                alt="Tomsher Technologies"
+                src={settings.logoWhite || settings.logo || '/logo-white.svg'}
+                alt={settings.siteName || 'Tomsher Technologies'}
                 width={180}
                 height={45}
                 className="h-10 w-auto"
               />
             </Link>
-            <p className="text-gray-300 mb-6 leading-relaxed">
-              Leading web development company in Dubai, UAE specializing in custom website development, 
-              eCommerce solutions, and digital marketing services.
-            </p>
+            {settings.description && (
+              <p className="text-gray-300 mb-6 leading-relaxed">
+                {settings.description}
+              </p>
+            )}
             
             {/* Contact Info */}
             <div className="space-y-3">
-              <div className="flex items-center space-x-3">
-                <MapPin className="h-5 w-5 text-primary" />
-                <span className="text-gray-300">Dubai, UAE</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-primary" />
-                <span className="text-gray-300">+971 4 123 4567</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="h-5 w-5 text-primary" />
-                <span className="text-gray-300">info@tomsher.com</span>
-              </div>
+              {settings.address && (
+                <div className="flex items-center space-x-3">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  <span className="text-gray-300">{settings.address}</span>
+                </div>
+              )}
+              {settings.phone && (
+                <div className="flex items-center space-x-3">
+                  <Phone className="h-5 w-5 text-primary" />
+                  <span className="text-gray-300">{settings.phone}</span>
+                </div>
+              )}
+              {settings.email && (
+                <div className="flex items-center space-x-3">
+                  <Mail className="h-5 w-5 text-primary" />
+                  <span className="text-gray-300">{settings.email}</span>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Services */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Services</h3>
-            <ul className="space-y-3">
-              {services.map((service) => (
-                <li key={service.name}>
-                  <Link
-                    href={service.href}
-                    className="text-gray-300 hover:text-primary transition-colors duration-200 flex items-center group"
-                  >
-                    <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                    {service.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Company</h3>
-            <ul className="space-y-3">
-              {company.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="text-gray-300 hover:text-primary transition-colors duration-200 flex items-center group"
-                  >
-                    <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Solutions */}
-          <div>
-            <h3 className="text-lg font-semibold mb-6">Solutions</h3>
-            <ul className="space-y-3">
-              {solutions.map((solution) => (
-                <li key={solution.name}>
-                  <Link
-                    href={solution.href}
-                    className="text-gray-300 hover:text-primary transition-colors duration-200 flex items-center group"
-                  >
-                    <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                    {solution.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Dynamic Menu Columns */}
+          {menuItems.filter(item => item.children && item.children.length > 0).slice(0, 3).map((menuItem) => (
+            <div key={menuItem._id}>
+              <h3 className="text-lg font-semibold mb-6">{menuItem.label}</h3>
+              <ul className="space-y-3">
+                {menuItem.children?.map((child) => (
+                  <li key={child._id}>
+                    <Link
+                      href={child.url}
+                      className="text-gray-300 hover:text-primary transition-colors duration-200 flex items-center group"
+                    >
+                      <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                      {child.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          
+          {/* Quick Links (if less than 3 menu groups) */}
+          {menuItems.filter(item => item.children && item.children.length > 0).length < 3 && (
+            <div>
+              <h3 className="text-lg font-semibold mb-6">Quick Links</h3>
+              <ul className="space-y-3">
+                {menuItems.filter(item => !item.children || item.children.length === 0).slice(0, 6).map((item) => (
+                  <li key={item._id}>
+                    <Link
+                      href={item.url}
+                      className="text-gray-300 hover:text-primary transition-colors duration-200 flex items-center group"
+                    >
+                      <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Newsletter */}
@@ -161,41 +179,61 @@ export function Footer() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
             <div className="text-gray-300 text-sm">
-              © 2025 | All rights reserved by Tomsher Technologies LLC.
+              © {new Date().getFullYear()} | All rights reserved by {settings.siteName || 'Tomsher Technologies'}.
             </div>
             
             {/* Social Links */}
             <div className="flex items-center space-x-4">
-              <Link
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-              >
-                <Facebook className="h-5 w-5" />
-              </Link>
-              <Link
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-              >
-                <Twitter className="h-5 w-5" />
-              </Link>
-              <Link
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-              >
-                <Instagram className="h-5 w-5" />
-              </Link>
-              <Link
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-              >
-                <Linkedin className="h-5 w-5" />
-              </Link>
-              <Link
-                href="#"
-                className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-              >
-                <Youtube className="h-5 w-5" />
-              </Link>
+              {settings.facebook && (
+                <Link
+                  href={settings.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Facebook className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.twitter && (
+                <Link
+                  href={settings.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Twitter className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.instagram && (
+                <Link
+                  href={settings.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Instagram className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.linkedin && (
+                <Link
+                  href={settings.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </Link>
+              )}
+              {settings.youtube && (
+                <Link
+                  href={settings.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                >
+                  <Youtube className="h-5 w-5" />
+                </Link>
+              )}
             </div>
 
             {/* Legal Links */}

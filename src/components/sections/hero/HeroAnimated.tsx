@@ -12,10 +12,22 @@ export default function HeroAnimated({
   ctaLink,
   secondaryCtaText,
   secondaryCtaLink,
-  titleColor,
-  subtitleColor,
-  descriptionColor
+  titleTheme = 'dark',
+  subtitleTheme = 'dark',
+  descriptionTheme = 'dark',
+  primaryButtonTheme = 'dark',
+  secondaryButtonTheme = 'light'
 }: HeroVariantProps) {
+  const titleClass = titleTheme === 'light' ? 'text-white' : 'text-gray-900'
+  const subtitleClass = subtitleTheme === 'light' ? 'text-white/90' : 'text-primary'
+  const descriptionClass = descriptionTheme === 'light' ? 'text-white/80' : 'text-gray-600'
+  const primaryButtonClass = primaryButtonTheme === 'dark' 
+    ? 'bg-gray-900 text-white hover:bg-gray-800' 
+    : 'bg-primary text-white hover:bg-primary/90'
+  const secondaryButtonClass = secondaryButtonTheme === 'dark'
+    ? 'bg-gray-900 text-white hover:bg-gray-800 border-2 border-gray-900'
+    : 'bg-white text-primary hover:bg-gray-50 border-2 border-primary'
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-white">
       <div className="absolute inset-0 z-0">
@@ -58,8 +70,7 @@ export default function HeroAnimated({
             transition={{ duration: 0.6 }}
           >
             <motion.p
-              className="text-primary font-semibold mb-4 text-lg"
-              style={subtitleColor ? { color: subtitleColor } : undefined}
+              className={`${subtitleClass} font-semibold mb-4 text-lg`}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -67,8 +78,7 @@ export default function HeroAnimated({
               {subtitle}
             </motion.p>
             <motion.h1
-              className="text-5xl lg:text-7xl font-bold mb-6 leading-tight"
-              style={titleColor ? { color: titleColor } : undefined}
+              className={`${titleClass} text-5xl lg:text-7xl font-bold mb-6 leading-tight`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -76,8 +86,7 @@ export default function HeroAnimated({
               {title}
             </motion.h1>
             <motion.div
-              className="text-xl text-gray-600 mb-8 max-w-2xl"
-              style={descriptionColor ? { color: descriptionColor } : undefined}
+              className={`${descriptionClass} text-xl mb-8 max-w-2xl`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
@@ -91,14 +100,14 @@ export default function HeroAnimated({
             >
               <Link
                 href={ctaLink}
-                className="bg-primary text-white px-8 py-4 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+                className={`${primaryButtonClass} px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105`}
               >
                 {ctaText}
               </Link>
               {secondaryCtaText && secondaryCtaLink && (
                 <Link
                   href={secondaryCtaLink}
-                  className="bg-white text-primary px-8 py-4 rounded-full font-semibold hover:bg-gray-50 transition-all duration-300 shadow-lg border-2 border-primary hover:scale-105"
+                  className={`${secondaryButtonClass} px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:scale-105`}
                 >
                   {secondaryCtaText}
                 </Link>
