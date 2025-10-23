@@ -84,6 +84,7 @@ export default function AdminSidebar({
     { title: 'Dashboard', icon: <Dashboard />, href: '/admin/dashboard' },
     { divider: true },
     { title: 'Content', header: true },
+    { title: 'Page Content', icon: <Pages />, href: '/admin/page-content' },
     { title: 'Pages', icon: <Pages />, href: '/admin/pages' },
     { title: 'Page Builder', icon: <Build />, href: '/admin/page-builder' },
     { title: 'Home Sections', icon: <ViewModule />, href: '/admin/home-sections' },
