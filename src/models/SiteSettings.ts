@@ -195,6 +195,28 @@ const SiteSettingsSchema = new mongoose.Schema({
       default: 'Contact Us',
     },
   },
+  footer: {
+    description: {
+      type: String,
+      default: 'Leading web development company in Dubai, UAE specializing in custom website development, eCommerce solutions, and digital marketing services.',
+    },
+    newsletterTitle: {
+      type: String,
+      default: 'Stay Updated',
+    },
+    newsletterDescription: {
+      type: String,
+      default: 'Subscribe to our newsletter for the latest updates on web development trends and digital marketing insights.',
+    },
+    copyrightText: {
+      type: String,
+      default: 'All rights reserved by Tomsher Technologies.',
+    },
+    showNewsletter: {
+      type: Boolean,
+      default: true,
+    },
+  },
 }, {
   timestamps: true,
 });

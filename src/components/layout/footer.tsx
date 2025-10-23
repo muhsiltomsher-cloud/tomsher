@@ -38,6 +38,13 @@ interface Settings {
   instagram?: string
   linkedin?: string
   youtube?: string
+  footer?: {
+    description?: string
+    newsletterTitle?: string
+    newsletterDescription?: string
+    copyrightText?: string
+    showNewsletter?: boolean
+  }
 }
 
 interface MenuItem {
@@ -91,9 +98,9 @@ export function Footer() {
                 className="h-10 w-auto"
               />
             </Link>
-            {settings.description && (
+            {(settings.footer?.description || settings.description) && (
               <p className="text-gray-300 mb-6 leading-relaxed">
-                {settings.description}
+                {settings.footer?.description || settings.description}
               </p>
             )}
             
@@ -162,26 +169,30 @@ export function Footer() {
         </div>
 
         {/* Newsletter */}
-        <div className="border-t border-gray-800 mt-12 pt-12">
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-2xl font-bold mb-4">Stay Updated</h3>
-              <p className="text-gray-300">
-                Subscribe to our newsletter for the latest updates on web development trends and digital marketing insights.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary"
-              />
-              <button className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-200 font-medium">
-                Subscribe
-              </button>
+        {(settings.footer?.showNewsletter !== false) && (
+          <div className="border-t border-gray-800 mt-12 pt-12">
+            <div className="grid lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <h3 className="text-2xl font-bold mb-4">
+                  {settings.footer?.newsletterTitle || 'Stay Updated'}
+                </h3>
+                <p className="text-gray-300">
+                  {settings.footer?.newsletterDescription || 'Subscribe to our newsletter for the latest updates on web development trends and digital marketing insights.'}
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary"
+                />
+                <button className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-200 font-medium">
+                  Subscribe
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Bottom Footer */}
@@ -189,7 +200,7 @@ export function Footer() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
             <div className="text-gray-300 text-sm">
-              © {new Date().getFullYear()} | All rights reserved by {settings.siteName || 'Tomsher Technologies'}.
+              © {new Date().getFullYear()} | {settings.footer?.copyrightText || `All rights reserved by ${settings.siteName || 'Tomsher Technologies'}.`}
             </div>
             
             {/* Social Links */}
