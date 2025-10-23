@@ -17,22 +17,11 @@ import {
   Article,
   Business,
   ContactMail,
-  Dashboard as DashboardIcon,
   Pages,
   RateReview,
-  Settings as SettingsIcon,
   Work,
-  ViewModule,
-  MenuBook,
-  Build,
-  Assignment,
-  Search,
-  PermMedia,
-  Help,
+  TrendingUp,
   People,
-  Email,
-  Speed,
-  Image,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -82,41 +71,29 @@ export default function AdminDashboard() {
     return null;
   }
 
-  const menuItems = [
-    { title: 'Pages', icon: <Pages />, href: '/admin/pages', count: stats.pages, color: '#667eea' },
-    { title: 'Page Builder', icon: <Build />, href: '/admin/page-builder', count: 0, color: '#ff6b6b' },
-    { title: 'Sections', icon: <ViewModule />, href: '/admin/sections', count: 0, color: '#a8edea' },
-    { title: 'Menu', icon: <MenuBook />, href: '/admin/menu', count: 0, color: '#fbc2eb' },
-    { title: 'Services', icon: <Business />, href: '/admin/services', count: stats.services, color: '#f093fb' },
-    { title: 'Portfolio', icon: <Work />, href: '/admin/portfolio', count: stats.portfolio, color: '#4facfe' },
-    { title: 'Team Members', icon: <People />, href: '/admin/team', count: 0, color: '#ee5a6f' },
-    { title: 'Testimonials', icon: <RateReview />, href: '/admin/testimonials', count: stats.testimonials, color: '#43e97b' },
-    { title: 'Blog Posts', icon: <Article />, href: '/admin/blog', count: stats.blog, color: '#fa709a' },
-    { title: 'Contacts', icon: <ContactMail />, href: '/admin/contacts', count: stats.contacts, color: '#fee140' },
-    { title: 'Form Submissions', icon: <Assignment />, href: '/admin/forms', count: 0, color: '#ff9ff3' },
-    { title: 'Newsletter', icon: <Email />, href: '/admin/newsletter', count: 0, color: '#10ac84' },
-    { title: 'Media Library', icon: <PermMedia />, href: '/admin/media', count: 0, color: '#48dbfb' },
-    { title: 'Logo Management', icon: <Image />, href: '/admin/logos', count: 0, color: '#9b59b6' },
-    { title: 'SEO Settings', icon: <Search />, href: '/admin/seo', count: 0, color: '#54a0ff' },
-    { title: 'Performance', icon: <Speed />, href: '/admin/performance', count: 0, color: '#ff6348' },
-    { title: 'Settings', icon: <SettingsIcon />, href: '/admin/settings', count: 0, color: '#30cfd0' },
-    { title: 'Help & Guide', icon: <Help />, href: '/admin/help', count: 0, color: '#feca57' },
+  const statsCards = [
+    { title: 'Total Pages', icon: <Pages />, count: stats.pages, color: '#667eea', href: '/admin/pages' },
+    { title: 'Services', icon: <Business />, count: stats.services, color: '#f093fb', href: '/admin/services' },
+    { title: 'Portfolio Items', icon: <Work />, count: stats.portfolio, color: '#4facfe', href: '/admin/portfolio' },
+    { title: 'Testimonials', icon: <RateReview />, count: stats.testimonials, color: '#43e97b', href: '/admin/testimonials' },
+    { title: 'Blog Posts', icon: <Article />, count: stats.blog, color: '#fa709a', href: '/admin/blog' },
+    { title: 'Contact Inquiries', icon: <ContactMail />, count: stats.contacts, color: '#fee140', href: '/admin/contacts' },
   ];
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'grey.100', py: 4 }}>
+    <Box sx={{ py: 4 }}>
       <Container maxWidth="lg">
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
-            Admin Dashboard
+            Dashboard Overview
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Welcome back, {session.user.name || session.user.email}
+            Welcome back, {session.user?.name || session.user?.email}
           </Typography>
         </Box>
 
         <Grid container spacing={3}>
-          {menuItems.map((item) => (
+          {statsCards.map((item) => (
             <Grid item xs={12} sm={6} md={4} key={item.title}>
               <Link href={item.href} style={{ textDecoration: 'none' }}>
                 <Card
@@ -131,28 +108,25 @@ export default function AdminDashboard() {
                   }}
                 >
                   <CardContent>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <Box>
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                          {item.title}
+                        </Typography>
+                        <Typography variant="h3" component="div" fontWeight={700}>
+                          {item.count}
+                        </Typography>
+                      </Box>
                       <Box
                         sx={{
                           bgcolor: item.color,
                           color: 'white',
-                          p: 1.5,
+                          p: 2,
                           borderRadius: 2,
                           display: 'flex',
-                          mr: 2,
                         }}
                       >
                         {item.icon}
-                      </Box>
-                      <Box>
-                        <Typography variant="h6" component="div">
-                          {item.title}
-                        </Typography>
-                        {item.count > 0 && (
-                          <Typography variant="h4" color="text.secondary">
-                            {item.count}
-                          </Typography>
-                        )}
                       </Box>
                     </Box>
                   </CardContent>
