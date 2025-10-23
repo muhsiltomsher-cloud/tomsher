@@ -229,9 +229,27 @@ export default function PageBuilderEditor() {
   }
 
   const handleImageSelect = (imageUrl: string, alt?: string) => {
-    const newData = { ...sectionData, [currentImageField]: imageUrl }
-    setSectionData(newData)
-    setPreviewData(newData)
+    if (currentImageField.includes('.')) {
+      const parts = currentImageField.split('.')
+      const newData = { ...sectionData }
+      
+      if (parts.length === 3) {
+        const [arrayKey, indexStr, fieldKey] = parts
+        const index = parseInt(indexStr)
+        const array = [...(newData[arrayKey] || [])]
+        array[index] = { ...array[index], [fieldKey]: imageUrl }
+        newData[arrayKey] = array
+      } else {
+        newData[currentImageField] = imageUrl
+      }
+      
+      setSectionData(newData)
+      setPreviewData(newData)
+    } else {
+      const newData = { ...sectionData, [currentImageField]: imageUrl }
+      setSectionData(newData)
+      setPreviewData(newData)
+    }
     setImagePickerOpen(false)
   }
 
@@ -398,6 +416,239 @@ export default function PageBuilderEditor() {
                     </Button>
                   )}
                 </Box>
+              </Box>
+            )
+          }
+
+          if (field.type === 'number') {
+            return (
+              <TextField
+                key={key}
+                fullWidth
+                type="number"
+                label={field.label}
+                value={data[key] || ''}
+                onChange={(e) => handleChange({ ...data, [key]: Number(e.target.value) })}
+                margin="normal"
+                required={field.required}
+              />
+            )
+          }
+
+          if (field.type === 'checkbox') {
+            return (
+              <Box key={key} sx={{ my: 2, display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="checkbox"
+                  checked={data[key] || false}
+                  onChange={(e) => handleChange({ ...data, [key]: e.target.checked })}
+                  style={{ marginRight: '8px' }}
+                />
+                <Typography variant="body2">{field.label}</Typography>
+              </Box>
+            )
+          }
+
+          if (field.type === 'tags') {
+            return (
+              <Box key={key} sx={{ my: 2 }}>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  {field.label} {field.required && <span style={{ color: 'red' }}>*</span>}
+                </Typography>
+                <TextField
+                  fullWidth
+                  value={Array.isArray(data[key]) ? data[key].join(', ') : ''}
+                  onChange={(e) => {
+                    const tags = e.target.value.split(',').map(t => t.trim()).filter(t => t)
+                    handleChange({ ...data, [key]: tags })
+                  }}
+                  placeholder="Enter tags separated by commas"
+                  helperText="Separate tags with commas"
+                />
+              </Box>
+            )
+          }
+
+          if (field.type === 'array') {
+            const arrayData = data[key] || []
+            return (
+              <Box key={key} sx={{ my: 3, p: 2, border: '1px solid #ddd', borderRadius: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  {field.label}
+                </Typography>
+                {arrayData.map((item: any, index: number) => (
+                  <Card key={index} sx={{ mb: 2, p: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                      <Typography variant="subtitle2">Item {index + 1}</Typography>
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          const newArray = arrayData.filter((_: any, i: number) => i !== index)
+                          handleChange({ ...data, [key]: newArray })
+                        }}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Box>
+                    {Object.entries(field.itemSchema).map(([itemKey, itemField]: [string, any]) => {
+                      if (itemField.type === 'text') {
+                        return (
+                          <TextField
+                            key={itemKey}
+                            fullWidth
+                            label={itemField.label}
+                            value={item[itemKey] || ''}
+                            onChange={(e) => {
+                              const newArray = [...arrayData]
+                              newArray[index] = { ...newArray[index], [itemKey]: e.target.value }
+                              handleChange({ ...data, [key]: newArray })
+                            }}
+                            margin="normal"
+                            size="small"
+                          />
+                        )
+                      }
+                      if (itemField.type === 'textarea') {
+                        return (
+                          <Box key={itemKey} sx={{ my: 1 }}>
+                            <Typography variant="caption" color="text.secondary">
+                              {itemField.label}
+                            </Typography>
+                            <RichTextEditor
+                              value={item[itemKey] || ''}
+                              onChange={(value) => {
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: value }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              placeholder={`Enter ${itemField.label.toLowerCase()}...`}
+                              height="150px"
+                            />
+                          </Box>
+                        )
+                      }
+                      if (itemField.type === 'select') {
+                        return (
+                          <FormControl fullWidth margin="normal" size="small" key={itemKey}>
+                            <InputLabel>{itemField.label}</InputLabel>
+                            <Select
+                              value={item[itemKey] || itemField.options[0]}
+                              onChange={(e) => {
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: e.target.value }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              label={itemField.label}
+                            >
+                              {itemField.options.map((option: string) => (
+                                <MenuItem key={option} value={option}>
+                                  {option}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        )
+                      }
+                      if (itemField.type === 'image') {
+                        return (
+                          <Box key={itemKey} sx={{ my: 1 }}>
+                            <Typography variant="caption" color="text.secondary">
+                              {itemField.label}
+                            </Typography>
+                            {item[itemKey] && (
+                              <Box sx={{ mb: 1 }}>
+                                <img 
+                                  src={item[itemKey]} 
+                                  alt={itemField.label}
+                                  style={{ maxWidth: '150px', maxHeight: '100px', objectFit: 'cover', borderRadius: '8px' }}
+                                />
+                              </Box>
+                            )}
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              startIcon={<ImageIcon />}
+                              onClick={() => {
+                                setCurrentImageField(`${key}.${index}.${itemKey}`)
+                                setImagePickerOpen(true)
+                              }}
+                            >
+                              {item[itemKey] ? 'Change' : 'Select'}
+                            </Button>
+                          </Box>
+                        )
+                      }
+                      if (itemField.type === 'tags') {
+                        return (
+                          <Box key={itemKey} sx={{ my: 1 }}>
+                            <Typography variant="caption" color="text.secondary">
+                              {itemField.label}
+                            </Typography>
+                            <TextField
+                              fullWidth
+                              size="small"
+                              value={Array.isArray(item[itemKey]) ? item[itemKey].join(', ') : ''}
+                              onChange={(e) => {
+                                const tags = e.target.value.split(',').map(t => t.trim()).filter(t => t)
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: tags }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              placeholder="Enter tags separated by commas"
+                            />
+                          </Box>
+                        )
+                      }
+                      if (itemField.type === 'number') {
+                        return (
+                          <TextField
+                            key={itemKey}
+                            fullWidth
+                            type="number"
+                            label={itemField.label}
+                            value={item[itemKey] || ''}
+                            onChange={(e) => {
+                              const newArray = [...arrayData]
+                              newArray[index] = { ...newArray[index], [itemKey]: Number(e.target.value) }
+                              handleChange({ ...data, [key]: newArray })
+                            }}
+                            margin="normal"
+                            size="small"
+                          />
+                        )
+                      }
+                      if (itemField.type === 'checkbox') {
+                        return (
+                          <Box key={itemKey} sx={{ my: 1, display: 'flex', alignItems: 'center' }}>
+                            <input
+                              type="checkbox"
+                              checked={item[itemKey] || false}
+                              onChange={(e) => {
+                                const newArray = [...arrayData]
+                                newArray[index] = { ...newArray[index], [itemKey]: e.target.checked }
+                                handleChange({ ...data, [key]: newArray })
+                              }}
+                              style={{ marginRight: '8px' }}
+                            />
+                            <Typography variant="caption">{itemField.label}</Typography>
+                          </Box>
+                        )
+                      }
+                      return null
+                    })}
+                  </Card>
+                ))}
+                <Button
+                  variant="outlined"
+                  startIcon={<Add />}
+                  onClick={() => {
+                    const newItem = {}
+                    handleChange({ ...data, [key]: [...arrayData, newItem] })
+                  }}
+                  fullWidth
+                >
+                  Add {field.label}
+                </Button>
               </Box>
             )
           }
