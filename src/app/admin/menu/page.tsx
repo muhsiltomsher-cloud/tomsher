@@ -210,7 +210,7 @@ export default function MenuManagement() {
     setFormData({
       title: '',
       url: '',
-      order: menuItems.length,
+      order: menuItems?.length || 0,
       image: '',
       description: '',
       icon: '',
@@ -330,7 +330,7 @@ export default function MenuManagement() {
               variant="contained"
               startIcon={<Add />}
               onClick={() => {
-                setFormData({ ...formData, order: menuItems.length });
+                setFormData({ ...formData, order: menuItems?.length || 0 });
                 setOpenDialog(true);
               }}
             >
