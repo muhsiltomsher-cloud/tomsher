@@ -5,6 +5,7 @@ import { Providers } from '@/components/providers'
 import { Toaster } from 'react-hot-toast'
 import ThemeProvider from '@/components/ThemeProvider'
 import TypographyLoader from '@/components/TypographyLoader'
+import MetadataLoader from '@/components/MetadataLoader'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -98,6 +99,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <TypographyLoader />
+        <MetadataLoader />
         <ThemeProvider>
           <Providers>
             {children}
