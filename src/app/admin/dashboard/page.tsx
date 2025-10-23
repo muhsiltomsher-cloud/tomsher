@@ -24,6 +24,7 @@ import {
   Work,
   ViewModule,
   MenuBook,
+  Build,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -75,6 +76,7 @@ export default function AdminDashboard() {
 
   const menuItems = [
     { title: 'Pages', icon: <Pages />, href: '/admin/pages', count: stats.pages, color: '#667eea' },
+    { title: 'Page Builder', icon: <Build />, href: '/admin/page-builder', count: 0, color: '#ff6b6b' },
     { title: 'Sections', icon: <ViewModule />, href: '/admin/sections', count: 0, color: '#a8edea' },
     { title: 'Menu', icon: <MenuBook />, href: '/admin/menu', count: 0, color: '#fbc2eb' },
     { title: 'Services', icon: <Business />, href: '/admin/services', count: stats.services, color: '#f093fb' },

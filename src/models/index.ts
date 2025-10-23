@@ -10,3 +10,4 @@ export { default as Contact, ContactStatus } from './Contact';
 export { default as Media } from './Media';
 export { default as Settings, SettingType } from './Settings';
 export { default as MenuItem } from './Menu';
+export { default as CustomPage } from './CustomPage';
