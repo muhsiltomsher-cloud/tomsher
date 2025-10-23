@@ -5,6 +5,11 @@ import FeaturesSection from './FeaturesSection'
 import TestimonialsShowcase from './TestimonialsShowcase'
 import PortfolioShowcase from './PortfolioShowcase'
 import ContactFormSection from './ContactFormSection'
+import StatsSection from './StatsSection'
+import PricingSection from './PricingSection'
+import TeamSection from './TeamSection'
+import FAQSection from './FAQSection'
+import NewsletterSection from './NewsletterSection'
 
 export const sectionComponents: Record<string, any> = {
   HeroSection,
@@ -13,7 +18,12 @@ export const sectionComponents: Record<string, any> = {
   FeaturesSection,
   TestimonialsShowcase,
   PortfolioShowcase,
-  ContactFormSection
+  ContactFormSection,
+  StatsSection,
+  PricingSection,
+  TeamSection,
+  FAQSection,
+  NewsletterSection
 }
 
 export const sectionDefinitions = [
@@ -22,7 +32,7 @@ export const sectionDefinitions = [
     name: 'Hero Section',
     component: 'HeroSection',
     description: 'Large header section with title, description, and CTA buttons',
-    variants: ['default', 'centered', 'split', 'minimal'],
+    variants: ['default', 'centered', 'split', 'minimal', 'glassmorphism', 'dark', 'animated', 'video'],
     defaultData: {
       title: 'Welcome to Our Website',
       subtitle: 'Building Digital Excellence',
@@ -40,7 +50,7 @@ export const sectionDefinitions = [
       secondaryCtaText: { type: 'text', label: 'Secondary CTA Text' },
       secondaryCtaLink: { type: 'text', label: 'Secondary CTA Link' },
       backgroundImage: { type: 'image', label: 'Background Image' },
-      variant: { type: 'select', label: 'Variant', options: ['default', 'centered', 'split', 'minimal'] }
+      variant: { type: 'select', label: 'Variant', options: ['default', 'centered', 'split', 'minimal', 'glassmorphism', 'dark', 'animated', 'video'] }
     }
   },
   {
@@ -219,7 +229,179 @@ export const sectionDefinitions = [
       formType: { type: 'select', label: 'Form Type', options: ['contact', 'inquiry', 'quote'] },
       variant: { type: 'select', label: 'Variant', options: ['default', 'split', 'centered'] }
     }
+  },
+  {
+    id: 'stats',
+    name: 'Stats Section',
+    component: 'StatsSection',
+    description: 'Display impressive statistics and numbers',
+    variants: ['default', 'gradient', 'minimal', 'cards', 'dark', 'modern'],
+    defaultData: {
+      title: 'Our Impact in Numbers',
+      subtitle: 'Trusted by leading companies worldwide',
+      variant: 'default',
+      stats: [
+        { value: '500+', label: 'Projects Completed', icon: '🚀' },
+        { value: '98%', label: 'Client Satisfaction', icon: '⭐' },
+        { value: '50+', label: 'Team Members', icon: '👥' },
+        { value: '10+', label: 'Years Experience', icon: '📅' }
+      ]
+    },
+    schema: {
+      title: { type: 'text', label: 'Title', required: true },
+      subtitle: { type: 'text', label: 'Subtitle' },
+      variant: { type: 'select', label: 'Variant', options: ['default', 'gradient', 'minimal', 'cards', 'dark', 'modern'] },
+      backgroundColor: { type: 'text', label: 'Background Color' },
+      stats: {
+        type: 'array',
+        label: 'Statistics',
+        itemSchema: {
+          value: { type: 'text', label: 'Value' },
+          label: { type: 'text', label: 'Label' },
+          icon: { type: 'text', label: 'Icon (emoji)' }
+        }
+      }
+    }
+  },
+  {
+    id: 'pricing',
+    name: 'Pricing Section',
+    component: 'PricingSection',
+    description: 'Display pricing plans and packages',
+    variants: ['default', 'cards'],
+    defaultData: {
+      title: 'Simple, Transparent Pricing',
+      subtitle: 'Choose the perfect plan for your needs',
+      variant: 'default',
+      plans: [
+        {
+          name: 'Starter',
+          price: '$29',
+          period: '/month',
+          features: ['5 Projects', '10GB Storage', 'Basic Support', 'API Access'],
+          buttonText: 'Get Started'
+        },
+        {
+          name: 'Professional',
+          price: '$79',
+          period: '/month',
+          features: ['Unlimited Projects', '100GB Storage', 'Priority Support', 'Advanced API', 'Custom Domain'],
+          highlighted: true,
+          buttonText: 'Start Free Trial'
+        }
+      ]
+    },
+    schema: {
+      title: { type: 'text', label: 'Title', required: true },
+      subtitle: { type: 'text', label: 'Subtitle' },
+      variant: { type: 'select', label: 'Variant', options: ['default', 'cards'] },
+      plans: {
+        type: 'array',
+        label: 'Pricing Plans',
+        itemSchema: {
+          name: { type: 'text', label: 'Plan Name' },
+          price: { type: 'text', label: 'Price' },
+          period: { type: 'text', label: 'Period' },
+          features: { type: 'tags', label: 'Features' },
+          highlighted: { type: 'checkbox', label: 'Highlight This Plan' },
+          buttonText: { type: 'text', label: 'Button Text' }
+        }
+      }
+    }
+  },
+  {
+    id: 'team',
+    name: 'Team Section',
+    component: 'TeamSection',
+    description: 'Showcase your team members',
+    variants: ['grid', 'cards'],
+    defaultData: {
+      title: 'Meet Our Team',
+      subtitle: 'Talented individuals driving innovation',
+      variant: 'grid',
+      members: [
+        {
+          name: 'Sarah Johnson',
+          position: 'CEO & Founder',
+          image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
+          bio: '15+ years in tech leadership',
+          social: { linkedin: '#', twitter: '#' }
+        }
+      ]
+    },
+    schema: {
+      title: { type: 'text', label: 'Title', required: true },
+      subtitle: { type: 'text', label: 'Subtitle' },
+      variant: { type: 'select', label: 'Variant', options: ['grid', 'cards'] },
+      members: {
+        type: 'array',
+        label: 'Team Members',
+        itemSchema: {
+          name: { type: 'text', label: 'Name' },
+          position: { type: 'text', label: 'Position' },
+          image: { type: 'image', label: 'Photo' },
+          bio: { type: 'textarea', label: 'Bio' }
+        }
+      }
+    }
+  },
+  {
+    id: 'faq',
+    name: 'FAQ Section',
+    component: 'FAQSection',
+    description: 'Frequently asked questions with accordion',
+    variants: ['accordion', 'grid'],
+    defaultData: {
+      title: 'Frequently Asked Questions',
+      subtitle: 'Everything you need to know',
+      variant: 'accordion',
+      faqs: [
+        {
+          question: 'What services do you offer?',
+          answer: 'We offer comprehensive web development, mobile app development, UI/UX design, and digital marketing services.'
+        },
+        {
+          question: 'How long does a typical project take?',
+          answer: 'Project timelines vary based on complexity. A simple website takes 2-4 weeks, while complex applications may take 3-6 months.'
+        }
+      ]
+    },
+    schema: {
+      title: { type: 'text', label: 'Title', required: true },
+      subtitle: { type: 'text', label: 'Subtitle' },
+      variant: { type: 'select', label: 'Variant', options: ['accordion', 'grid'] },
+      faqs: {
+        type: 'array',
+        label: 'FAQs',
+        itemSchema: {
+          question: { type: 'text', label: 'Question' },
+          answer: { type: 'textarea', label: 'Answer' }
+        }
+      }
+    }
+  },
+  {
+    id: 'newsletter',
+    name: 'Newsletter Section',
+    component: 'NewsletterSection',
+    description: 'Newsletter subscription form',
+    variants: ['default', 'gradient'],
+    defaultData: {
+      title: 'Stay Updated',
+      subtitle: 'Subscribe to our newsletter for the latest updates and insights',
+      placeholder: 'Enter your email address',
+      buttonText: 'Subscribe',
+      variant: 'default'
+    },
+    schema: {
+      title: { type: 'text', label: 'Title', required: true },
+      subtitle: { type: 'text', label: 'Subtitle' },
+      placeholder: { type: 'text', label: 'Input Placeholder' },
+      buttonText: { type: 'text', label: 'Button Text' },
+      variant: { type: 'select', label: 'Variant', options: ['default', 'gradient'] },
+      backgroundColor: { type: 'text', label: 'Background Color' }
+    }
   }
 ]
 
-export { HeroSection, ServicesSection, CTASection, FeaturesSection, TestimonialsShowcase, PortfolioShowcase, ContactFormSection }
+export { HeroSection, ServicesSection, CTASection, FeaturesSection, TestimonialsShowcase, PortfolioShowcase, ContactFormSection, StatsSection, PricingSection, TeamSection, FAQSection, NewsletterSection }

@@ -29,6 +29,8 @@ import {
   Search,
   PermMedia,
   Help,
+  People,
+  Email,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -85,10 +87,12 @@ export default function AdminDashboard() {
     { title: 'Menu', icon: <MenuBook />, href: '/admin/menu', count: 0, color: '#fbc2eb' },
     { title: 'Services', icon: <Business />, href: '/admin/services', count: stats.services, color: '#f093fb' },
     { title: 'Portfolio', icon: <Work />, href: '/admin/portfolio', count: stats.portfolio, color: '#4facfe' },
+    { title: 'Team Members', icon: <People />, href: '/admin/team', count: 0, color: '#ee5a6f' },
     { title: 'Testimonials', icon: <RateReview />, href: '/admin/testimonials', count: stats.testimonials, color: '#43e97b' },
     { title: 'Blog Posts', icon: <Article />, href: '/admin/blog', count: stats.blog, color: '#fa709a' },
     { title: 'Contacts', icon: <ContactMail />, href: '/admin/contacts', count: stats.contacts, color: '#fee140' },
     { title: 'Form Submissions', icon: <Assignment />, href: '/admin/forms', count: 0, color: '#ff9ff3' },
+    { title: 'Newsletter', icon: <Email />, href: '/admin/newsletter', count: 0, color: '#10ac84' },
     { title: 'Media Library', icon: <PermMedia />, href: '/admin/media', count: 0, color: '#48dbfb' },
     { title: 'SEO Settings', icon: <Search />, href: '/admin/seo', count: 0, color: '#54a0ff' },
     { title: 'Settings', icon: <SettingsIcon />, href: '/admin/settings', count: 0, color: '#30cfd0' },

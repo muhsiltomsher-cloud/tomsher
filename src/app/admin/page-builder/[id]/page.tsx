@@ -34,9 +34,11 @@ import {
   VisibilityOff,
   Save,
   ArrowBack,
+  Image as ImageIcon,
 } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 import { sectionDefinitions } from '@/components/sections'
+import ImagePicker from '@/components/admin/ImagePicker'
 
 interface PageSection {
   _id?: string
@@ -74,6 +76,8 @@ export default function PageBuilderEditor() {
   const [sectionData, setSectionData] = useState<any>({})
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [imagePickerOpen, setImagePickerOpen] = useState(false)
+  const [currentImageField, setCurrentImageField] = useState<string>('')
 
   useEffect(() => {
     const fetchPage = async () => {
@@ -213,6 +217,11 @@ export default function PageBuilderEditor() {
     }
   }
 
+  const handleImageSelect = (imageUrl: string, alt?: string) => {
+    setSectionData({ ...sectionData, [currentImageField]: imageUrl })
+    setImagePickerOpen(false)
+  }
+
   const renderSectionForm = (sectionDef: any, data: any, onChange: (data: any) => void) => {
     if (!sectionDef) return null
 
@@ -265,6 +274,44 @@ export default function PageBuilderEditor() {
                   ))}
                 </Select>
               </FormControl>
+            )
+          }
+
+          if (field.type === 'image') {
+            return (
+              <Box key={key} sx={{ my: 2 }}>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  {field.label}
+                </Typography>
+                {data[key] && (
+                  <Box sx={{ mb: 1 }}>
+                    <img 
+                      src={data[key]} 
+                      alt={field.label}
+                      style={{ maxWidth: '200px', maxHeight: '150px', objectFit: 'cover', borderRadius: '8px' }}
+                    />
+                  </Box>
+                )}
+                <Button
+                  variant="outlined"
+                  startIcon={<ImageIcon />}
+                  onClick={() => {
+                    setCurrentImageField(key)
+                    setImagePickerOpen(true)
+                  }}
+                >
+                  {data[key] ? 'Change Image' : 'Select Image'}
+                </Button>
+                {data[key] && (
+                  <Button
+                    size="small"
+                    onClick={() => onChange({ ...data, [key]: '' })}
+                    sx={{ ml: 1 }}
+                  >
+                    Remove
+                  </Button>
+                )}
+              </Box>
             )
           }
 
@@ -488,6 +535,14 @@ export default function PageBuilderEditor() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Image Picker Dialog */}
+      <ImagePicker
+        open={imagePickerOpen}
+        onClose={() => setImagePickerOpen(false)}
+        onSelect={handleImageSelect}
+        title="Select Image"
+      />
     </Box>
   )
 }
