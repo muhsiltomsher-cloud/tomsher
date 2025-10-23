@@ -32,6 +32,7 @@ import {
   People,
   Email,
   Speed,
+  Image,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -95,6 +96,7 @@ export default function AdminDashboard() {
     { title: 'Form Submissions', icon: <Assignment />, href: '/admin/forms', count: 0, color: '#ff9ff3' },
     { title: 'Newsletter', icon: <Email />, href: '/admin/newsletter', count: 0, color: '#10ac84' },
     { title: 'Media Library', icon: <PermMedia />, href: '/admin/media', count: 0, color: '#48dbfb' },
+    { title: 'Logo Management', icon: <Image />, href: '/admin/logos', count: 0, color: '#9b59b6' },
     { title: 'SEO Settings', icon: <Search />, href: '/admin/seo', count: 0, color: '#54a0ff' },
     { title: 'Performance', icon: <Speed />, href: '/admin/performance', count: 0, color: '#ff6348' },
     { title: 'Settings', icon: <SettingsIcon />, href: '/admin/settings', count: 0, color: '#30cfd0' },
