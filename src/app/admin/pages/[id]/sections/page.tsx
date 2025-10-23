@@ -51,6 +51,7 @@ interface Section {
   component: string;
   schema: any;
   variants: string[];
+  isActive: boolean;
 }
 
 interface Page {

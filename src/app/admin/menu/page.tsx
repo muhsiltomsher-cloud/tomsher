@@ -208,7 +208,7 @@ export default function MenuManagement() {
     return menuItems.filter(item => item.parentId === parentId);
   };
 
-  const renderMenuItem = (item: MenuItem, level: number = 0) => {
+  const renderMenuItem = (item: MenuItem, level: number = 0): JSX.Element => {
     const children = getChildItems(item._id);
     
     return (

@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import 'react-quill/dist/quill.snow.css'
 
@@ -19,8 +18,6 @@ export default function RichTextEditor({
   placeholder = 'Start typing...',
   height = '300px',
 }: RichTextEditorProps) {
-  const quillRef = useRef<any>(null)
-
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -85,7 +82,6 @@ export default function RichTextEditor({
         }
       `}</style>
       <ReactQuill
-        ref={quillRef}
         theme="snow"
         value={value}
         onChange={onChange}

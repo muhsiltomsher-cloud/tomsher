@@ -6,24 +6,9 @@ export async function GET() {
   try {
     await connectDB();
     
-    const settings = await Settings.find({});
+    const typographySetting = await Settings.findOne({ key: 'typography' });
     
-    if (!settings || settings.length === 0) {
-      return NextResponse.json({
-        baseFontSize: '16px',
-        bodyFontWeight: '400',
-        headingFontWeight: '700',
-        h1Size: '3rem',
-        h2Size: '2.25rem',
-        h3Size: '1.875rem',
-        h4Size: '1.5rem',
-        h5Size: '1.25rem',
-        h6Size: '1rem',
-      });
-    }
-    
-    const settingsDoc = settings[0];
-    const typography = settingsDoc.typography || {
+    const defaultTypography = {
       baseFontSize: '16px',
       bodyFontWeight: '400',
       headingFontWeight: '700',
@@ -34,6 +19,12 @@ export async function GET() {
       h5Size: '1.25rem',
       h6Size: '1rem',
     };
+    
+    if (!typographySetting) {
+      return NextResponse.json(defaultTypography);
+    }
+    
+    const typography = typographySetting.value || defaultTypography;
     
     return NextResponse.json(typography);
   } catch (error) {
