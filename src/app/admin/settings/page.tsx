@@ -424,6 +424,117 @@ export default function SettingsManagement() {
                 fullWidth
               />
             </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Pinterest URL"
+                value={settings.socialMedia?.pinterest || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, pinterest: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="TikTok URL"
+                value={settings.socialMedia?.tiktok || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, tiktok: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Snapchat URL"
+                value={settings.socialMedia?.snapchat || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, snapchat: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="WhatsApp URL"
+                value={settings.socialMedia?.whatsapp || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, whatsapp: e.target.value }
+                })}
+                fullWidth
+                placeholder="https://wa.me/1234567890"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Telegram URL"
+                value={settings.socialMedia?.telegram || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, telegram: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="GitHub URL"
+                value={settings.socialMedia?.github || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, github: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Dribbble URL"
+                value={settings.socialMedia?.dribbble || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, dribbble: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Behance URL"
+                value={settings.socialMedia?.behance || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, behance: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Medium URL"
+                value={settings.socialMedia?.medium || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, medium: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Reddit URL"
+                value={settings.socialMedia?.reddit || ''}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  socialMedia: { ...settings.socialMedia, reddit: e.target.value }
+                })}
+                fullWidth
+              />
+            </Grid>
           </Grid>
 
           <Divider sx={{ my: 4 }} />
