@@ -22,10 +22,17 @@ import {
   TextField,
   CircularProgress,
   MenuItem,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Grid,
+  Card,
+  CardContent,
 } from '@mui/material';
-import { Add, Edit, Delete } from '@mui/icons-material';
+import { Add, Edit, Delete, ExpandMore } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { sectionDefinitions } from '@/components/sections';
 
 interface Section {
   _id: string;
@@ -207,6 +214,56 @@ export default function SectionsManagement() {
           </Box>
         </Box>
 
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h5" sx={{ mb: 2 }}>
+            Available Section Types
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            These are the built-in section types available in the page builder. Each section has multiple design variants.
+          </Typography>
+          <Grid container spacing={2}>
+            {sectionDefinitions.map((section) => (
+              <Grid item xs={12} md={6} lg={4} key={section.id}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      {section.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      {section.description}
+                    </Typography>
+                    <Box sx={{ mb: 1 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        Component:
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>
+                        {section.component}
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="caption" color="text.secondary">
+                        Variants ({section.variants.length}):
+                      </Typography>
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 0.5 }}>
+                        {section.variants.map((variant: string) => (
+                          <Chip key={variant} label={variant} size="small" />
+                        ))}
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        <Typography variant="h5" sx={{ mb: 2, mt: 4 }}>
+          Custom Sections
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Create custom section definitions for specialized content types.
+        </Typography>
+
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -219,43 +276,53 @@ export default function SectionsManagement() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sections.map((section) => (
-                <TableRow key={section._id}>
-                  <TableCell>
-                    <Box>
-                      <Typography variant="body2" fontWeight="bold">{section.name}</Typography>
-                      {section.description && (
-                        <Typography variant="caption" color="text.secondary">
-                          {section.description}
-                        </Typography>
-                      )}
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Chip label={section.type} size="small" />
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
-                      {section.component}
+              {sections.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    <Typography variant="body2" color="text.secondary" sx={{ py: 4 }}>
+                      No custom sections created yet. Click "Create Section" to add one.
                     </Typography>
                   </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={section.isActive ? 'Active' : 'Inactive'}
-                      size="small"
-                      color={section.isActive ? 'success' : 'default'}
-                    />
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton size="small" color="primary" onClick={() => handleEdit(section)}>
-                      <Edit />
-                    </IconButton>
-                    <IconButton size="small" color="error" onClick={() => handleDelete(section._id)}>
-                      <Delete />
-                    </IconButton>
-                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                sections.map((section) => (
+                  <TableRow key={section._id}>
+                    <TableCell>
+                      <Box>
+                        <Typography variant="body2" fontWeight="bold">{section.name}</Typography>
+                        {section.description && (
+                          <Typography variant="caption" color="text.secondary">
+                            {section.description}
+                          </Typography>
+                        )}
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Chip label={section.type} size="small" />
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+                        {section.component}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={section.isActive ? 'Active' : 'Inactive'}
+                        size="small"
+                        color={section.isActive ? 'success' : 'default'}
+                      />
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton size="small" color="primary" onClick={() => handleEdit(section)}>
+                        <Edit />
+                      </IconButton>
+                      <IconButton size="small" color="error" onClick={() => handleDelete(section._id)}>
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
