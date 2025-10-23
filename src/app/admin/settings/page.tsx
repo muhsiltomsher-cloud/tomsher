@@ -40,6 +40,17 @@ interface Settings {
     googleAnalyticsId?: string;
     facebookPixelId?: string;
   };
+  typography?: {
+    baseFontSize?: string;
+    headingFontWeight?: string;
+    bodyFontWeight?: string;
+    h1Size?: string;
+    h2Size?: string;
+    h3Size?: string;
+    h4Size?: string;
+    h5Size?: string;
+    h6Size?: string;
+  };
 }
 
 export default function SettingsManagement() {
@@ -56,6 +67,17 @@ export default function SettingsManagement() {
     socialMedia: {},
     seo: {},
     analytics: {},
+    typography: {
+      baseFontSize: '16px',
+      headingFontWeight: '700',
+      bodyFontWeight: '400',
+      h1Size: '3rem',
+      h2Size: '2.25rem',
+      h3Size: '1.875rem',
+      h4Size: '1.5rem',
+      h5Size: '1.25rem',
+      h6Size: '1rem',
+    },
   });
 
   useEffect(() => {
@@ -345,6 +367,139 @@ export default function SettingsManagement() {
                   seo: { ...settings.seo, metaKeywords: e.target.value }
                 })}
                 fullWidth
+              />
+            </Grid>
+          </Grid>
+
+          <Divider sx={{ my: 4 }} />
+
+          <Typography variant="h6" gutterBottom>
+            Typography Settings
+          </Typography>
+          <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 3 }}>
+            Font: Manrope (fixed). Customize font sizes and weights below.
+          </Typography>
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Base Font Size"
+                value={settings.typography?.baseFontSize || '16px'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, baseFontSize: e.target.value }
+                })}
+                fullWidth
+                placeholder="16px"
+                helperText="Default body text size (e.g., 16px, 1rem)"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Body Font Weight"
+                select
+                value={settings.typography?.bodyFontWeight || '400'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, bodyFontWeight: e.target.value }
+                })}
+                fullWidth
+                SelectProps={{ native: true }}
+              >
+                <option value="300">Light (300)</option>
+                <option value="400">Normal (400)</option>
+                <option value="500">Medium (500)</option>
+                <option value="600">Semibold (600)</option>
+              </TextField>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="Heading Font Weight"
+                select
+                value={settings.typography?.headingFontWeight || '700'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, headingFontWeight: e.target.value }
+                })}
+                fullWidth
+                SelectProps={{ native: true }}
+              >
+                <option value="500">Medium (500)</option>
+                <option value="600">Semibold (600)</option>
+                <option value="700">Bold (700)</option>
+                <option value="800">Extrabold (800)</option>
+              </TextField>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="H1 Font Size"
+                value={settings.typography?.h1Size || '3rem'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, h1Size: e.target.value }
+                })}
+                fullWidth
+                placeholder="3rem"
+                helperText="Main heading size"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="H2 Font Size"
+                value={settings.typography?.h2Size || '2.25rem'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, h2Size: e.target.value }
+                })}
+                fullWidth
+                placeholder="2.25rem"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="H3 Font Size"
+                value={settings.typography?.h3Size || '1.875rem'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, h3Size: e.target.value }
+                })}
+                fullWidth
+                placeholder="1.875rem"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="H4 Font Size"
+                value={settings.typography?.h4Size || '1.5rem'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, h4Size: e.target.value }
+                })}
+                fullWidth
+                placeholder="1.5rem"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="H5 Font Size"
+                value={settings.typography?.h5Size || '1.25rem'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, h5Size: e.target.value }
+                })}
+                fullWidth
+                placeholder="1.25rem"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                label="H6 Font Size"
+                value={settings.typography?.h6Size || '1rem'}
+                onChange={(e) => setSettings({
+                  ...settings,
+                  typography: { ...settings.typography, h6Size: e.target.value }
+                })}
+                fullWidth
+                placeholder="1rem"
               />
             </Grid>
           </Grid>
