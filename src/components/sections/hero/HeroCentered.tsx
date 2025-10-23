@@ -13,7 +13,10 @@ export default function HeroCentered({
   ctaLink,
   secondaryCtaText,
   secondaryCtaLink,
-  backgroundImage
+  backgroundImage,
+  titleColor,
+  subtitleColor,
+  descriptionColor
 }: HeroVariantProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-secondary text-white">
@@ -28,13 +31,17 @@ export default function HeroCentered({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-white/90 font-semibold mb-4 text-lg">{subtitle}</p>
-          <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight max-w-4xl mx-auto">
+          <p className="text-white/90 font-semibold mb-4 text-lg" style={subtitleColor ? { color: subtitleColor } : undefined}>
+            {subtitle}
+          </p>
+          <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight max-w-4xl mx-auto" style={titleColor ? { color: titleColor } : undefined}>
             {title}
           </h1>
-          <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-            {description}
-          </p>
+          <div 
+            className="text-xl text-white/80 mb-8 max-w-2xl mx-auto" 
+            style={descriptionColor ? { color: descriptionColor } : undefined}
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href={ctaLink}

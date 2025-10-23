@@ -11,7 +11,10 @@ export default function HeroMinimal({
   ctaText,
   ctaLink,
   secondaryCtaText,
-  secondaryCtaLink
+  secondaryCtaLink,
+  titleColor,
+  subtitleColor,
+  descriptionColor
 }: HeroVariantProps) {
   return (
     <section className="relative py-32 bg-white">
@@ -22,13 +25,17 @@ export default function HeroMinimal({
           transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto text-center"
         >
-          <p className="text-primary font-semibold mb-4 text-lg">{subtitle}</p>
-          <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+          <p className="text-primary font-semibold mb-4 text-lg" style={subtitleColor ? { color: subtitleColor } : undefined}>
+            {subtitle}
+          </p>
+          <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight" style={titleColor ? { color: titleColor } : undefined}>
             {title}
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            {description}
-          </p>
+          <div 
+            className="text-xl text-gray-600 mb-8"
+            style={descriptionColor ? { color: descriptionColor } : undefined}
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href={ctaLink}

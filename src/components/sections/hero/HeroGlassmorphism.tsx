@@ -13,7 +13,10 @@ export default function HeroGlassmorphism({
   ctaLink,
   secondaryCtaText,
   secondaryCtaLink,
-  backgroundImage
+  backgroundImage,
+  titleColor,
+  subtitleColor,
+  descriptionColor
 }: HeroVariantProps) {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
@@ -41,13 +44,17 @@ export default function HeroGlassmorphism({
             boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
           }}
         >
-          <p className="text-white/90 font-semibold mb-4 text-lg">{subtitle}</p>
-          <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight text-white">
+          <p className="text-white/90 font-semibold mb-4 text-lg" style={subtitleColor ? { color: subtitleColor } : undefined}>
+            {subtitle}
+          </p>
+          <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight text-white" style={titleColor ? { color: titleColor } : undefined}>
             {title}
           </h1>
-          <p className="text-xl text-white/80 mb-8">
-            {description}
-          </p>
+          <div 
+            className="text-xl text-white/80 mb-8"
+            style={descriptionColor ? { color: descriptionColor } : undefined}
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
           <div className="flex flex-wrap gap-4">
             <Link
               href={ctaLink}

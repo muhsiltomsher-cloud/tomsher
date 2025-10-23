@@ -13,7 +13,10 @@ export default function HeroDark({
   ctaLink,
   secondaryCtaText,
   secondaryCtaLink,
-  backgroundImage
+  backgroundImage,
+  titleColor,
+  subtitleColor,
+  descriptionColor
 }: HeroVariantProps) {
   return (
     <section className="relative min-h-screen flex items-center bg-gray-900 text-white">
@@ -30,13 +33,17 @@ export default function HeroDark({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-primary font-semibold mb-4 text-lg" style={{ color: '#667eea' }}>{subtitle}</p>
-            <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+            <p className="text-primary font-semibold mb-4 text-lg" style={subtitleColor ? { color: subtitleColor } : { color: '#667eea' }}>
+              {subtitle}
+            </p>
+            <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight" style={titleColor ? { color: titleColor } : undefined}>
               {title}
             </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-2xl">
-              {description}
-            </p>
+            <div 
+              className="text-xl text-gray-300 mb-8 max-w-2xl"
+              style={descriptionColor ? { color: descriptionColor } : undefined}
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
             <div className="flex flex-wrap gap-4">
               <Link
                 href={ctaLink}

@@ -7,6 +7,9 @@ export interface HeroSectionData {
   secondaryCtaText?: string
   secondaryCtaLink?: string
   backgroundImage?: string
+  titleColor?: string
+  subtitleColor?: string
+  descriptionColor?: string
   variant?: 'default' | 'centered' | 'split' | 'minimal' | 'glassmorphism' | 'dark' | 'animated' | 'video'
 }
 
@@ -19,4 +22,7 @@ export interface HeroVariantProps {
   secondaryCtaText?: string
   secondaryCtaLink?: string
   backgroundImage?: string
+  titleColor?: string
+  subtitleColor?: string
+  descriptionColor?: string
 }

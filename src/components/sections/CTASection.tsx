@@ -19,6 +19,8 @@ export default function CTASection({ data }: CTASectionProps) {
     secondaryCtaText,
     secondaryCtaLink,
     backgroundImage,
+    titleColor,
+    descriptionColor,
     variant = 'default'
   } = data
 
@@ -29,7 +31,9 @@ export default function CTASection({ data }: CTASectionProps) {
     ctaLink,
     secondaryCtaText,
     secondaryCtaLink,
-    backgroundImage
+    backgroundImage,
+    titleColor,
+    descriptionColor
   }
 
   const variants = {

@@ -24,6 +24,9 @@ export default function HeroSection({ data }: HeroSectionProps) {
     secondaryCtaText,
     secondaryCtaLink,
     backgroundImage,
+    titleColor,
+    subtitleColor,
+    descriptionColor,
     variant = 'default'
   } = data
 
@@ -35,7 +38,10 @@ export default function HeroSection({ data }: HeroSectionProps) {
     ctaLink,
     secondaryCtaText,
     secondaryCtaLink,
-    backgroundImage
+    backgroundImage,
+    titleColor,
+    subtitleColor,
+    descriptionColor
   }
 
   const variants = {
