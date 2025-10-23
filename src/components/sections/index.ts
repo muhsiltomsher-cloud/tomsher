@@ -52,6 +52,9 @@ export const sectionDefinitions = [
       secondaryCtaText: { type: 'text', label: 'Secondary CTA Text' },
       secondaryCtaLink: { type: 'text', label: 'Secondary CTA Link' },
       backgroundImage: { type: 'image', label: 'Background Image' },
+      titleColor: { type: 'color', label: 'Title Color' },
+      subtitleColor: { type: 'color', label: 'Subtitle Color' },
+      descriptionColor: { type: 'color', label: 'Description Color' },
       variant: { type: 'select', label: 'Variant', options: ['default', 'centered', 'split', 'minimal', 'glassmorphism', 'dark', 'animated', 'video'] }
     }
   },
@@ -107,6 +110,8 @@ export const sectionDefinitions = [
       secondaryCtaText: { type: 'text', label: 'Secondary CTA Text' },
       secondaryCtaLink: { type: 'text', label: 'Secondary CTA Link' },
       backgroundImage: { type: 'image', label: 'Background Image' },
+      titleColor: { type: 'color', label: 'Title Color' },
+      descriptionColor: { type: 'color', label: 'Description Color' },
       variant: { type: 'select', label: 'Variant', options: ['default', 'gradient', 'split', 'minimal'] }
     }
   },

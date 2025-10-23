@@ -363,6 +363,45 @@ export default function PageBuilderEditor() {
             )
           }
 
+          if (field.type === 'color') {
+            return (
+              <Box key={key} sx={{ my: 2 }}>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  {field.label} {field.required && <span style={{ color: 'red' }}>*</span>}
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                  <input
+                    type="color"
+                    value={data[key] || '#000000'}
+                    onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
+                    style={{
+                      width: '60px',
+                      height: '40px',
+                      border: '2px solid #ddd',
+                      borderRadius: '8px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <TextField
+                    value={data[key] || '#000000'}
+                    onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
+                    placeholder="#000000"
+                    size="small"
+                    sx={{ flex: 1 }}
+                  />
+                  {data[key] && (
+                    <Button
+                      size="small"
+                      onClick={() => handleChange({ ...data, [key]: '' })}
+                    >
+                      Reset
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            )
+          }
+
           return null
         })}
       </Box>
