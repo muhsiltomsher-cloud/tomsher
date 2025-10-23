@@ -39,6 +39,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('BLOB_READ_WRITE_TOKEN is not configured');
+      return NextResponse.json({ 
+        error: 'Image upload not configured. Please set BLOB_READ_WRITE_TOKEN environment variable.' 
+      }, { status: 500 });
+    }
+
     const blob = await put(file.name, file, {
       access: 'public',
     });
@@ -55,6 +62,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(media, { status: 201 });
   } catch (error) {
     console.error('Error uploading media:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
+    return NextResponse.json({ 
+      error: 'Failed to upload image',
+      details: errorMessage 
+    }, { status: 500 });
   }
 }
