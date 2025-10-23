@@ -34,6 +34,8 @@ export default function ImagePicker({ open, onClose, onSelect, title = 'Select I
   const [images, setImages] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<any[]>([]);
+  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [altText, setAltText] = useState('');
 
   useEffect(() => {
     if (open && tab === 0) {
@@ -75,13 +77,22 @@ export default function ImagePicker({ open, onClose, onSelect, title = 'Select I
     searchUnsplash();
   };
 
-  const handleImageSelect = (image: any) => {
+  const handleImageClick = (image: any) => {
+    setSelectedImage(image);
     if (tab === 0) {
-      onSelect(image.url, image.alt);
+      setAltText(image.alt || '');
     } else {
-      onSelect(image.url, image.altText || image.caption);
+      setAltText(image.altText || image.caption || '');
     }
-    onClose();
+  };
+
+  const handleConfirmSelection = () => {
+    if (selectedImage) {
+      onSelect(selectedImage.url, altText);
+      setSelectedImage(null);
+      setAltText('');
+      onClose();
+    }
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -171,12 +182,16 @@ export default function ImagePicker({ open, onClose, onSelect, title = 'Select I
             <CircularProgress />
           </Box>
         ) : (
-          <Grid container spacing={2} sx={{ maxHeight: '500px', overflow: 'auto' }}>
+          <Grid container spacing={2} sx={{ maxHeight: '400px', overflow: 'auto' }}>
             {(tab === 0 ? images : uploadedImages).map((image) => (
               <Grid item xs={12} sm={6} md={4} key={image.id}>
                 <Card 
-                  sx={{ cursor: 'pointer', '&:hover': { boxShadow: 6 } }}
-                  onClick={() => handleImageSelect(image)}
+                  sx={{ 
+                    cursor: 'pointer', 
+                    '&:hover': { boxShadow: 6 },
+                    border: selectedImage?.id === image.id ? '3px solid #003d88' : 'none'
+                  }}
+                  onClick={() => handleImageClick(image)}
                 >
                   <CardMedia
                     component="img"
@@ -195,9 +210,41 @@ export default function ImagePicker({ open, onClose, onSelect, title = 'Select I
             ))}
           </Grid>
         )}
+
+        {selectedImage && (
+          <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
+            <Typography variant="subtitle2" gutterBottom>
+              Selected Image
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+              <img 
+                src={tab === 0 ? selectedImage.thumb : selectedImage.url} 
+                alt="Selected" 
+                style={{ width: 120, height: 80, objectFit: 'cover', borderRadius: 4 }}
+              />
+              <TextField
+                fullWidth
+                label="Alt Text (for SEO and accessibility)"
+                value={altText}
+                onChange={(e) => setAltText(e.target.value)}
+                placeholder="Describe this image..."
+                helperText="Alt text helps search engines and screen readers understand your image"
+                multiline
+                rows={2}
+              />
+            </Box>
+          </Box>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
+        <Button 
+          onClick={handleConfirmSelection} 
+          variant="contained"
+          disabled={!selectedImage}
+        >
+          Use This Image
+        </Button>
       </DialogActions>
     </Dialog>
   );

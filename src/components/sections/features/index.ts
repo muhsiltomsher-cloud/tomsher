@@ -1,0 +1,6 @@
+export { default as FeaturesGrid } from './FeaturesGrid'
+export { default as FeaturesCards } from './FeaturesCards'
+export { default as FeaturesList } from './FeaturesList'
+export { default as FeaturesHighlight } from './FeaturesHighlight'
+export * from './types'
+export { iconMap } from './iconMap'

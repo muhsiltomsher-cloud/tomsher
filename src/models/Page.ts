@@ -25,6 +25,15 @@ export interface IPage extends Document {
   status: PageStatus;
   type: PageType;
   authorId: mongoose.Types.ObjectId;
+  parentId?: mongoose.Types.ObjectId;
+  order?: number;
+  settings?: {
+    enableSkeletonLoaders?: boolean;
+    enablePageTransitions?: boolean;
+    pageTransitionVariant?: string;
+    enableScrollAnimations?: boolean;
+    scrollAnimationVariant?: string;
+  };
   createdAt: Date;
   updatedAt: Date;
   publishedAt?: Date;
@@ -66,6 +75,18 @@ const PageSchema = new Schema<IPage>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
+    },
+    parentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Page',
+    },
+    order: {
+      type: Number,
+      default: 0,
+    },
+    settings: {
+      type: Schema.Types.Mixed,
+      default: {},
     },
     publishedAt: {
       type: Date,
