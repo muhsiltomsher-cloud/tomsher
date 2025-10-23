@@ -24,10 +24,12 @@ import {
   Switch,
   FormControlLabel,
   Rating,
+  Avatar,
 } from '@mui/material';
-import { Add, Edit, Delete } from '@mui/icons-material';
+import { Add, Edit, Delete, Image as ImageIcon } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import ImagePicker from '@/components/admin/ImagePicker';
 
 interface Testimonial {
   _id: string;
@@ -45,6 +47,7 @@ export default function TestimonialsManagement() {
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<Testimonial | null>(null);
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     position: '',
@@ -151,6 +154,11 @@ export default function TestimonialsManagement() {
       isFeatured: false,
       order: 0,
     });
+  };
+
+  const handleImageSelect = (url: string) => {
+    setFormData({ ...formData, avatar: url });
+    setImagePickerOpen(false);
   };
 
   if (loading) {
@@ -271,12 +279,36 @@ export default function TestimonialsManagement() {
                   onChange={(e, newValue) => setFormData({ ...formData, rating: newValue || 5 })}
                 />
               </Box>
-              <TextField
-                label="Avatar URL"
-                value={formData.avatar}
-                onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
-                fullWidth
-              />
+              <Box>
+                <Typography variant="subtitle2" gutterBottom>
+                  Avatar Image
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                  <TextField
+                    label="Avatar URL"
+                    value={formData.avatar}
+                    onChange={(e) => setFormData({ ...formData, avatar: e.target.value })}
+                    fullWidth
+                    placeholder="Image URL"
+                  />
+                  <Button
+                    variant="outlined"
+                    startIcon={<ImageIcon />}
+                    onClick={() => setImagePickerOpen(true)}
+                  >
+                    Select
+                  </Button>
+                </Box>
+                {formData.avatar && (
+                  <Box sx={{ mt: 2, textAlign: 'center' }}>
+                    <Avatar
+                      src={formData.avatar}
+                      alt={formData.name}
+                      sx={{ width: 80, height: 80, mx: 'auto' }}
+                    />
+                  </Box>
+                )}
+              </Box>
               <TextField
                 label="Order"
                 type="number"
@@ -311,6 +343,12 @@ export default function TestimonialsManagement() {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <ImagePicker
+          open={imagePickerOpen}
+          onClose={() => setImagePickerOpen(false)}
+          onSelect={handleImageSelect}
+        />
       </Container>
     </Box>
   );

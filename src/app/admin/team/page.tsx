@@ -23,8 +23,9 @@ import {
   Grid,
   Avatar,
 } from '@mui/material'
-import { Delete, Edit, Add, Visibility, VisibilityOff } from '@mui/icons-material'
+import { Delete, Edit, Add, Visibility, VisibilityOff, Image as ImageIcon } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
+import ImagePicker from '@/components/admin/ImagePicker'
 
 interface TeamMember {
   _id: string
@@ -53,6 +54,7 @@ export default function TeamPage() {
   const [loading, setLoading] = useState(true)
   const [openDialog, setOpenDialog] = useState(false)
   const [editMode, setEditMode] = useState(false)
+  const [imagePickerOpen, setImagePickerOpen] = useState(false)
   const [currentMember, setCurrentMember] = useState<Partial<TeamMember>>({
     name: '',
     position: '',
@@ -169,6 +171,11 @@ export default function TeamPage() {
   const handleSkillsChange = (value: string) => {
     const skills = value.split(',').map(s => s.trim()).filter(s => s)
     setCurrentMember({ ...currentMember, skills })
+  }
+
+  const handleImageSelect = (url: string) => {
+    setCurrentMember({ ...currentMember, image: url })
+    setImagePickerOpen(false)
   }
 
   if (status === 'loading' || loading) {
@@ -327,13 +334,34 @@ export default function TeamPage() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Image URL"
-                value={currentMember.image || ''}
-                onChange={(e) => setCurrentMember({ ...currentMember, image: e.target.value })}
-                helperText="Upload image in Media Library and paste URL here"
-              />
+              <Typography variant="subtitle2" gutterBottom>
+                Profile Image
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                <TextField
+                  fullWidth
+                  label="Image URL"
+                  value={currentMember.image || ''}
+                  onChange={(e) => setCurrentMember({ ...currentMember, image: e.target.value })}
+                  placeholder="Image URL"
+                />
+                <Button
+                  variant="outlined"
+                  startIcon={<ImageIcon />}
+                  onClick={() => setImagePickerOpen(true)}
+                >
+                  Select
+                </Button>
+              </Box>
+              {currentMember.image && (
+                <Box sx={{ mt: 2, textAlign: 'center' }}>
+                  <Avatar
+                    src={currentMember.image}
+                    alt={currentMember.name}
+                    sx={{ width: 100, height: 100, mx: 'auto' }}
+                  />
+                </Box>
+              )}
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -407,6 +435,12 @@ export default function TeamPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <ImagePicker
+        open={imagePickerOpen}
+        onClose={() => setImagePickerOpen(false)}
+        onSelect={handleImageSelect}
+      />
     </Box>
   )
 }
