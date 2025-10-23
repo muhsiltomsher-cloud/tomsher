@@ -1,0 +1,5 @@
+export { default as ServicesGrid } from './ServicesGrid'
+export { default as ServicesCards } from './ServicesCards'
+export { default as ServicesMinimal } from './ServicesMinimal'
+export * from './types'
+export { iconMap } from './iconMap'
