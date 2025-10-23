@@ -41,6 +41,7 @@ import {
 import { useSession } from 'next-auth/react'
 import { sectionDefinitions, sectionRegistry } from '@/components/sections'
 import ImagePicker from '@/components/admin/ImagePicker'
+import RichTextEditor from '@/components/editor/RichTextEditor'
 
 interface PageSection {
   _id?: string
@@ -235,17 +236,30 @@ export default function PageBuilderEditor() {
   }
 
   const renderLivePreview = (sectionDef: any, data: any) => {
-    if (!sectionDef || !data) return null
+    if (!sectionDef || !data) {
+      return (
+        <Alert severity="info">
+          No section selected or data is empty.
+        </Alert>
+      )
+    }
 
     const SectionComponent = sectionRegistry[sectionDef.component]
-    if (!SectionComponent) return null
+    if (!SectionComponent) {
+      return (
+        <Alert severity="error">
+          Component "{sectionDef.component}" not found in registry. Available components: {Object.keys(sectionRegistry).join(', ')}
+        </Alert>
+      )
+    }
 
     try {
       return <SectionComponent {...data} />
     } catch (error) {
+      console.error('Preview error:', error)
       return (
         <Alert severity="warning">
-          Preview unavailable. Please fill in required fields.
+          Preview error: {error instanceof Error ? error.message : 'Please fill in required fields'}
         </Alert>
       )
     }
@@ -278,17 +292,17 @@ export default function PageBuilderEditor() {
 
           if (field.type === 'textarea') {
             return (
-              <TextField
-                key={key}
-                fullWidth
-                label={field.label}
-                value={data[key] || ''}
-                onChange={(e) => handleChange({ ...data, [key]: e.target.value })}
-                margin="normal"
-                multiline
-                rows={3}
-                required={field.required}
-              />
+              <Box key={key} sx={{ my: 2 }}>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  {field.label} {field.required && <span style={{ color: 'red' }}>*</span>}
+                </Typography>
+                <RichTextEditor
+                  value={data[key] || ''}
+                  onChange={(value) => handleChange({ ...data, [key]: value })}
+                  placeholder={`Enter ${field.label.toLowerCase()}...`}
+                  height="200px"
+                />
+              </Box>
             )
           }
 

@@ -26,6 +26,8 @@ export const sectionComponents: Record<string, any> = {
   NewsletterSection
 }
 
+export const sectionRegistry = sectionComponents
+
 export const sectionDefinitions = [
   {
     id: 'hero',
