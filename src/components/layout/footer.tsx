@@ -19,6 +19,7 @@ interface Settings {
   siteName?: string
   logo?: string
   logoWhite?: string
+  logoFooter?: string
   phone?: string
   email?: string
   address?: string
@@ -74,7 +75,7 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="inline-block mb-6">
               <Image
-                src={settings.logoWhite || settings.logo || '/logo-white.svg'}
+                src={settings.logoFooter || settings.logoWhite || settings.logo || '/logo-white.svg'}
                 alt={settings.siteName || 'Tomsher Technologies'}
                 width={180}
                 height={45}

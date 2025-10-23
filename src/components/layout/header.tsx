@@ -25,6 +25,8 @@ interface MenuItem {
 interface Settings {
   siteName: string
   logo: string
+  logoNormal?: string
+  logoSticky?: string
   phone: string
   email: string
   address: string
@@ -136,11 +138,17 @@ export function Header() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src={settings.logo || '/logo.svg'}
+                src={
+                  isScrolled 
+                    ? (settings.logoSticky || settings.logoNormal || settings.logo || '/logo.svg')
+                    : (settings.logoNormal || settings.logo || '/logo.svg')
+                }
                 alt={settings.siteName || 'Tomsher Technologies'}
                 width={180}
                 height={45}
-                className="h-8 lg:h-10 w-auto"
+                className={`w-auto transition-all duration-300 ${
+                  isScrolled ? 'h-7 lg:h-8' : 'h-8 lg:h-10'
+                }`}
                 priority
               />
             </Link>
