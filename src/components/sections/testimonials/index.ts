@@ -1,0 +1,5 @@
+export { default as TestimonialsCards } from './TestimonialsCards'
+export { default as TestimonialsCarousel } from './TestimonialsCarousel'
+export { default as TestimonialsGrid } from './TestimonialsGrid'
+export { default as TestimonialsFeatured } from './TestimonialsFeatured'
+export * from './types'
