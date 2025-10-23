@@ -23,9 +23,10 @@ import {
   CircularProgress,
   MenuItem,
 } from '@mui/material';
-import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
+import { Add, Edit, Delete, Visibility, Image as ImageIcon } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import ImagePicker from '@/components/admin/ImagePicker';
 
 interface BlogPost {
   _id: string;
@@ -53,7 +54,9 @@ export default function BlogManagement() {
     tags: '',
     status: 'DRAFT',
     readTime: 5,
+    featuredImage: '',
   });
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
 
   useEffect(() => {
     fetchPosts();
@@ -117,6 +120,7 @@ export default function BlogManagement() {
       tags: (post as any).tags?.join(', ') || '',
       status: post.status,
       readTime: (post as any).readTime || 5,
+      featuredImage: (post as any).featuredImage || '',
     });
     setOpenDialog(true);
   };
@@ -153,7 +157,13 @@ export default function BlogManagement() {
       tags: '',
       status: 'DRAFT',
       readTime: 5,
+      featuredImage: '',
     });
+  };
+
+  const handleImageSelect = (url: string) => {
+    setFormData({ ...formData, featuredImage: url });
+    setImagePickerOpen(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -278,6 +288,37 @@ export default function BlogManagement() {
                 rows={8}
                 required
               />
+              
+              <Box>
+                <Typography variant="subtitle2" gutterBottom>
+                  Featured Image
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                  <TextField
+                    value={formData.featuredImage}
+                    onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
+                    fullWidth
+                    placeholder="Image URL"
+                  />
+                  <Button
+                    variant="outlined"
+                    startIcon={<ImageIcon />}
+                    onClick={() => setImagePickerOpen(true)}
+                  >
+                    Select
+                  </Button>
+                </Box>
+                {formData.featuredImage && (
+                  <Box sx={{ mt: 2, textAlign: 'center' }}>
+                    <img
+                      src={formData.featuredImage}
+                      alt="Featured"
+                      style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 8 }}
+                    />
+                  </Box>
+                )}
+              </Box>
+
               <TextField
                 label="Category"
                 value={formData.category}
@@ -321,6 +362,12 @@ export default function BlogManagement() {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <ImagePicker
+          open={imagePickerOpen}
+          onClose={() => setImagePickerOpen(false)}
+          onSelect={handleImageSelect}
+        />
       </Container>
     </Box>
   );

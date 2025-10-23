@@ -24,9 +24,10 @@ import {
   Switch,
   FormControlLabel,
 } from '@mui/material';
-import { Add, Edit, Delete } from '@mui/icons-material';
+import { Add, Edit, Delete, Image as ImageIcon } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import ImagePicker from '@/components/admin/ImagePicker';
 
 interface Portfolio {
   _id: string;
@@ -56,7 +57,9 @@ export default function PortfolioManagement() {
     isActive: true,
     isFeatured: false,
     order: 0,
+    featuredImage: '',
   });
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
 
   useEffect(() => {
     fetchPortfolios();
@@ -123,6 +126,7 @@ export default function PortfolioManagement() {
       isActive: item.isActive,
       isFeatured: item.isFeatured,
       order: item.order,
+      featuredImage: (item as any).featuredImage || '',
     });
     setOpenDialog(true);
   };
@@ -162,7 +166,13 @@ export default function PortfolioManagement() {
       isActive: true,
       isFeatured: false,
       order: 0,
+      featuredImage: '',
     });
+  };
+
+  const handleImageSelect = (url: string) => {
+    setFormData({ ...formData, featuredImage: url });
+    setImagePickerOpen(false);
   };
 
   if (loading) {
@@ -278,6 +288,37 @@ export default function PortfolioManagement() {
                 rows={4}
                 required
               />
+              
+              <Box>
+                <Typography variant="subtitle2" gutterBottom>
+                  Featured Image
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                  <TextField
+                    value={formData.featuredImage}
+                    onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
+                    fullWidth
+                    placeholder="Image URL"
+                  />
+                  <Button
+                    variant="outlined"
+                    startIcon={<ImageIcon />}
+                    onClick={() => setImagePickerOpen(true)}
+                  >
+                    Select
+                  </Button>
+                </Box>
+                {formData.featuredImage && (
+                  <Box sx={{ mt: 2, textAlign: 'center' }}>
+                    <img
+                      src={formData.featuredImage}
+                      alt="Featured"
+                      style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 8 }}
+                    />
+                  </Box>
+                )}
+              </Box>
+
               <TextField
                 label="Category"
                 value={formData.category}
@@ -338,6 +379,12 @@ export default function PortfolioManagement() {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <ImagePicker
+          open={imagePickerOpen}
+          onClose={() => setImagePickerOpen(false)}
+          onSelect={handleImageSelect}
+        />
       </Container>
     </Box>
   );
