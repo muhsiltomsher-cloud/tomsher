@@ -236,17 +236,30 @@ export default function PageBuilderEditor() {
   }
 
   const renderLivePreview = (sectionDef: any, data: any) => {
-    if (!sectionDef || !data) return null
+    if (!sectionDef || !data) {
+      return (
+        <Alert severity="info">
+          No section selected or data is empty.
+        </Alert>
+      )
+    }
 
     const SectionComponent = sectionRegistry[sectionDef.component]
-    if (!SectionComponent) return null
+    if (!SectionComponent) {
+      return (
+        <Alert severity="error">
+          Component "{sectionDef.component}" not found in registry. Available components: {Object.keys(sectionRegistry).join(', ')}
+        </Alert>
+      )
+    }
 
     try {
       return <SectionComponent {...data} />
     } catch (error) {
+      console.error('Preview error:', error)
       return (
         <Alert severity="warning">
-          Preview unavailable. Please fill in required fields.
+          Preview error: {error instanceof Error ? error.message : 'Please fill in required fields'}
         </Alert>
       )
     }
