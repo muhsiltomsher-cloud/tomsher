@@ -1,40 +1,93 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { CheckCircle, Users, Award, Globe, Target } from 'lucide-react'
 
-const features = [
-  {
-    icon: Users,
-    title: '0% Outsourcing Policy',
-    description: 'We are a fully in-house team with experienced professionals'
-  },
-  {
-    icon: Award,
-    title: 'World-class Services',
-    description: 'Advanced technologies and proven methodologies'
-  },
-  {
-    icon: Globe,
-    title: 'Global Reach',
-    description: 'Serving clients across 30+ countries worldwide'
-  },
-  {
-    icon: Target,
-    title: 'Results Driven',
-    description: 'Focused on delivering measurable business outcomes'
-  }
-]
+interface AboutContent {
+  title: string
+  highlight: string
+  description: string
+  features: Array<{ title: string; description: string; icon: string }>
+  stats: Array<{ number: string; label: string }>
+}
 
-const stats = [
-  { number: '500+', label: 'Projects Completed' },
-  { number: '300+', label: 'Happy Clients' },
-  { number: '30+', label: 'Countries Served' },
-  { number: '10+', label: 'Years Experience' }
-]
+const iconMap: Record<string, any> = {
+  Users,
+  Award,
+  Globe,
+  Target,
+  CheckCircle,
+}
+
+const defaultContent: AboutContent = {
+  title: 'About',
+  highlight: 'Tomsher Technologies',
+  description: 'Tomsher is a leading web development company in Dubai, specializing in affordable website creation and custom eCommerce website development services in Dubai and UAE. We have been working with multinational, semi-government, corporate, SME and start-up companies from Middle East, Africa, Asia, Europe and America.',
+  features: [
+    {
+      icon: 'Users',
+      title: '0% Outsourcing Policy',
+      description: 'We are a fully in-house team with experienced professionals'
+    },
+    {
+      icon: 'Award',
+      title: 'World-class Services',
+      description: 'Advanced technologies and proven methodologies'
+    },
+    {
+      icon: 'Globe',
+      title: 'Global Reach',
+      description: 'Serving clients across 30+ countries worldwide'
+    },
+    {
+      icon: 'Target',
+      title: 'Results Driven',
+      description: 'Focused on delivering measurable business outcomes'
+    }
+  ],
+  stats: [
+    { number: '500+', label: 'Projects Completed' },
+    { number: '300+', label: 'Happy Clients' },
+    { number: '30+', label: 'Countries Served' },
+    { number: '10+', label: 'Years Experience' }
+  ]
+}
 
 export function AboutSection() {
+  const [content, setContent] = useState<AboutContent>(defaultContent)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch('/api/settings')
+        if (response.ok) {
+          const data = await response.json()
+          if (data.homeAbout) {
+            setContent({
+              title: data.homeAbout.title || defaultContent.title,
+              highlight: data.homeAbout.highlight || defaultContent.highlight,
+              description: data.homeAbout.description || defaultContent.description,
+              features: data.homeAbout.features && data.homeAbout.features.length > 0 
+                ? data.homeAbout.features 
+                : defaultContent.features,
+              stats: data.homeAbout.stats && data.homeAbout.stats.length > 0 
+                ? data.homeAbout.stats 
+                : defaultContent.stats,
+            })
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching about content:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContent()
+  }, [])
   return (
     <section className="section-padding bg-gray-50">
       <div className="container mx-auto px-4">
@@ -49,24 +102,17 @@ export function AboutSection() {
           >
             <div>
               <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
-                About <span className="gradient-text">Tomsher Technologies</span>
+                {content.title} <span className="gradient-text">{content.highlight}</span>
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                Tomsher is a leading web development company in Dubai, specializing in affordable website 
-                creation and custom eCommerce website development services in Dubai and UAE. We have been 
-                working with multinational, semi-government, corporate, SME and start-up companies from 
-                Middle East, Africa, Asia, Europe and America.
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-                At Tomsher, we turn challenges into opportunities with sleek, intuitive designs and 
-                tailor-made strategies. We don't just solve problems—we compose experiences.
+                {content.description}
               </p>
             </div>
 
             {/* Features */}
             <div className="grid sm:grid-cols-2 gap-6">
-              {features.map((feature, index) => {
-                const IconComponent = feature.icon
+              {content.features.map((feature, index) => {
+                const IconComponent = iconMap[feature.icon] || Users
                 return (
                   <motion.div
                     key={index}
@@ -96,7 +142,7 @@ export function AboutSection() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-8 border-t border-gray-200"
             >
-              {stats.map((stat, index) => (
+              {content.stats.map((stat, index) => (
                 <div key={index} className="text-center lg:text-left">
                   <div className="text-2xl lg:text-3xl font-bold text-primary mb-1">
                     {stat.number}

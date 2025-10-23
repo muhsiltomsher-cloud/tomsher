@@ -105,6 +105,96 @@ const SiteSettingsSchema = new mongoose.Schema({
       default: '1rem',
     },
   },
+  homeHero: {
+    title: {
+      type: String,
+      default: 'Transform Your Business with',
+    },
+    highlight: {
+      type: String,
+      default: 'Innovative Web Solutions',
+    },
+    subtitle: {
+      type: String,
+      default: 'Leading web development company in Dubai, UAE specializing in custom website development, eCommerce solutions, and digital marketing services.',
+    },
+    badge: {
+      type: String,
+      default: '#1 Web Development Company in Dubai',
+    },
+    features: {
+      type: [String],
+      default: ['Custom Web Development', 'E-commerce Solutions', 'Digital Marketing', 'Mobile App Development'],
+    },
+    ctaPrimary: {
+      type: String,
+      default: 'Get Started Today',
+    },
+    ctaSecondary: {
+      type: String,
+      default: 'View Our Work',
+    },
+    stats: [{
+      label: String,
+      value: String,
+    }],
+  },
+  homeAbout: {
+    title: {
+      type: String,
+      default: 'About',
+    },
+    highlight: {
+      type: String,
+      default: 'Tomsher Technologies',
+    },
+    description: {
+      type: String,
+      default: 'Tomsher is a leading web development company in Dubai, specializing in affordable website creation and custom eCommerce website development services in Dubai and UAE.',
+    },
+    features: [{
+      title: String,
+      description: String,
+      icon: String,
+    }],
+    stats: [{
+      number: String,
+      label: String,
+    }],
+  },
+  homeStats: {
+    title: {
+      type: String,
+      default: 'Our Achievements',
+    },
+    subtitle: {
+      type: String,
+      default: 'Numbers that speak for themselves',
+    },
+    stats: [{
+      label: String,
+      value: String,
+      icon: String,
+    }],
+  },
+  homeCTA: {
+    title: {
+      type: String,
+      default: 'Ready to Start Your Project?',
+    },
+    subtitle: {
+      type: String,
+      default: 'Let\'s work together to bring your ideas to life',
+    },
+    ctaPrimary: {
+      type: String,
+      default: 'Get Started',
+    },
+    ctaSecondary: {
+      type: String,
+      default: 'Contact Us',
+    },
+  },
 }, {
   timestamps: true,
 });

@@ -15,32 +15,72 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-const heroVariants = [
-  {
-    id: 'variant1',
-    title: 'Transform Your Business with',
-    highlight: 'Innovative Web Solutions',
-    subtitle: 'Leading web development company in Dubai, UAE specializing in custom website development, eCommerce solutions, and digital marketing services.',
-    features: [
-      'Custom Web Development',
-      'E-commerce Solutions', 
-      'Digital Marketing',
-      'Mobile App Development'
-    ],
-    stats: [
-      { label: 'Projects Completed', value: '500+' },
-      { label: 'Happy Clients', value: '300+' },
-      { label: 'Countries Served', value: '30+' },
-      { label: 'Years Experience', value: '10+' }
-    ],
-    ctaPrimary: 'Get Started Today',
-    ctaSecondary: 'View Our Work'
-  }
-]
+interface HeroContent {
+  title: string
+  highlight: string
+  subtitle: string
+  badge: string
+  features: string[]
+  ctaPrimary: string
+  ctaSecondary: string
+  stats: Array<{ label: string; value: string }>
+}
+
+const defaultContent: HeroContent = {
+  title: 'Transform Your Business with',
+  highlight: 'Innovative Web Solutions',
+  subtitle: 'Leading web development company in Dubai, UAE specializing in custom website development, eCommerce solutions, and digital marketing services.',
+  badge: '#1 Web Development Company in Dubai',
+  features: [
+    'Custom Web Development',
+    'E-commerce Solutions', 
+    'Digital Marketing',
+    'Mobile App Development'
+  ],
+  stats: [
+    { label: 'Projects Completed', value: '500+' },
+    { label: 'Happy Clients', value: '300+' },
+    { label: 'Countries Served', value: '30+' },
+    { label: 'Years Experience', value: '10+' }
+  ],
+  ctaPrimary: 'Get Started Today',
+  ctaSecondary: 'View Our Work'
+}
 
 export function HeroSection() {
-  const [currentVariant, setCurrentVariant] = useState(0)
-  const variant = heroVariants[currentVariant]
+  const [content, setContent] = useState<HeroContent>(defaultContent)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch('/api/settings')
+        if (response.ok) {
+          const data = await response.json()
+          if (data.homeHero) {
+            setContent({
+              title: data.homeHero.title || defaultContent.title,
+              highlight: data.homeHero.highlight || defaultContent.highlight,
+              subtitle: data.homeHero.subtitle || defaultContent.subtitle,
+              badge: data.homeHero.badge || defaultContent.badge,
+              features: data.homeHero.features || defaultContent.features,
+              ctaPrimary: data.homeHero.ctaPrimary || defaultContent.ctaPrimary,
+              ctaSecondary: data.homeHero.ctaSecondary || defaultContent.ctaSecondary,
+              stats: data.homeHero.stats && data.homeHero.stats.length > 0 
+                ? data.homeHero.stats 
+                : defaultContent.stats,
+            })
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching hero content:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchContent()
+  }, [])
 
   return (
     <section className="relative min-h-screen flex items-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 overflow-hidden">
@@ -62,24 +102,24 @@ export function HeroSection() {
             {/* Badge */}
             <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
               <Award className="h-4 w-4" />
-              <span>#1 Web Development Company in Dubai</span>
+              <span>{content.badge}</span>
             </div>
 
             {/* Title */}
             <div className="space-y-4">
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                {variant.title}{' '}
-                <span className="gradient-text">{variant.highlight}</span>
+                {content.title}{' '}
+                <span className="gradient-text">{content.highlight}</span>
               </h1>
               
               <p className="text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl">
-                {variant.subtitle}
+                {content.subtitle}
               </p>
             </div>
 
             {/* Features */}
             <div className="grid grid-cols-2 gap-4">
-              {variant.features.map((feature, index) => (
+              {content.features.map((feature, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <CheckCircle className="h-5 w-5 text-green-500" />
                   <span className="text-gray-700 font-medium">{feature}</span>
@@ -91,7 +131,7 @@ export function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button asChild size="lg" className="group">
                 <Link href="/contact">
-                  {variant.ctaPrimary}
+                  {content.ctaPrimary}
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
@@ -99,14 +139,14 @@ export function HeroSection() {
               <Button asChild variant="outline" size="lg" className="group">
                 <Link href="/portfolio">
                   <Play className="mr-2 h-5 w-5" />
-                  {variant.ctaSecondary}
+                  {content.ctaSecondary}
                 </Link>
               </Button>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-8 border-t border-gray-200">
-              {variant.stats.map((stat, index) => (
+              {content.stats.map((stat, index) => (
                 <div key={index} className="text-center lg:text-left">
                   <div className="text-2xl lg:text-3xl font-bold text-primary">
                     {stat.value}
