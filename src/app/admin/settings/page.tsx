@@ -20,6 +20,7 @@ interface Settings {
   _id?: string;
   siteName: string;
   siteDescription: string;
+  logo?: string;
   contactEmail: string;
   contactPhone: string;
   address: string;
@@ -44,9 +45,11 @@ interface Settings {
 export default function SettingsManagement() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [settings, setSettings] = useState<Settings>({
     siteName: '',
     siteDescription: '',
+    logo: '',
     contactEmail: '',
     contactPhone: '',
     address: '',
@@ -73,6 +76,35 @@ export default function SettingsManagement() {
       toast.error('Failed to load settings');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/admin/media/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSettings({ ...settings, logo: data.url });
+        toast.success('Logo uploaded successfully!');
+      } else {
+        toast.error('Failed to upload logo');
+      }
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      toast.error('Failed to upload logo');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -180,6 +212,34 @@ export default function SettingsManagement() {
                 multiline
                 rows={3}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography variant="subtitle2" gutterBottom>
+                Site Logo
+              </Typography>
+              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
+                Recommended: 400x100px PNG or SVG (max 500KB)
+              </Typography>
+              {settings.logo && (
+                <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1, display: 'inline-block' }}>
+                  <img src={settings.logo} alt="Site Logo" style={{ maxHeight: 80, maxWidth: 300 }} />
+                </Box>
+              )}
+              <Box>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  disabled={uploading}
+                >
+                  {uploading ? 'Uploading...' : settings.logo ? 'Change Logo' : 'Upload Logo'}
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/png,image/svg+xml,image/jpeg"
+                    onChange={handleLogoUpload}
+                  />
+                </Button>
+              </Box>
             </Grid>
           </Grid>
 

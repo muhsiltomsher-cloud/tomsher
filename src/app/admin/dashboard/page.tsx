@@ -22,6 +22,13 @@ import {
   RateReview,
   Settings as SettingsIcon,
   Work,
+  ViewModule,
+  MenuBook,
+  Build,
+  Assignment,
+  Search,
+  PermMedia,
+  Help,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -73,12 +80,19 @@ export default function AdminDashboard() {
 
   const menuItems = [
     { title: 'Pages', icon: <Pages />, href: '/admin/pages', count: stats.pages, color: '#667eea' },
+    { title: 'Page Builder', icon: <Build />, href: '/admin/page-builder', count: 0, color: '#ff6b6b' },
+    { title: 'Sections', icon: <ViewModule />, href: '/admin/sections', count: 0, color: '#a8edea' },
+    { title: 'Menu', icon: <MenuBook />, href: '/admin/menu', count: 0, color: '#fbc2eb' },
     { title: 'Services', icon: <Business />, href: '/admin/services', count: stats.services, color: '#f093fb' },
     { title: 'Portfolio', icon: <Work />, href: '/admin/portfolio', count: stats.portfolio, color: '#4facfe' },
     { title: 'Testimonials', icon: <RateReview />, href: '/admin/testimonials', count: stats.testimonials, color: '#43e97b' },
     { title: 'Blog Posts', icon: <Article />, href: '/admin/blog', count: stats.blog, color: '#fa709a' },
     { title: 'Contacts', icon: <ContactMail />, href: '/admin/contacts', count: stats.contacts, color: '#fee140' },
+    { title: 'Form Submissions', icon: <Assignment />, href: '/admin/forms', count: 0, color: '#ff9ff3' },
+    { title: 'Media Library', icon: <PermMedia />, href: '/admin/media', count: 0, color: '#48dbfb' },
+    { title: 'SEO Settings', icon: <Search />, href: '/admin/seo', count: 0, color: '#54a0ff' },
     { title: 'Settings', icon: <SettingsIcon />, href: '/admin/settings', count: 0, color: '#30cfd0' },
+    { title: 'Help & Guide', icon: <Help />, href: '/admin/help', count: 0, color: '#feca57' },
   ];
 
   return (
