@@ -1,0 +1,5 @@
+export { default as HeroSkeleton } from './HeroSkeleton'
+export { default as ServicesSkeleton } from './ServicesSkeleton'
+export { default as PortfolioSkeleton } from './PortfolioSkeleton'
+export { default as TestimonialsSkeleton } from './TestimonialsSkeleton'
+export { default as PageSkeleton } from './PageSkeleton'
