@@ -167,7 +167,7 @@ export default function IconPicker({ open, onClose, onSelect, currentIcon }: Ico
               sx={{ mb: 2 }}
             />
             {imageUrl && (
-              <Box sx={{ mb: 2, text-align: 'center' }}>
+              <Box sx={{ mb: 2, textAlign: 'center' }}>
                 <img
                   src={imageUrl}
                   alt="Preview"
