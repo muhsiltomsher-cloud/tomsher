@@ -25,9 +25,10 @@ import {
   FormControlLabel,
   MenuItem as MuiMenuItem,
 } from '@mui/material';
-import { Add, Edit, Delete, ArrowUpward, ArrowDownward, SubdirectoryArrowRight } from '@mui/icons-material';
+import { Add, Edit, Delete, ArrowUpward, ArrowDownward, SubdirectoryArrowRight, ViewColumn } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import MegaMenuEditor from '@/components/admin/MegaMenuEditor';
 
 interface MenuItem {
   _id: string;
@@ -43,6 +44,7 @@ interface MenuItem {
   isActive: boolean;
   isMegaMenu: boolean;
   megaMenuColumns: number;
+  megaMenuData?: any;
   children?: MenuItem[];
 }
 
@@ -61,6 +63,8 @@ export default function MenuManagement() {
   const [pageSuggestions, setPageSuggestions] = useState<PageSuggestion[]>([]);
   const [showTitleSuggestions, setShowTitleSuggestions] = useState(false);
   const [showUrlSuggestions, setShowUrlSuggestions] = useState(false);
+  const [openMegaMenuEditor, setOpenMegaMenuEditor] = useState(false);
+  const [editingMegaMenuItem, setEditingMegaMenuItem] = useState<MenuItem | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     url: '',
@@ -210,7 +214,7 @@ export default function MenuManagement() {
     setFormData({
       title: '',
       url: '',
-      order: menuItems.length,
+      order: menuItems?.length || 0,
       image: '',
       description: '',
       icon: '',
@@ -221,6 +225,43 @@ export default function MenuManagement() {
       isMegaMenu: false,
       megaMenuColumns: 3,
     });
+  };
+
+  const handleOpenMegaMenuEditor = (item: MenuItem) => {
+    setEditingMegaMenuItem(item);
+    setOpenMegaMenuEditor(true);
+  };
+
+  const handleSaveMegaMenu = async (columns: any[]) => {
+    if (!editingMegaMenuItem) return;
+
+    try {
+      const response = await fetch(`/api/admin/menu/${editingMegaMenuItem._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...editingMegaMenuItem,
+          megaMenuData: columns,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success('Mega menu saved successfully');
+        fetchMenuItems();
+        setOpenMegaMenuEditor(false);
+        setEditingMegaMenuItem(null);
+      } else {
+        toast.error('Failed to save mega menu');
+      }
+    } catch (error) {
+      console.error('Error saving mega menu:', error);
+      toast.error('Failed to save mega menu');
+    }
+  };
+
+  const handleCloseMegaMenuEditor = () => {
+    setOpenMegaMenuEditor(false);
+    setEditingMegaMenuItem(null);
   };
 
   const getTopLevelItems = () => {
@@ -292,6 +333,16 @@ export default function MenuManagement() {
             </Box>
           </TableCell>
           <TableCell align="right">
+            {item.isMegaMenu && (
+              <IconButton 
+                size="small" 
+                color="secondary" 
+                onClick={() => handleOpenMegaMenuEditor(item)}
+                title="Edit Mega Menu"
+              >
+                <ViewColumn />
+              </IconButton>
+            )}
             <IconButton size="small" color="primary" onClick={() => handleEdit(item)}>
               <Edit />
             </IconButton>
@@ -330,7 +381,7 @@ export default function MenuManagement() {
               variant="contained"
               startIcon={<Add />}
               onClick={() => {
-                setFormData({ ...formData, order: menuItems.length });
+                setFormData({ ...formData, order: menuItems?.length || 0 });
                 setOpenDialog(true);
               }}
             >
@@ -591,6 +642,31 @@ export default function MenuManagement() {
             </Button>
           </DialogActions>
         </Dialog>
+
+        {/* Mega Menu Editor Dialog */}
+        {openMegaMenuEditor && editingMegaMenuItem && (
+          <Dialog 
+            open={openMegaMenuEditor} 
+            onClose={handleCloseMegaMenuEditor} 
+            maxWidth="xl" 
+            fullWidth
+            PaperProps={{
+              sx: { height: '90vh' }
+            }}
+          >
+            <DialogContent sx={{ p: 0 }}>
+              <Box sx={{ p: 3 }}>
+                <MegaMenuEditor
+                  menuItemId={editingMegaMenuItem._id}
+                  menuItemTitle={editingMegaMenuItem.title}
+                  initialColumns={editingMegaMenuItem.megaMenuData || []}
+                  onSave={handleSaveMegaMenu}
+                  onClose={handleCloseMegaMenuEditor}
+                />
+              </Box>
+            </DialogContent>
+          </Dialog>
+        )}
       </Container>
     </Box>
   );

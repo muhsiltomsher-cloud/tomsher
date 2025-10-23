@@ -51,6 +51,10 @@ const MenuItemSchema = new mongoose.Schema({
     type: Number,
     default: 3,
   },
+  megaMenuData: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null,
+  },
 }, {
   timestamps: true,
 });
