@@ -70,24 +70,18 @@ export const sectionDefinitions = [
       title: 'Our Services',
       subtitle: 'What We Offer',
       variant: 'grid',
-      services: [
-        { icon: 'code', title: 'Web Development', description: 'Custom web applications' },
-        { icon: 'smartphone', title: 'Mobile Apps', description: 'Native and cross-platform' },
-        { icon: 'shopping', title: 'E-Commerce', description: 'Scalable online stores' }
-      ]
+      serviceIds: []
     },
     schema: {
       title: { type: 'text', label: 'Title', required: true },
       subtitle: { type: 'text', label: 'Subtitle' },
       variant: { type: 'select', label: 'Variant', options: ['grid', 'cards', 'minimal'] },
-      services: { 
-        type: 'array', 
-        label: 'Services',
-        itemSchema: {
-          icon: { type: 'select', label: 'Icon', options: ['code', 'smartphone', 'shopping', 'palette', 'trending', 'cloud'] },
-          title: { type: 'text', label: 'Title' },
-          description: { type: 'textarea', label: 'Description' }
-        }
+      serviceIds: { 
+        type: 'multiselect-db', 
+        label: 'Select Services',
+        apiEndpoint: '/api/admin/services',
+        displayField: 'title',
+        valueField: '_id'
       }
     }
   },

@@ -63,6 +63,51 @@ interface CustomPage {
   seoDescription?: string
 }
 
+function DatabaseMultiSelect({ field, fieldKey, value, onChange }: any) {
+  const [options, setOptions] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const response = await fetch(field.apiEndpoint)
+        if (response.ok) {
+          const data = await response.json()
+          setOptions(data)
+        }
+      } catch (error) {
+        console.error('Error fetching options:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchOptions()
+  }, [field.apiEndpoint])
+
+  return (
+    <FormControl fullWidth margin="normal">
+      <InputLabel>{field.label}</InputLabel>
+      <Select
+        multiple
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        label={field.label}
+        disabled={loading}
+      >
+        {loading ? (
+          <MenuItem disabled>Loading...</MenuItem>
+        ) : (
+          options.map((option) => (
+            <MenuItem key={option[field.valueField]} value={option[field.valueField]}>
+              {option[field.displayField]}
+            </MenuItem>
+          ))
+        )}
+      </Select>
+    </FormControl>
+  )
+}
+
 export default function PageBuilderEditor() {
   const router = useRouter()
   const params = useParams()
@@ -466,6 +511,18 @@ export default function PageBuilderEditor() {
                   helperText="Separate tags with commas"
                 />
               </Box>
+            )
+          }
+
+          if (field.type === 'multiselect-db') {
+            return (
+              <DatabaseMultiSelect
+                key={key}
+                field={field}
+                fieldKey={key}
+                value={data[key] || []}
+                onChange={(value) => handleChange({ ...data, [key]: value })}
+              />
             )
           }
 
