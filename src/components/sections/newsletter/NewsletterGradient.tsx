@@ -36,15 +36,15 @@ export default function NewsletterGradient({ title, subtitle, placeholder, butto
       color: 'white'
     }}>
       <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>{title}</h2>
-        <p style={{ fontSize: '1.2rem', opacity: 0.9, marginBottom: '2rem' }}>{subtitle}</p>
+        <h2 style={{  marginBottom: '1rem', fontWeight: 'bold' }}>{title}</h2>
+        <p style={{  opacity: 0.9, marginBottom: '2rem' }}>{subtitle}</p>
         
         {status === 'success' ? (
           <div style={{ 
             padding: '2rem',
             background: 'rgba(255, 255, 255, 0.2)',
             borderRadius: '12px',
-            fontSize: '1.1rem',
+            
             backdropFilter: 'blur(10px)'
           }}>
             🎉 Thank you for subscribing! Check your email for confirmation.
@@ -69,7 +69,7 @@ export default function NewsletterGradient({ title, subtitle, placeholder, butto
                 padding: '1rem',
                 border: 'none',
                 borderRadius: '8px',
-                fontSize: '1rem',
+                
                 outline: 'none',
               }}
             />
@@ -82,7 +82,7 @@ export default function NewsletterGradient({ title, subtitle, placeholder, butto
                 color: '#667eea',
                 border: 'none',
                 borderRadius: '8px',
-                fontSize: '1rem',
+                
                 fontWeight: 'bold',
                 cursor: status === 'loading' ? 'not-allowed' : 'pointer',
                 opacity: status === 'loading' ? 0.7 : 1,
