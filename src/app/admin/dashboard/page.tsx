@@ -23,6 +23,7 @@ import {
   Settings as SettingsIcon,
   Work,
   ViewModule,
+  MenuBook,
 } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -75,6 +76,7 @@ export default function AdminDashboard() {
   const menuItems = [
     { title: 'Pages', icon: <Pages />, href: '/admin/pages', count: stats.pages, color: '#667eea' },
     { title: 'Sections', icon: <ViewModule />, href: '/admin/sections', count: 0, color: '#a8edea' },
+    { title: 'Menu', icon: <MenuBook />, href: '/admin/menu', count: 0, color: '#fbc2eb' },
     { title: 'Services', icon: <Business />, href: '/admin/services', count: stats.services, color: '#f093fb' },
     { title: 'Portfolio', icon: <Work />, href: '/admin/portfolio', count: stats.portfolio, color: '#4facfe' },
     { title: 'Testimonials', icon: <RateReview />, href: '/admin/testimonials', count: stats.testimonials, color: '#43e97b' },
