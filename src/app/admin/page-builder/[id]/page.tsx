@@ -254,7 +254,7 @@ export default function PageBuilderEditor() {
     }
 
     try {
-      return <SectionComponent {...data} />
+      return <SectionComponent data={data} />
     } catch (error) {
       console.error('Preview error:', error)
       return (
