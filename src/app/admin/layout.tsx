@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { useState, useMemo } from 'react'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import { Box } from '@mui/material'
+import { NotificationProvider } from '@/contexts/NotificationContext'
 
 export default function AdminLayout({
   children,
@@ -41,28 +42,30 @@ export default function AdminLayout({
 
   return (
     <SessionProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-          <AdminSidebar
-            open={sidebarOpen}
-            onToggle={toggleSidebar}
-            darkMode={darkMode}
-            onToggleDarkMode={toggleDarkMode}
-          />
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              transition: 'margin-left 0.3s',
-              marginLeft: sidebarOpen ? '260px' : '70px',
-              bgcolor: 'background.default',
-            }}
-          >
-            {children}
+      <NotificationProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+            <AdminSidebar
+              open={sidebarOpen}
+              onToggle={toggleSidebar}
+              darkMode={darkMode}
+              onToggleDarkMode={toggleDarkMode}
+            />
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                transition: 'margin-left 0.3s',
+                marginLeft: sidebarOpen ? '260px' : '70px',
+                bgcolor: 'background.default',
+              }}
+            >
+              {children}
+            </Box>
           </Box>
-        </Box>
-      </ThemeProvider>
+        </ThemeProvider>
+      </NotificationProvider>
     </SessionProvider>
   )
 }
