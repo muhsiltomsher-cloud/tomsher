@@ -32,8 +32,10 @@ interface CustomPage {
   title: string
   slug: string
   description?: string
+  type: string
+  status: string
   sections: any[]
-  isPublished: boolean
+  isPublished?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -218,6 +220,7 @@ export default function PageBuilderPage() {
             <TableRow>
               <TableCell>Title</TableCell>
               <TableCell>Slug</TableCell>
+              <TableCell>Type</TableCell>
               <TableCell>Sections</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Last Updated</TableCell>
@@ -250,12 +253,15 @@ export default function PageBuilderPage() {
                     <code>/{page.slug}</code>
                   </TableCell>
                   <TableCell>
+                    <Chip label={page.type || 'CUSTOM'} size="small" variant="outlined" />
+                  </TableCell>
+                  <TableCell>
                     <Chip label={`${page.sections?.length || 0} sections`} size="small" />
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={page.isPublished ? 'Published' : 'Draft'}
-                      color={page.isPublished ? 'success' : 'default'}
+                      label={page.status === 'PUBLISHED' || page.isPublished ? 'Published' : 'Draft'}
+                      color={page.status === 'PUBLISHED' || page.isPublished ? 'success' : 'default'}
                       size="small"
                     />
                   </TableCell>

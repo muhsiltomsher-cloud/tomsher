@@ -24,7 +24,7 @@ import {
   MenuItem,
   CircularProgress,
 } from '@mui/material';
-import { Add, Edit, Delete, Visibility, ViewModule } from '@mui/icons-material';
+import { Add, Edit, Delete, Visibility, ViewModule, Build } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -192,6 +192,15 @@ export default function PagesManagement() {
                   </TableCell>
                   <TableCell>{new Date(page.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell align="right">
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      component={Link}
+                      href={`/admin/page-builder/${page._id}`}
+                      title="Build Page"
+                    >
+                      <Build />
+                    </IconButton>
                     <IconButton
                       size="small"
                       color="primary"
