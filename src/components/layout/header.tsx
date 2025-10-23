@@ -17,9 +17,28 @@ import { Button } from '@/components/ui/button'
 
 interface MenuItem {
   _id: string
-  label: string
+  title: string
   url: string
   children?: MenuItem[]
+  isMegaMenu?: boolean
+  megaMenuColumns?: number
+  megaMenuData?: {
+    columns?: Array<{
+      title: string
+      content?: string
+      image?: string
+      links?: Array<{
+        title: string
+        url: string
+        description?: string
+      }>
+      button?: {
+        text: string
+        url: string
+        style: string
+      }
+    }>
+  }
 }
 
 interface Settings {
@@ -157,13 +176,87 @@ export function Header() {
             <nav className="hidden lg:flex items-center space-x-8">
               {navigation.map((item) => (
                 <div key={item._id} className="relative group">
-                  {item.children && item.children.length > 0 ? (
+                  {item.isMegaMenu && item.megaMenuData?.columns ? (
                     <div>
                       <button
                         className="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors duration-200 font-medium"
                         onClick={() => handleDropdownToggle(item._id)}
                       >
-                        <span>{item.label}</span>
+                        <span>{item.title}</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </button>
+                      <AnimatePresence>
+                        {activeDropdown === item._id && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl border p-6 z-50"
+                            style={{ 
+                              width: `${Math.min(item.megaMenuColumns || 3, 6) * 250}px`,
+                              maxWidth: '90vw'
+                            }}
+                          >
+                            <div className={`grid gap-6`} style={{ gridTemplateColumns: `repeat(${item.megaMenuColumns || 3}, 1fr)` }}>
+                              {item.megaMenuData.columns.map((column, idx) => (
+                                <div key={idx} className="space-y-3">
+                                  {column.image && (
+                                    <img 
+                                      src={column.image} 
+                                      alt={column.title}
+                                      className="w-full h-32 object-cover rounded-lg mb-3"
+                                    />
+                                  )}
+                                  <h3 className="font-bold text-gray-900 text-lg">{column.title}</h3>
+                                  {column.content && (
+                                    <p className="text-sm text-gray-600">{column.content}</p>
+                                  )}
+                                  {column.links && column.links.length > 0 && (
+                                    <div className="space-y-2">
+                                      {column.links.map((link, linkIdx) => (
+                                        <Link
+                                          key={linkIdx}
+                                          href={link.url}
+                                          className="block text-sm text-gray-700 hover:text-primary transition-colors"
+                                          onClick={() => setActiveDropdown(null)}
+                                        >
+                                          <div className="font-medium">{link.title}</div>
+                                          {link.description && (
+                                            <div className="text-xs text-gray-500">{link.description}</div>
+                                          )}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  )}
+                                  {column.button && (
+                                    <Link
+                                      href={column.button.url}
+                                      className={`inline-block px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                                        column.button.style === 'primary' 
+                                          ? 'bg-primary text-white hover:bg-primary/90'
+                                          : column.button.style === 'secondary'
+                                          ? 'bg-gray-200 text-gray-900 hover:bg-gray-300'
+                                          : 'border border-primary text-primary hover:bg-primary/5'
+                                      }`}
+                                      onClick={() => setActiveDropdown(null)}
+                                    >
+                                      {column.button.text}
+                                    </Link>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : item.children && item.children.length > 0 ? (
+                    <div>
+                      <button
+                        className="flex items-center space-x-1 text-gray-700 hover:text-primary transition-colors duration-200 font-medium"
+                        onClick={() => handleDropdownToggle(item._id)}
+                      >
+                        <span>{item.title}</span>
                         <ChevronDown className="h-4 w-4" />
                       </button>
                       <AnimatePresence>
@@ -181,7 +274,7 @@ export function Header() {
                                 className="block px-4 py-2 text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors duration-200"
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                {child.label}
+                                {child.title}
                               </Link>
                             ))}
                           </motion.div>
@@ -193,7 +286,7 @@ export function Header() {
                       href={item.url}
                       className="text-gray-700 hover:text-primary transition-colors duration-200 font-medium"
                     >
-                      {item.label}
+                      {item.title}
                     </Link>
                   )}
                 </div>
@@ -234,13 +327,77 @@ export function Header() {
                 <nav className="space-y-4">
                   {navigation.map((item) => (
                     <div key={item._id}>
-                      {item.children && item.children.length > 0 ? (
+                      {item.isMegaMenu && item.megaMenuData?.columns ? (
                         <div>
                           <button
                             className="flex items-center justify-between w-full text-left text-gray-700 hover:text-primary transition-colors duration-200 font-medium py-2"
                             onClick={() => handleDropdownToggle(item._id)}
                           >
-                            <span>{item.label}</span>
+                            <span>{item.title}</span>
+                            <ChevronDown 
+                              className={`h-4 w-4 transition-transform duration-200 ${
+                                activeDropdown === item._id ? 'rotate-180' : ''
+                              }`} 
+                            />
+                          </button>
+                          <AnimatePresence>
+                            {activeDropdown === item._id && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="pl-4 space-y-4 mt-2"
+                              >
+                                {item.megaMenuData.columns.map((column, idx) => (
+                                  <div key={idx} className="space-y-2 pb-4 border-b last:border-b-0">
+                                    <div className="font-bold text-gray-900">{column.title}</div>
+                                    {column.content && (
+                                      <p className="text-sm text-gray-600">{column.content}</p>
+                                    )}
+                                    {column.links && column.links.map((link, linkIdx) => (
+                                      <Link
+                                        key={linkIdx}
+                                        href={link.url}
+                                        className="block text-sm text-gray-600 hover:text-primary transition-colors py-1"
+                                        onClick={() => {
+                                          setIsMobileMenuOpen(false)
+                                          setActiveDropdown(null)
+                                        }}
+                                      >
+                                        {link.title}
+                                      </Link>
+                                    ))}
+                                    {column.button && (
+                                      <Link
+                                        href={column.button.url}
+                                        className={`inline-block px-3 py-1.5 rounded-md text-sm font-medium ${
+                                          column.button.style === 'primary' 
+                                            ? 'bg-primary text-white'
+                                            : column.button.style === 'secondary'
+                                            ? 'bg-gray-200 text-gray-900'
+                                            : 'border border-primary text-primary'
+                                        }`}
+                                        onClick={() => {
+                                          setIsMobileMenuOpen(false)
+                                          setActiveDropdown(null)
+                                        }}
+                                      >
+                                        {column.button.text}
+                                      </Link>
+                                    )}
+                                  </div>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ) : item.children && item.children.length > 0 ? (
+                        <div>
+                          <button
+                            className="flex items-center justify-between w-full text-left text-gray-700 hover:text-primary transition-colors duration-200 font-medium py-2"
+                            onClick={() => handleDropdownToggle(item._id)}
+                          >
+                            <span>{item.title}</span>
                             <ChevronDown 
                               className={`h-4 w-4 transition-transform duration-200 ${
                                 activeDropdown === item._id ? 'rotate-180' : ''
@@ -265,7 +422,7 @@ export function Header() {
                                       setActiveDropdown(null)
                                     }}
                                   >
-                                    {child.label}
+                                    {child.title}
                                   </Link>
                                 ))}
                               </motion.div>
@@ -278,7 +435,7 @@ export function Header() {
                           className="block text-gray-700 hover:text-primary transition-colors duration-200 font-medium py-2"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          {item.label}
+                          {item.title}
                         </Link>
                       )}
                     </div>

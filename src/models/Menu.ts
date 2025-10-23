@@ -50,10 +50,25 @@ const MenuItemSchema = new mongoose.Schema({
   megaMenuColumns: {
     type: Number,
     default: 3,
+    min: 2,
+    max: 6,
   },
   megaMenuData: {
-    type: mongoose.Schema.Types.Mixed,
-    default: null,
+    columns: [{
+      title: String,
+      content: String,
+      image: String,
+      links: [{
+        title: String,
+        url: String,
+        description: String,
+      }],
+      button: {
+        text: String,
+        url: String,
+        style: String,
+      },
+    }],
   },
 }, {
   timestamps: true,
