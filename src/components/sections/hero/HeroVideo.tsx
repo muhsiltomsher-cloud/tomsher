@@ -13,7 +13,10 @@ export default function HeroVideo({
   ctaLink,
   secondaryCtaText,
   secondaryCtaLink,
-  backgroundImage
+  backgroundImage,
+  titleColor,
+  subtitleColor,
+  descriptionColor
 }: HeroVariantProps) {
   return (
     <section className="relative min-h-screen flex items-center">
@@ -30,13 +33,17 @@ export default function HeroVideo({
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <p className="text-white/90 font-semibold mb-4 text-lg">{subtitle}</p>
-            <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight text-white">
+            <p className="text-white/90 font-semibold mb-4 text-lg" style={subtitleColor ? { color: subtitleColor } : undefined}>
+              {subtitle}
+            </p>
+            <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight text-white" style={titleColor ? { color: titleColor } : undefined}>
               {title}
             </h1>
-            <p className="text-xl text-white/80 mb-8 max-w-2xl">
-              {description}
-            </p>
+            <div 
+              className="text-xl text-white/80 mb-8 max-w-2xl"
+              style={descriptionColor ? { color: descriptionColor } : undefined}
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
             <div className="flex flex-wrap gap-4">
               <Link
                 href={ctaLink}

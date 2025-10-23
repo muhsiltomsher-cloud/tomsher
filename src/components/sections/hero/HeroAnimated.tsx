@@ -11,7 +11,10 @@ export default function HeroAnimated({
   ctaText,
   ctaLink,
   secondaryCtaText,
-  secondaryCtaLink
+  secondaryCtaLink,
+  titleColor,
+  subtitleColor,
+  descriptionColor
 }: HeroVariantProps) {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-white">
@@ -56,6 +59,7 @@ export default function HeroAnimated({
           >
             <motion.p
               className="text-primary font-semibold mb-4 text-lg"
+              style={subtitleColor ? { color: subtitleColor } : undefined}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -64,20 +68,21 @@ export default function HeroAnimated({
             </motion.p>
             <motion.h1
               className="text-5xl lg:text-7xl font-bold mb-6 leading-tight"
+              style={titleColor ? { color: titleColor } : undefined}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               {title}
             </motion.h1>
-            <motion.p
+            <motion.div
               className="text-xl text-gray-600 mb-8 max-w-2xl"
+              style={descriptionColor ? { color: descriptionColor } : undefined}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              {description}
-            </motion.p>
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
             <motion.div
               className="flex flex-wrap gap-4"
               initial={{ opacity: 0, y: 20 }}

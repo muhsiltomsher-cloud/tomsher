@@ -38,9 +38,11 @@ export default function HeroDefault({
             <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight" style={titleColor ? { color: titleColor } : undefined}>
               {title}
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl" style={descriptionColor ? { color: descriptionColor } : undefined}>
-              {description}
-            </p>
+            <div 
+              className="text-xl text-gray-600 mb-8 max-w-2xl" 
+              style={descriptionColor ? { color: descriptionColor } : undefined}
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
             <div className="flex flex-wrap gap-4">
               <Link
                 href={ctaLink}
