@@ -7,9 +7,11 @@ export interface HeroSectionData {
   secondaryCtaText?: string
   secondaryCtaLink?: string
   backgroundImage?: string
-  titleColor?: string
-  subtitleColor?: string
-  descriptionColor?: string
+  titleTheme?: 'dark' | 'light'
+  subtitleTheme?: 'dark' | 'light'
+  descriptionTheme?: 'dark' | 'light'
+  primaryButtonTheme?: 'dark' | 'light'
+  secondaryButtonTheme?: 'dark' | 'light'
   variant?: 'default' | 'centered' | 'split' | 'minimal' | 'glassmorphism' | 'dark' | 'animated' | 'video'
 }
 
@@ -22,7 +24,9 @@ export interface HeroVariantProps {
   secondaryCtaText?: string
   secondaryCtaLink?: string
   backgroundImage?: string
-  titleColor?: string
-  subtitleColor?: string
-  descriptionColor?: string
+  titleTheme?: 'dark' | 'light'
+  subtitleTheme?: 'dark' | 'light'
+  descriptionTheme?: 'dark' | 'light'
+  primaryButtonTheme?: 'dark' | 'light'
+  secondaryButtonTheme?: 'dark' | 'light'
 }
