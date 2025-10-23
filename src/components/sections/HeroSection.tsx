@@ -24,9 +24,11 @@ export default function HeroSection({ data }: HeroSectionProps) {
     secondaryCtaText,
     secondaryCtaLink,
     backgroundImage,
-    titleColor,
-    subtitleColor,
-    descriptionColor,
+    titleTheme,
+    subtitleTheme,
+    descriptionTheme,
+    primaryButtonTheme,
+    secondaryButtonTheme,
     variant = 'default'
   } = data
 
@@ -39,9 +41,11 @@ export default function HeroSection({ data }: HeroSectionProps) {
     secondaryCtaText,
     secondaryCtaLink,
     backgroundImage,
-    titleColor,
-    subtitleColor,
-    descriptionColor
+    titleTheme,
+    subtitleTheme,
+    descriptionTheme,
+    primaryButtonTheme,
+    secondaryButtonTheme
   }
 
   const variants = {

@@ -6,8 +6,10 @@ export interface CTASectionData {
   secondaryCtaText?: string
   secondaryCtaLink?: string
   backgroundImage?: string
-  titleColor?: string
-  descriptionColor?: string
+  titleTheme?: 'dark' | 'light'
+  descriptionTheme?: 'dark' | 'light'
+  primaryButtonTheme?: 'dark' | 'light'
+  secondaryButtonTheme?: 'dark' | 'light'
   variant?: 'default' | 'gradient' | 'split' | 'minimal'
 }
 
@@ -19,6 +21,8 @@ export interface CTAVariantProps {
   secondaryCtaText?: string
   secondaryCtaLink?: string
   backgroundImage?: string
-  titleColor?: string
-  descriptionColor?: string
+  titleTheme?: 'dark' | 'light'
+  descriptionTheme?: 'dark' | 'light'
+  primaryButtonTheme?: 'dark' | 'light'
+  secondaryButtonTheme?: 'dark' | 'light'
 }
