@@ -14,10 +14,22 @@ export default function HeroGlassmorphism({
   secondaryCtaText,
   secondaryCtaLink,
   backgroundImage,
-  titleColor,
-  subtitleColor,
-  descriptionColor
+  titleTheme = 'light',
+  subtitleTheme = 'light',
+  descriptionTheme = 'light',
+  primaryButtonTheme = 'light',
+  secondaryButtonTheme = 'light'
 }: HeroVariantProps) {
+  const titleClass = titleTheme === 'light' ? 'text-white' : 'text-gray-900'
+  const subtitleClass = subtitleTheme === 'light' ? 'text-white/90' : 'text-primary'
+  const descriptionClass = descriptionTheme === 'light' ? 'text-white/80' : 'text-gray-600'
+  const primaryButtonClass = primaryButtonTheme === 'dark' 
+    ? 'bg-gray-900 text-white hover:bg-gray-800' 
+    : 'bg-white text-primary hover:bg-white/90'
+  const secondaryButtonClass = secondaryButtonTheme === 'dark'
+    ? 'bg-gray-900 text-white hover:bg-gray-800 border border-gray-900'
+    : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30'
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
       {backgroundImage && (
@@ -44,28 +56,27 @@ export default function HeroGlassmorphism({
             boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
           }}
         >
-          <p className="text-white/90 font-semibold mb-4 text-lg" style={subtitleColor ? { color: subtitleColor } : undefined}>
+          <p className={`${subtitleClass} font-semibold mb-4 text-lg`}>
             {subtitle}
           </p>
-          <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight text-white" style={titleColor ? { color: titleColor } : undefined}>
+          <h1 className={`${titleClass} text-5xl lg:text-7xl font-bold mb-6 leading-tight`}>
             {title}
           </h1>
           <div 
-            className="text-xl text-white/80 mb-8"
-            style={descriptionColor ? { color: descriptionColor } : undefined}
+            className={`${descriptionClass} text-xl mb-8`}
             dangerouslySetInnerHTML={{ __html: description }}
           />
           <div className="flex flex-wrap gap-4">
             <Link
               href={ctaLink}
-              className="bg-white text-primary px-8 py-4 rounded-full font-semibold hover:bg-white/90 transition-all duration-300 shadow-xl"
+              className={`${primaryButtonClass} px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-xl`}
             >
               {ctaText}
             </Link>
             {secondaryCtaText && secondaryCtaLink && (
               <Link
                 href={secondaryCtaLink}
-                className="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 border border-white/30"
+                className={`${secondaryButtonClass} px-8 py-4 rounded-full font-semibold transition-all duration-300`}
               >
                 {secondaryCtaText}
               </Link>

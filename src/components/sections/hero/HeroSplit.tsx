@@ -14,10 +14,22 @@ export default function HeroSplit({
   secondaryCtaText,
   secondaryCtaLink,
   backgroundImage,
-  titleColor,
-  subtitleColor,
-  descriptionColor
+  titleTheme = 'dark',
+  subtitleTheme = 'dark',
+  descriptionTheme = 'dark',
+  primaryButtonTheme = 'dark',
+  secondaryButtonTheme = 'light'
 }: HeroVariantProps) {
+  const titleClass = titleTheme === 'light' ? 'text-white' : 'text-gray-900'
+  const subtitleClass = subtitleTheme === 'light' ? 'text-white/90' : 'text-primary'
+  const descriptionClass = descriptionTheme === 'light' ? 'text-white/80' : 'text-gray-600'
+  const primaryButtonClass = primaryButtonTheme === 'dark' 
+    ? 'bg-gray-900 text-white hover:bg-gray-800' 
+    : 'bg-white text-primary hover:bg-gray-100'
+  const secondaryButtonClass = secondaryButtonTheme === 'dark'
+    ? 'bg-gray-900 text-white hover:bg-gray-800'
+    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+
   return (
     <section className="relative min-h-screen flex items-center bg-white">
       <div className="container mx-auto px-4">
@@ -27,28 +39,27 @@ export default function HeroSplit({
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-primary font-semibold mb-4 text-lg" style={subtitleColor ? { color: subtitleColor } : undefined}>
+            <p className={`${subtitleClass} font-semibold mb-4 text-lg`}>
               {subtitle}
             </p>
-            <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight" style={titleColor ? { color: titleColor } : undefined}>
+            <h1 className={`${titleClass} text-5xl lg:text-6xl font-bold mb-6 leading-tight`}>
               {title}
             </h1>
             <div 
-              className="text-xl text-gray-600 mb-8"
-              style={descriptionColor ? { color: descriptionColor } : undefined}
+              className={`${descriptionClass} text-xl mb-8`}
               dangerouslySetInnerHTML={{ __html: description }}
             />
             <div className="flex flex-wrap gap-4">
               <Link
                 href={ctaLink}
-                className="bg-primary text-white px-8 py-4 rounded-full font-semibold hover:bg-primary/90 transition-colors duration-300 shadow-lg"
+                className={`${primaryButtonClass} px-8 py-4 rounded-full font-semibold transition-colors duration-300 shadow-lg`}
               >
                 {ctaText}
               </Link>
               {secondaryCtaText && secondaryCtaLink && (
                 <Link
                   href={secondaryCtaLink}
-                  className="bg-gray-100 text-gray-900 px-8 py-4 rounded-full font-semibold hover:bg-gray-200 transition-colors duration-300"
+                  className={`${secondaryButtonClass} px-8 py-4 rounded-full font-semibold transition-colors duration-300`}
                 >
                   {secondaryCtaText}
                 </Link>

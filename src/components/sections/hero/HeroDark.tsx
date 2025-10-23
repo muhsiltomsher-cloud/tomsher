@@ -14,10 +14,22 @@ export default function HeroDark({
   secondaryCtaText,
   secondaryCtaLink,
   backgroundImage,
-  titleColor,
-  subtitleColor,
-  descriptionColor
+  titleTheme = 'light',
+  subtitleTheme = 'light',
+  descriptionTheme = 'light',
+  primaryButtonTheme = 'light',
+  secondaryButtonTheme = 'dark'
 }: HeroVariantProps) {
+  const titleClass = titleTheme === 'light' ? 'text-white' : 'text-gray-900'
+  const subtitleClass = subtitleTheme === 'light' ? 'text-white/90' : 'text-primary'
+  const descriptionClass = descriptionTheme === 'light' ? 'text-gray-300' : 'text-gray-600'
+  const primaryButtonClass = primaryButtonTheme === 'dark' 
+    ? 'bg-gray-900 text-white hover:bg-gray-800' 
+    : 'bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600'
+  const secondaryButtonClass = secondaryButtonTheme === 'dark'
+    ? 'bg-gray-800 text-white hover:bg-gray-700 border border-gray-700'
+    : 'bg-white text-gray-900 hover:bg-gray-100'
+
   return (
     <section className="relative min-h-screen flex items-center bg-gray-900 text-white">
       {backgroundImage && (
@@ -33,29 +45,27 @@ export default function HeroDark({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <p className="text-primary font-semibold mb-4 text-lg" style={subtitleColor ? { color: subtitleColor } : { color: '#667eea' }}>
+            <p className={`${subtitleClass} font-semibold mb-4 text-lg`}>
               {subtitle}
             </p>
-            <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight" style={titleColor ? { color: titleColor } : undefined}>
+            <h1 className={`${titleClass} text-5xl lg:text-7xl font-bold mb-6 leading-tight`}>
               {title}
             </h1>
             <div 
-              className="text-xl text-gray-300 mb-8 max-w-2xl"
-              style={descriptionColor ? { color: descriptionColor } : undefined}
+              className={`${descriptionClass} text-xl mb-8 max-w-2xl`}
               dangerouslySetInnerHTML={{ __html: description }}
             />
             <div className="flex flex-wrap gap-4">
               <Link
                 href={ctaLink}
-                className="px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
-                style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
+                className={`${primaryButtonClass} px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl`}
               >
                 {ctaText}
               </Link>
               {secondaryCtaText && secondaryCtaLink && (
                 <Link
                   href={secondaryCtaLink}
-                  className="bg-gray-800 text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-700 transition-colors duration-300 border border-gray-700"
+                  className={`${secondaryButtonClass} px-8 py-4 rounded-full font-semibold transition-colors duration-300`}
                 >
                   {secondaryCtaText}
                 </Link>
