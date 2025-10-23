@@ -20,3 +20,4 @@ export { default as Gallery } from './Gallery';
 export { default as TeamMember } from './TeamMember';
 export { default as Newsletter } from './Newsletter';
 export { default as SectionContent } from './SectionContent';
+export { default as PageContent } from './PageContent';

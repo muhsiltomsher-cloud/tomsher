@@ -6,6 +6,19 @@ import { getSectionComponent } from '@/components/sections/section-registry'
 async function getHomePageData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    
+    const pageContentResponse = await fetch(`${baseUrl}/api/page-content/HOME`, {
+      cache: 'no-store',
+    })
+    
+    if (pageContentResponse.ok) {
+      const pageContent = await pageContentResponse.json()
+      return {
+        page: pageContent,
+        sections: pageContent.sections || []
+      }
+    }
+    
     const response = await fetch(`${baseUrl}/api/pages/home`, {
       cache: 'no-store',
     })
@@ -26,9 +39,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const data = await getHomePageData()
   
   if (data?.page) {
+    const page = data.page
     return {
-      title: data.page.metaTitle || data.page.title || 'Best Web Development Company in Dubai, UAE | Tomsher Technologies',
-      description: data.page.metaDescription || 'Tomsher is a leading web development company in Dubai, specializing in affordable website creation and custom eCommerce website development services in Dubai and UAE.',
+      title: page.seo?.metaTitle || page.metaTitle || page.title || 'Best Web Development Company in Dubai, UAE | Tomsher Technologies',
+      description: page.seo?.metaDescription || page.metaDescription || 'Tomsher is a leading web development company in Dubai, specializing in affordable website creation and custom eCommerce website development services in Dubai and UAE.',
+      keywords: page.seo?.keywords?.join(', '),
+      openGraph: page.seo?.ogImage ? {
+        images: [page.seo.ogImage],
+      } : undefined,
     }
   }
   
