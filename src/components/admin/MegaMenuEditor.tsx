@@ -18,6 +18,7 @@ import {
   DialogActions,
   Divider,
   Chip,
+  MenuItem as MuiMenuItem,
 } from '@mui/material';
 import {
   Add,
@@ -52,6 +53,12 @@ interface MegaMenuColumn {
   items: MegaMenuItem[];
   image?: string;
   description?: string;
+  content?: string;
+  button?: {
+    text: string;
+    url: string;
+    style: string;
+  };
 }
 
 interface MegaMenuItem {
@@ -131,6 +138,22 @@ function SortableColumnItem({ column, onEdit, onDelete }: {
           </Typography>
         )}
 
+        {column.content && (
+          <Typography variant="body2" sx={{ mb: 2 }}>
+            {column.content}
+          </Typography>
+        )}
+
+        {column.button && (
+          <Box sx={{ mb: 2 }}>
+            <Chip 
+              label={`Button: ${column.button.text}`} 
+              color={column.button.style === 'primary' ? 'primary' : 'secondary'}
+              size="small"
+            />
+          </Box>
+        )}
+
         <Divider sx={{ my: 2 }} />
 
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
@@ -180,6 +203,10 @@ export default function MegaMenuEditor({
     title: '',
     image: '',
     description: '',
+    content: '',
+    buttonText: '',
+    buttonUrl: '',
+    buttonStyle: 'primary',
   });
 
   const [itemForm, setItemForm] = useState({
@@ -210,7 +237,15 @@ export default function MegaMenuEditor({
   };
 
   const handleAddColumn = () => {
-    setColumnForm({ title: '', image: '', description: '' });
+    setColumnForm({ 
+      title: '', 
+      image: '', 
+      description: '', 
+      content: '', 
+      buttonText: '', 
+      buttonUrl: '', 
+      buttonStyle: 'primary' 
+    });
     setEditingColumn(null);
     setEditingColumnIndex(-1);
     setOpenColumnDialog(true);
@@ -221,6 +256,10 @@ export default function MegaMenuEditor({
       title: column.title,
       image: column.image || '',
       description: column.description || '',
+      content: column.content || '',
+      buttonText: column.button?.text || '',
+      buttonUrl: column.button?.url || '',
+      buttonStyle: column.button?.style || 'primary',
     });
     setEditingColumn(column);
     setEditingColumnIndex(index);
@@ -233,6 +272,12 @@ export default function MegaMenuEditor({
       return;
     }
 
+    const button = columnForm.buttonText && columnForm.buttonUrl ? {
+      text: columnForm.buttonText,
+      url: columnForm.buttonUrl,
+      style: columnForm.buttonStyle,
+    } : undefined;
+
     if (editingColumn) {
       const updatedColumns = [...columns];
       updatedColumns[editingColumnIndex] = {
@@ -240,6 +285,8 @@ export default function MegaMenuEditor({
         title: columnForm.title,
         image: columnForm.image,
         description: columnForm.description,
+        content: columnForm.content,
+        button,
       };
       setColumns(updatedColumns);
       toast.success('Column updated');
@@ -249,6 +296,8 @@ export default function MegaMenuEditor({
         title: columnForm.title,
         image: columnForm.image,
         description: columnForm.description,
+        content: columnForm.content,
+        button,
         items: [],
       };
       setColumns([...columns, newColumn]);
@@ -435,6 +484,11 @@ export default function MegaMenuEditor({
                             {column.description}
                           </Typography>
                         )}
+                        {column.content && (
+                          <Typography variant="body2" sx={{ mb: 1 }}>
+                            {column.content}
+                          </Typography>
+                        )}
                         <Box sx={{ mt: 1 }}>
                           {column.items.map((item) => (
                             <Typography
@@ -450,6 +504,16 @@ export default function MegaMenuEditor({
                             </Typography>
                           ))}
                         </Box>
+                        {column.button && (
+                          <Button
+                            variant={column.button.style === 'outlined' ? 'outlined' : 'contained'}
+                            color={column.button.style === 'secondary' ? 'secondary' : 'primary'}
+                            size="small"
+                            sx={{ mt: 2 }}
+                          >
+                            {column.button.text}
+                          </Button>
+                        )}
                       </Box>
                     </Grid>
                   ))}
@@ -493,6 +557,46 @@ export default function MegaMenuEditor({
               rows={2}
               helperText="Optional: Brief description for this column"
             />
+            <TextField
+              label="Content"
+              value={columnForm.content}
+              onChange={(e) => setColumnForm({ ...columnForm, content: e.target.value })}
+              fullWidth
+              multiline
+              rows={3}
+              helperText="Optional: Additional content text for this column"
+            />
+            <Divider sx={{ my: 1 }}>
+              <Chip label="Button (Optional)" size="small" />
+            </Divider>
+            <TextField
+              label="Button Text"
+              value={columnForm.buttonText}
+              onChange={(e) => setColumnForm({ ...columnForm, buttonText: e.target.value })}
+              fullWidth
+              placeholder="Learn More"
+              helperText="Optional: Button text"
+            />
+            <TextField
+              label="Button URL"
+              value={columnForm.buttonUrl}
+              onChange={(e) => setColumnForm({ ...columnForm, buttonUrl: e.target.value })}
+              fullWidth
+              placeholder="/services"
+              helperText="Optional: Button link URL"
+            />
+            <TextField
+              select
+              label="Button Style"
+              value={columnForm.buttonStyle}
+              onChange={(e) => setColumnForm({ ...columnForm, buttonStyle: e.target.value })}
+              fullWidth
+              helperText="Button appearance style"
+            >
+              <MuiMenuItem value="primary">Primary (Blue)</MuiMenuItem>
+              <MuiMenuItem value="secondary">Secondary (Gray)</MuiMenuItem>
+              <MuiMenuItem value="outlined">Outlined</MuiMenuItem>
+            </TextField>
           </Box>
         </DialogContent>
         <DialogActions>
