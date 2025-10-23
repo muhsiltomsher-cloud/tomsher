@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
-import Settings from '@/models/Settings';
+import SiteSettings from '@/models/SiteSettings';
 
 export async function PUT(
   request: NextRequest,
@@ -16,7 +16,7 @@ export async function PUT(
 
     await connectDB();
     const body = await request.json();
-    const settings = await Settings.findByIdAndUpdate(params.id, body, { new: true });
+    const settings = await SiteSettings.findByIdAndUpdate(params.id, body, { new: true });
 
     if (!settings) {
       return NextResponse.json({ error: 'Settings not found' }, { status: 404 });
