@@ -57,9 +57,11 @@ export default function PortfolioManagement() {
     isActive: true,
     isFeatured: false,
     order: 0,
-    featuredImage: '',
+    image: '',
+    gallery: [] as string[],
   });
   const [imagePickerOpen, setImagePickerOpen] = useState(false);
+  const [imagePickerMode, setImagePickerMode] = useState<'cover' | 'gallery'>('cover');
 
   useEffect(() => {
     fetchPortfolios();
@@ -84,9 +86,19 @@ export default function PortfolioManagement() {
     try {
       const technologiesArray = formData.technologies.split(',').map(t => t.trim()).filter(t => t);
       const payload = {
-        ...formData,
+        title: formData.title,
+        slug: formData.slug,
+        description: formData.description,
+        shortDescription: formData.shortDescription,
+        category: formData.category,
+        client: formData.client,
+        projectUrl: formData.projectUrl,
         technologies: technologiesArray,
-        gallery: [],
+        isActive: formData.isActive,
+        isFeatured: formData.isFeatured,
+        order: formData.order,
+        image: formData.image,
+        gallery: formData.gallery,
       };
 
       const url = editingItem
@@ -126,7 +138,8 @@ export default function PortfolioManagement() {
       isActive: item.isActive,
       isFeatured: item.isFeatured,
       order: item.order,
-      featuredImage: (item as any).featuredImage || '',
+      image: (item as any).image || '',
+      gallery: (item as any).gallery || [],
     });
     setOpenDialog(true);
   };
@@ -166,13 +179,23 @@ export default function PortfolioManagement() {
       isActive: true,
       isFeatured: false,
       order: 0,
-      featuredImage: '',
+      image: '',
+      gallery: [],
     });
   };
 
   const handleImageSelect = (url: string) => {
-    setFormData({ ...formData, featuredImage: url });
+    if (imagePickerMode === 'cover') {
+      setFormData({ ...formData, image: url });
+    } else {
+      setFormData({ ...formData, gallery: [...formData.gallery, url] });
+    }
     setImagePickerOpen(false);
+  };
+
+  const handleRemoveGalleryImage = (index: number) => {
+    const newGallery = formData.gallery.filter((_, i) => i !== index);
+    setFormData({ ...formData, gallery: newGallery });
   };
 
   if (loading) {
@@ -291,30 +314,83 @@ export default function PortfolioManagement() {
               
               <Box>
                 <Typography variant="subtitle2" gutterBottom>
-                  Featured Image
+                  Cover/Thumbnail Image
+                </Typography>
+                <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
+                  Main image shown in portfolio listing
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                   <TextField
-                    value={formData.featuredImage}
-                    onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                     fullWidth
                     placeholder="Image URL"
                   />
                   <Button
                     variant="outlined"
                     startIcon={<ImageIcon />}
-                    onClick={() => setImagePickerOpen(true)}
+                    onClick={() => {
+                      setImagePickerMode('cover');
+                      setImagePickerOpen(true);
+                    }}
                   >
                     Select
                   </Button>
                 </Box>
-                {formData.featuredImage && (
+                {formData.image && (
                   <Box sx={{ mt: 2, textAlign: 'center' }}>
                     <img
-                      src={formData.featuredImage}
-                      alt="Featured"
+                      src={formData.image}
+                      alt="Cover"
                       style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 8 }}
                     />
+                  </Box>
+                )}
+              </Box>
+
+              <Box>
+                <Typography variant="subtitle2" gutterBottom>
+                  Gallery Images
+                </Typography>
+                <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
+                  Additional images shown on portfolio detail page
+                </Typography>
+                <Button
+                  variant="outlined"
+                  startIcon={<ImageIcon />}
+                  onClick={() => {
+                    setImagePickerMode('gallery');
+                    setImagePickerOpen(true);
+                  }}
+                  fullWidth
+                >
+                  Add Gallery Image
+                </Button>
+                {formData.gallery.length > 0 && (
+                  <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+                    {formData.gallery.map((img, index) => (
+                      <Box key={index} sx={{ position: 'relative' }}>
+                        <img
+                          src={img}
+                          alt={`Gallery ${index + 1}`}
+                          style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 8 }}
+                        />
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => handleRemoveGalleryImage(index)}
+                          sx={{
+                            position: 'absolute',
+                            top: -8,
+                            right: -8,
+                            bgcolor: 'white',
+                            '&:hover': { bgcolor: 'white' }
+                          }}
+                        >
+                          <Delete fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    ))}
                   </Box>
                 )}
               </Box>

@@ -14,6 +14,7 @@ interface Portfolio {
   slug: string
   description: string
   shortDescription?: string
+  image?: string
   category: string
   client?: string
   projectUrl?: string
@@ -192,7 +193,14 @@ export default function PortfolioPage() {
                       <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
                         {/* Project Image */}
                         <div className="relative h-64 bg-gradient-to-br from-primary/20 to-secondary/20 overflow-hidden">
-                          {project.gallery && project.gallery[0] ? (
+                          {project.image ? (
+                            <Image
+                              src={project.image}
+                              alt={project.title}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          ) : project.gallery && project.gallery[0] ? (
                             <Image
                               src={project.gallery[0]}
                               alt={project.title}
