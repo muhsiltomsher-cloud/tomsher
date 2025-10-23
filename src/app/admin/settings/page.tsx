@@ -12,15 +12,20 @@ import {
   Grid,
   Divider,
 } from '@mui/material';
-import { Save } from '@mui/icons-material';
+import { Save, Image as ImageIcon } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import ImageGalleryPicker from '@/components/admin/ImageGalleryPicker';
 
 interface Settings {
   _id?: string;
   siteName: string;
   siteDescription: string;
   logo?: string;
+  logoNormal?: string;
+  logoSticky?: string;
+  logoFooter?: string;
+  favicon?: string;
   contactEmail: string;
   contactPhone: string;
   address: string;
@@ -57,10 +62,16 @@ export default function SettingsManagement() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [openImagePicker, setOpenImagePicker] = useState(false);
+  const [currentLogoField, setCurrentLogoField] = useState<'logo' | 'logoNormal' | 'logoSticky' | 'logoFooter' | 'favicon'>('logo');
   const [settings, setSettings] = useState<Settings>({
     siteName: '',
     siteDescription: '',
     logo: '',
+    logoNormal: '',
+    logoSticky: '',
+    logoFooter: '',
+    favicon: '',
     contactEmail: '',
     contactPhone: '',
     address: '',
@@ -128,6 +139,16 @@ export default function SettingsManagement() {
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleOpenImagePicker = (field: 'logo' | 'logoNormal' | 'logoSticky' | 'logoFooter' | 'favicon') => {
+    setCurrentLogoField(field);
+    setOpenImagePicker(true);
+  };
+
+  const handleSelectImage = (url: string) => {
+    setSettings({ ...settings, [currentLogoField]: url });
+    setOpenImagePicker(false);
   };
 
   const handleSave = async () => {
@@ -236,30 +257,107 @@ export default function SettingsManagement() {
               />
             </Grid>
             <Grid item xs={12}>
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
+                Logo Management
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                Upload different logos for various sections of your website
+              </Typography>
+            </Grid>
+
+            {/* Normal Header Logo */}
+            <Grid item xs={12} md={6}>
               <Typography variant="subtitle2" gutterBottom>
-                Site Logo
+                Normal Header Logo
               </Typography>
               <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
-                Recommended: 400x100px PNG or SVG (max 500KB)
+                Recommended: 400x100px PNG or SVG
               </Typography>
-              {settings.logo && (
+              {settings.logoNormal && (
                 <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1, display: 'inline-block' }}>
-                  <img src={settings.logo} alt="Site Logo" style={{ maxHeight: 80, maxWidth: 300 }} />
+                  <img src={settings.logoNormal} alt="Normal Header Logo" style={{ maxHeight: 80, maxWidth: 300 }} />
                 </Box>
               )}
               <Box>
                 <Button
                   variant="outlined"
-                  component="label"
-                  disabled={uploading}
+                  startIcon={<ImageIcon />}
+                  onClick={() => handleOpenImagePicker('logoNormal')}
                 >
-                  {uploading ? 'Uploading...' : settings.logo ? 'Change Logo' : 'Upload Logo'}
-                  <input
-                    type="file"
-                    hidden
-                    accept="image/png,image/svg+xml,image/jpeg"
-                    onChange={handleLogoUpload}
-                  />
+                  {settings.logoNormal ? 'Change Logo' : 'Select Logo'}
+                </Button>
+              </Box>
+            </Grid>
+
+            {/* Sticky Header Logo */}
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle2" gutterBottom>
+                Sticky Header Logo
+              </Typography>
+              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
+                Logo shown when header is sticky/scrolled. Recommended: 300x80px
+              </Typography>
+              {settings.logoSticky && (
+                <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1, display: 'inline-block' }}>
+                  <img src={settings.logoSticky} alt="Sticky Header Logo" style={{ maxHeight: 60, maxWidth: 250 }} />
+                </Box>
+              )}
+              <Box>
+                <Button
+                  variant="outlined"
+                  startIcon={<ImageIcon />}
+                  onClick={() => handleOpenImagePicker('logoSticky')}
+                >
+                  {settings.logoSticky ? 'Change Logo' : 'Select Logo'}
+                </Button>
+              </Box>
+            </Grid>
+
+            {/* Footer Logo */}
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle2" gutterBottom>
+                Footer Logo
+              </Typography>
+              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
+                Logo shown in footer. Recommended: 400x100px
+              </Typography>
+              {settings.logoFooter && (
+                <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1, display: 'inline-block' }}>
+                  <img src={settings.logoFooter} alt="Footer Logo" style={{ maxHeight: 80, maxWidth: 300 }} />
+                </Box>
+              )}
+              <Box>
+                <Button
+                  variant="outlined"
+                  startIcon={<ImageIcon />}
+                  onClick={() => handleOpenImagePicker('logoFooter')}
+                >
+                  {settings.logoFooter ? 'Change Logo' : 'Select Logo'}
+                </Button>
+              </Box>
+            </Grid>
+
+            {/* Favicon */}
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle2" gutterBottom>
+                Favicon
+              </Typography>
+              <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 2 }}>
+                Browser tab icon. Recommended: 32x32px or 64x64px PNG/ICO
+              </Typography>
+              {settings.favicon && (
+                <Box sx={{ mb: 2, p: 2, bgcolor: 'grey.100', borderRadius: 1, display: 'inline-block' }}>
+                  <img src={settings.favicon} alt="Favicon" style={{ maxHeight: 32, maxWidth: 32 }} />
+                </Box>
+              )}
+              <Box>
+                <Button
+                  variant="outlined"
+                  startIcon={<ImageIcon />}
+                  onClick={() => handleOpenImagePicker('favicon')}
+                >
+                  {settings.favicon ? 'Change Favicon' : 'Select Favicon'}
                 </Button>
               </Box>
             </Grid>
@@ -535,6 +633,18 @@ export default function SettingsManagement() {
             </Grid>
           </Grid>
         </Paper>
+
+        {/* Image Gallery Picker */}
+        <ImageGalleryPicker
+          open={openImagePicker}
+          onClose={() => setOpenImagePicker(false)}
+          onSelect={handleSelectImage}
+          currentImage={settings[currentLogoField]}
+          title={`Select ${currentLogoField === 'logoNormal' ? 'Normal Header Logo' : 
+                          currentLogoField === 'logoSticky' ? 'Sticky Header Logo' : 
+                          currentLogoField === 'logoFooter' ? 'Footer Logo' : 
+                          currentLogoField === 'favicon' ? 'Favicon' : 'Logo'}`}
+        />
       </Container>
     </Box>
   );
