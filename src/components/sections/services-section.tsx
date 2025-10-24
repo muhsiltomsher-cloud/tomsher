@@ -80,7 +80,7 @@ interface ServicesSectionProps {
 }
 
 export function ServicesSection({ data }: ServicesSectionProps = {}) {
-  const services = data || [];
+  const services = Array.isArray(data) ? data : [];
 
   if (services.length === 0) {
     return null;

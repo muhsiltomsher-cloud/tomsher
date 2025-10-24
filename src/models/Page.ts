@@ -34,6 +34,9 @@ export interface IPage extends Document {
   parentId?: mongoose.Types.ObjectId;
   order?: number;
   sections?: IPageSection[];
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
   settings?: {
     enableSkeletonLoaders?: boolean;
     enablePageTransitions?: boolean;
@@ -110,6 +113,16 @@ const PageSchema = new Schema<IPage>(
     },
     sections: {
       type: [PageSectionSchema],
+      default: [],
+    },
+    seoTitle: {
+      type: String,
+    },
+    seoDescription: {
+      type: String,
+    },
+    seoKeywords: {
+      type: [String],
       default: [],
     },
     settings: {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import CustomPage from '@/models/CustomPage';
+import Page, { PageStatus } from '@/models/Page';
 
 export async function GET(
   request: NextRequest,
@@ -9,9 +9,9 @@ export async function GET(
   try {
     await connectDB();
     
-    const page = await CustomPage.findOne({ 
+    const page = await Page.findOne({ 
       slug: params.slug,
-      isPublished: true 
+      status: PageStatus.PUBLISHED
     });
 
     if (!page) {
