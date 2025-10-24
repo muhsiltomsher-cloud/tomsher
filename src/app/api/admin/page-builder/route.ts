@@ -13,7 +13,10 @@ export async function GET() {
     }
 
     await connectDB();
-    const pages = await Page.find().sort({ updatedAt: -1 });
+    const permanentPageTypes = [PageType.HOME, PageType.ABOUT, PageType.PORTFOLIO, PageType.SERVICE, PageType.CONTACT];
+    const pages = await Page.find({ 
+      type: { $nin: permanentPageTypes }
+    }).sort({ updatedAt: -1 });
     return NextResponse.json(pages);
   } catch (error) {
     console.error('Error fetching pages:', error);
