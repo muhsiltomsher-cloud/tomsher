@@ -50,36 +50,44 @@ export default function PrivacyPage() {
     }
   }
 
-  const defaultSections = [
+  const defaultSections: Array<{type?: string; title: string; subtitle?: string; content: string; order?: number}> = [
     {
+      type: 'section',
       title: 'Information We Collect',
       content: 'We collect information that you provide directly to us, including when you create an account, make a purchase, subscribe to our newsletter, or contact us for support. This may include your name, email address, phone number, and payment information.'
     },
     {
+      type: 'section',
       title: 'How We Use Your Information',
       content: 'We use the information we collect to provide, maintain, and improve our services, process transactions, send you technical notices and support messages, respond to your comments and questions, and communicate with you about products, services, and events.'
     },
     {
+      type: 'section',
       title: 'Information Sharing',
       content: 'We do not share your personal information with third parties except as described in this policy. We may share information with service providers who perform services on our behalf, when required by law, or with your consent.'
     },
     {
+      type: 'section',
       title: 'Data Security',
       content: 'We take reasonable measures to help protect your personal information from loss, theft, misuse, unauthorized access, disclosure, alteration, and destruction. However, no internet or email transmission is ever fully secure or error-free.'
     },
     {
+      type: 'section',
       title: 'Your Rights',
       content: 'You have the right to access, update, or delete your personal information at any time. You may also opt out of receiving promotional communications from us by following the instructions in those messages.'
     },
     {
+      type: 'section',
       title: 'Cookies and Tracking',
       content: 'We use cookies and similar tracking technologies to collect information about your browsing activities and to personalize your experience. You can control cookies through your browser settings.'
     },
     {
+      type: 'section',
       title: 'Changes to This Policy',
       content: 'We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last Updated" date.'
     },
     {
+      type: 'section',
       title: 'Contact Us',
       content: 'If you have any questions about this privacy policy, please contact us at privacy@tomsher.com or through our contact page.'
     }

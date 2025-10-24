@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import SectionWrapper from '@/src/common/components/SectionWrapper'
-import Button from '@/src/common/components/Button'
+import SectionWrapper from '@/common/components/SectionWrapper'
+import Button from '@/common/components/Button'
 
 interface AboutContent {
   yearsText: string
@@ -38,7 +38,7 @@ const defaultContent: AboutContent = {
   videoUrl: 'https://player.vimeo.com/video/1044576275?background=1&autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0'
 }
 
-const AboutSection = () => {
+export const AboutSection = () => {
   const [content, setContent] = useState<AboutContent>(defaultContent)
   const [loading, setLoading] = useState(true)
 
@@ -147,5 +147,3 @@ const AboutSection = () => {
     </SectionWrapper>
   )
 }
-
-export default AboutSection

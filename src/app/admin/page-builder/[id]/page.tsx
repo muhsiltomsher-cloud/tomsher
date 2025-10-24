@@ -518,7 +518,7 @@ export default function PageBuilderEditor() {
                 field={field}
                 fieldKey={key}
                 value={data[key] || []}
-                onChange={(value) => handleChange({ ...data, [key]: value })}
+                onChange={(value: any) => handleChange({ ...data, [key]: value })}
               />
             )
           }

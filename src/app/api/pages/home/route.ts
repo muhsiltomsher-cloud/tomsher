@@ -33,8 +33,8 @@ export async function GET() {
       page: {
         _id: homePage._id,
         title: homePage.title,
-        metaTitle: homePage.metaTitle,
-        metaDescription: homePage.metaDescription,
+        metaTitle: homePage.seoTitle,
+        metaDescription: homePage.seoDescription,
       },
       sections,
     });

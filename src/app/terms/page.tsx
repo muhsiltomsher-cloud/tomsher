@@ -50,48 +50,59 @@ export default function TermsPage() {
     }
   }
 
-  const defaultSections = [
+  const defaultSections: Array<{type?: string; title: string; subtitle?: string; content: string; order?: number}> = [
     {
+      type: 'section',
       title: 'Acceptance of Terms',
       content: 'By accessing and using our services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to these terms, please do not use our services.'
     },
     {
+      type: 'section',
       title: 'Use License',
       content: 'Permission is granted to temporarily access our services for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not: modify or copy the materials; use the materials for any commercial purpose; attempt to decompile or reverse engineer any software contained on our platform; remove any copyright or other proprietary notations from the materials; or transfer the materials to another person or "mirror" the materials on any other server.'
     },
     {
+      type: 'section',
       title: 'User Accounts',
       content: 'When you create an account with us, you must provide accurate, complete, and current information. Failure to do so constitutes a breach of the Terms. You are responsible for safeguarding the password and for all activities that occur under your account.'
     },
     {
+      type: 'section',
       title: 'Intellectual Property',
       content: 'The service and its original content, features, and functionality are and will remain the exclusive property of Tomsher Technologies and its licensors. The service is protected by copyright, trademark, and other laws. Our trademarks may not be used in connection with any product or service without our prior written consent.'
     },
     {
+      type: 'section',
       title: 'User Content',
       content: 'Our service may allow you to post, link, store, share and otherwise make available certain information, text, graphics, or other material. You are responsible for the content that you post on or through the service, including its legality, reliability, and appropriateness.'
     },
     {
+      type: 'section',
       title: 'Prohibited Uses',
       content: 'You may not use our services: for any unlawful purpose or to solicit others to perform unlawful acts; to violate any international, federal, provincial or state regulations, rules, laws, or local ordinances; to infringe upon or violate our intellectual property rights or the intellectual property rights of others; to harass, abuse, insult, harm, defame, slander, disparage, intimidate, or discriminate; to submit false or misleading information; to upload or transmit viruses or any other type of malicious code; to collect or track the personal information of others; to spam, phish, pharm, pretext, spider, crawl, or scrape; for any obscene or immoral purpose; or to interfere with or circumvent the security features of the service.'
     },
     {
+      type: 'section',
       title: 'Limitation of Liability',
       content: 'In no event shall Tomsher Technologies, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the service.'
     },
     {
+      type: 'section',
       title: 'Disclaimer',
       content: 'Your use of the service is at your sole risk. The service is provided on an "AS IS" and "AS AVAILABLE" basis. The service is provided without warranties of any kind, whether express or implied, including, but not limited to, implied warranties of merchantability, fitness for a particular purpose, non-infringement or course of performance.'
     },
     {
+      type: 'section',
       title: 'Governing Law',
       content: 'These Terms shall be governed and construed in accordance with the laws of your jurisdiction, without regard to its conflict of law provisions. Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights.'
     },
     {
+      type: 'section',
       title: 'Changes to Terms',
       content: 'We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.'
     },
     {
+      type: 'section',
       title: 'Contact Information',
       content: 'If you have any questions about these Terms, please contact us at legal@tomsher.com or through our contact page.'
     }

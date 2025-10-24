@@ -69,7 +69,7 @@ export default function AdminDashboard() {
         fetch('/api/admin/portfolio'),
       ])
 
-      const activities = []
+      const activities: Array<{name: string; desc: string; avatar: string; time: string; timestamp: number}> = []
 
       if (pagesRes.ok) {
         const pages = await pagesRes.json()
