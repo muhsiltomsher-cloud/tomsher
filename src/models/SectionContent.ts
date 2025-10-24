@@ -4,7 +4,6 @@ const SectionContentSchema = new mongoose.Schema({
   sectionKey: {
     type: String,
     required: true,
-    unique: true,
     enum: ['HERO', 'ABOUT', 'SERVICES', 'PORTFOLIO', 'TESTIMONIALS', 'CONTACT', 'CTA', 'STATS', 'FEATURES', 'TEAM', 'FAQ', 'BLOG', 'CLIENTS', 'PROCESS'],
   },
   pageType: {
