@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 interface ServiceItemProps {
   colSpan: string;
@@ -75,43 +75,12 @@ const ServiceItem: React.FC<ServiceItemProps> = ({
   </div>
 );
 
-export function ServicesSection() {
-  const [services, setServices] = useState<ServiceData[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ServicesSectionProps {
+  data?: ServiceData[];
+}
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const response = await fetch('/api/admin/services');
-        if (response.ok) {
-          const data = await response.json();
-          const sortedServices = data
-            .filter((s: ServiceData) => s.icon && s.backgroundImage)
-            .sort((a: ServiceData, b: ServiceData) => a.order - b.order)
-            .slice(0, 5);
-          setServices(sortedServices);
-        }
-      } catch (error) {
-        console.error('Error fetching services:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchServices();
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="bg-[#bee1e6] py-[100px]">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <p className="text-gray-600">Loading services...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+export function ServicesSection({ data }: ServicesSectionProps = {}) {
+  const services = data || [];
 
   if (services.length === 0) {
     return null;

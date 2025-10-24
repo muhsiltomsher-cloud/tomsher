@@ -107,39 +107,16 @@ const defaultContent: HeroContent = {
   }
 };
 
-const HeroSection: React.FC = () => {
-  const [content, setContent] = useState<HeroContent>(defaultContent);
-  const [loading, setLoading] = useState(true);
+interface HeroSectionProps {
+  data?: HeroContent;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const content = data || defaultContent;
 
   useEffect(() => {
-    const fetchContent = async () => {
-      try {
-        const response = await fetch('/api/settings');
-        if (response.ok) {
-          const data = await response.json();
-          if (data.homeHero) {
-            setContent({
-              backgroundImage: data.homeHero.backgroundImage || defaultContent.backgroundImage,
-              backgroundColor: data.homeHero.backgroundColor || defaultContent.backgroundColor,
-              badges: data.homeHero.badges && data.homeHero.badges.length > 0 
-                ? data.homeHero.badges 
-                : defaultContent.badges,
-              heading: data.homeHero.heading || defaultContent.heading,
-              description: data.homeHero.description || defaultContent.description,
-              worksLink: data.homeHero.worksLink || defaultContent.worksLink,
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching hero content:', error);
-      } finally {
-        setLoading(false);
-        setTimeout(() => setIsVisible(true), 100);
-      }
-    };
-
-    fetchContent();
+    setTimeout(() => setIsVisible(true), 100);
   }, []);
 
   const renderIcon = (iconName: string) => {
@@ -152,15 +129,6 @@ const HeroSection: React.FC = () => {
         return <GlobeIcon />;
     }
   };
-
-  if (loading) {
-    return (
-      <div
-        className="relative w-full overflow-hidden"
-        style={{ height: 900, backgroundColor: content.backgroundColor }}
-      />
-    );
-  }
 
   return (
     <div
