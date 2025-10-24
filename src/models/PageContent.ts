@@ -5,7 +5,7 @@ const PageContentSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    enum: ['PRIVACY', 'TERMS', 'REFUND', 'SHIPPING', 'DISCLAIMER'],
+    enum: ['ABOUT', 'PRIVACY', 'TERMS', 'REFUND', 'SHIPPING', 'DISCLAIMER'],
   },
   title: {
     type: String,
@@ -15,6 +15,31 @@ const PageContentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  heroTitle: {
+    type: String,
+  },
+  heroSubtitle: {
+    type: String,
+  },
+  heroImage: {
+    type: String,
+  },
+  sections: [{
+    type: {
+      type: String,
+      enum: ['TEXT', 'STATS', 'IMAGE_TEXT', 'FEATURES', 'TEAM'],
+    },
+    title: String,
+    subtitle: String,
+    content: String,
+    image: String,
+    items: [{
+      title: String,
+      description: String,
+      icon: String,
+      value: String,
+    }],
+  }],
   isActive: {
     type: Boolean,
     default: true,

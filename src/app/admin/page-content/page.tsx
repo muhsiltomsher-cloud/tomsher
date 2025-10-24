@@ -38,6 +38,7 @@ interface PageContent {
 }
 
 const PAGE_TYPES = [
+  { value: 'ABOUT', label: 'About Us' },
   { value: 'PRIVACY', label: 'Privacy Policy' },
   { value: 'TERMS', label: 'Terms and Conditions' },
   { value: 'REFUND', label: 'Refund Policy' },
@@ -51,7 +52,7 @@ export default function PageContentManagement() {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<PageContent | null>(null);
   const [formData, setFormData] = useState({
-    pageType: 'PRIVACY',
+    pageType: 'ABOUT',
     title: '',
     content: '',
     isActive: true,
@@ -144,7 +145,7 @@ export default function PageContentManagement() {
     setOpenDialog(false);
     setEditingItem(null);
     setFormData({
-      pageType: 'PRIVACY',
+      pageType: 'ABOUT',
       title: '',
       content: '',
       isActive: true,
@@ -172,7 +173,7 @@ export default function PageContentManagement() {
               Static Page Content
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Manage Terms, Privacy Policy, and other static pages
+              Manage About Us, Terms, Privacy Policy, and other static pages
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2 }}>
