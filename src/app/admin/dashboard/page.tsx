@@ -161,9 +161,9 @@ export default function AdminDashboard() {
   const greeting = currentHour < 12 ? 'Morning' : currentHour < 18 ? 'Afternoon' : 'Evening'
 
   return (
-    <Box sx={{ py: 4, px: 3, bgcolor: '#f8f9fa', minHeight: '100vh' }}>
+    <Box sx={{ py: 2, px: 2, bgcolor: '#f8f9fa', minHeight: '100vh' }}>
       <Container maxWidth="xl">
-        <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 2 }}>
           <Typography variant="h4" component="h1" fontWeight={700} gutterBottom>
             Hello {userName}, Good {greeting}
           </Typography>
@@ -172,12 +172,12 @@ export default function AdminDashboard() {
           </Typography>
         </Box>
 
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
           <Grid item xs={12} lg={8}>
-            <Grid container spacing={3} sx={{ mb: 3 }}>
+            <Grid container spacing={2} sx={{ mb: 2 }}>
               <Grid item xs={12} sm={4}>
-                <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-                  <CardContent>
+                <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+                  <CardContent sx={{ py: 2 }}>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       Total Pages
                     </Typography>
@@ -192,8 +192,8 @@ export default function AdminDashboard() {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-                  <CardContent>
+                <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+                  <CardContent sx={{ py: 2 }}>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       Services
                     </Typography>
@@ -208,8 +208,8 @@ export default function AdminDashboard() {
               </Grid>
 
               <Grid item xs={12} sm={4}>
-                <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-                  <CardContent>
+                <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+                  <CardContent sx={{ py: 2 }}>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
                       Portfolio
                     </Typography>
@@ -224,21 +224,21 @@ export default function AdminDashboard() {
               </Grid>
             </Grid>
 
-            <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', mb: 3 }}>
-              <CardContent>
+            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', mb: 2 }}>
+              <CardContent sx={{ py: 2 }}>
                 <Typography variant="h6" fontWeight={600} gutterBottom>
                   Content Overview
                 </Typography>
                 <Typography variant="h3" fontWeight={700} sx={{ mb: 0.5 }}>
                   {(stats.pages + stats.services + stats.portfolio + stats.blog).toLocaleString()} Items
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 2 }}>
                   <Typography variant="caption" color="text.secondary">
                     Total content across all sections
                   </Typography>
                 </Box>
 
-                <Grid container spacing={2}>
+                <Grid container spacing={1.5}>
                   {[
                     { label: 'Manage Pages', emoji: '📄', count: stats.pages, bg: '#fef3c7', color: '#fbbf24', href: '/admin/pages' },
                     { label: 'Blog Posts', emoji: '📝', count: stats.blog, bg: '#dbeafe', color: '#3b82f6', href: '/admin/blog' },
@@ -250,7 +250,7 @@ export default function AdminDashboard() {
                         component={Link}
                         href={item.href}
                         sx={{
-                          p: 2,
+                          p: 1.5,
                           borderRadius: 2,
                           bgcolor: item.bg,
                           textAlign: 'center',
@@ -263,18 +263,18 @@ export default function AdminDashboard() {
                       >
                         <Box
                           sx={{
-                            width: 48,
-                            height: 48,
+                            width: 40,
+                            height: 40,
                             borderRadius: '50%',
                             bgcolor: item.color,
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             mx: 'auto',
-                            mb: 1,
+                            mb: 0.5,
                           }}
                         >
-                          <Typography variant="h6">{item.emoji}</Typography>
+                          <Typography variant="body1">{item.emoji}</Typography>
                         </Box>
                         <Typography variant="caption" color="text.secondary">
                           {item.count} Items
@@ -289,9 +289,9 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-              <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+              <CardContent sx={{ py: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                   <Typography variant="h6" fontWeight={600}>
                     Recent Activity
                   </Typography>
@@ -304,11 +304,11 @@ export default function AdminDashboard() {
                 </Box>
 
                 {loadingActivity ? (
-                  <Box sx={{ py: 4, textAlign: 'center' }}>
+                  <Box sx={{ py: 3, textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary">Loading...</Typography>
                   </Box>
                 ) : recentActivity.length === 0 ? (
-                  <Box sx={{ py: 4, textAlign: 'center' }}>
+                  <Box sx={{ py: 3, textAlign: 'center' }}>
                     <Typography variant="body2" color="text.secondary">No recent activity</Typography>
                   </Box>
                 ) : recentActivity.map((activity, index) => (
@@ -317,12 +317,12 @@ export default function AdminDashboard() {
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 2,
-                      py: 2,
+                      gap: 1.5,
+                      py: 1.5,
                       borderBottom: index < 3 ? '1px solid #f3f4f6' : 'none',
                     }}
                   >
-                    <Avatar sx={{ bgcolor: '#f3f4f6', width: 40, height: 40 }}>
+                    <Avatar sx={{ bgcolor: '#f3f4f6', width: 36, height: 36 }}>
                       {activity.avatar}
                     </Avatar>
                     <Box sx={{ flex: 1 }}>
@@ -343,7 +343,7 @@ export default function AdminDashboard() {
           </Grid>
 
           <Grid item xs={12} lg={4}>
-            <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid container spacing={1.5} sx={{ mb: 2 }}>
               {[
                 { label: 'Testimonials', emoji: '⭐', value: stats.testimonials, progress: (stats.testimonials / 10) * 100, color: '#3b82f6', bg: '#dbeafe' },
                 { label: 'Contacts', emoji: '📧', value: stats.contacts, progress: (stats.contacts / 20) * 100, color: '#f59e0b', bg: '#fef3c7' },
@@ -351,21 +351,21 @@ export default function AdminDashboard() {
                 { label: 'Media Files', emoji: '📦', value: stats.media, progress: (stats.media / 50) * 100, color: '#14b8a6', bg: '#ccfbf1' },
               ].map((item, index) => (
                 <Grid item xs={6} key={index}>
-                  <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-                    <CardContent>
+                  <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+                    <CardContent sx={{ py: 1.5 }}>
                       <Box
                         sx={{
-                          width: 40,
-                          height: 40,
+                          width: 36,
+                          height: 36,
                           borderRadius: 2,
                           bgcolor: item.bg,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          mb: 1,
+                          mb: 0.5,
                         }}
                       >
-                        <Typography>{item.emoji}</Typography>
+                        <Typography variant="body2">{item.emoji}</Typography>
                       </Box>
                       <Typography variant="caption" color="text.secondary">
                         {item.label}
@@ -377,8 +377,8 @@ export default function AdminDashboard() {
                         variant="determinate"
                         value={item.progress}
                         sx={{
-                          mt: 1,
-                          height: 4,
+                          mt: 0.5,
+                          height: 3,
                           borderRadius: 2,
                           bgcolor: '#e5e7eb',
                           '& .MuiLinearProgress-bar': { bgcolor: item.color },
@@ -390,9 +390,9 @@ export default function AdminDashboard() {
               ))}
             </Grid>
 
-            <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', mb: 3 }}>
-              <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', mb: 2 }}>
+              <CardContent sx={{ py: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                   <Typography variant="h6" fontWeight={600}>
                     Sep 2024
                   </Typography>
@@ -406,7 +406,7 @@ export default function AdminDashboard() {
                   </Box>
                 </Box>
 
-                <Grid container spacing={1}>
+                <Grid container spacing={0.5}>
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
                     <Grid item xs={12 / 7} key={day}>
                       <Typography variant="caption" color="text.secondary" align="center" display="block">
@@ -418,7 +418,7 @@ export default function AdminDashboard() {
                     <Grid item xs={12 / 7} key={date}>
                       <Box
                         sx={{
-                          py: 1,
+                          py: 0.5,
                           textAlign: 'center',
                           borderRadius: 1,
                           cursor: 'pointer',
@@ -435,12 +435,12 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card sx={{ borderRadius: 3, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-              <CardContent>
+            <Card sx={{ borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+              <CardContent sx={{ py: 2 }}>
                 <Typography variant="h6" fontWeight={600} gutterBottom>
                   Quick Actions
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
                   {[
                     { label: 'Create New Page', href: '/admin/pages', color: '#667eea' },
                     { label: 'Add Blog Post', href: '/admin/blog', color: '#f093fb' },
@@ -452,7 +452,7 @@ export default function AdminDashboard() {
                       component={Link}
                       href={action.href}
                       sx={{
-                        p: 2,
+                        p: 1.5,
                         borderRadius: 2,
                         bgcolor: '#f9fafb',
                         display: 'flex',
