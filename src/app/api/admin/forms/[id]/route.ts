@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import FormSubmission from '@/models/FormSubmission';
 
+export const dynamic = 'force-dynamic';
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }

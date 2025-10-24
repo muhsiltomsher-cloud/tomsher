@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import TeamMember from '@/models/TeamMember';
 
+export const dynamic = 'force-dynamic';
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }

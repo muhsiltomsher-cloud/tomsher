@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import MenuItem from '@/models/Menu';
 
+export const dynamic = 'force-dynamic';
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }

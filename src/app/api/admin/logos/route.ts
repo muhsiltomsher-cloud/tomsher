@@ -4,6 +4,7 @@ import connectDB from '@/lib/mongodb';
 import Settings from '@/models/Settings';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
