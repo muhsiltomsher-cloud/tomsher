@@ -6,13 +6,17 @@ interface SectionWrapperProps {
   containerClassName?: string;
 }
 
-const SectionWrapper: React.FC<SectionWrapperProps> = ({ children, className = '', containerClassName = '' }) => {
+const SectionWrapper: React.FC<SectionWrapperProps> = ({ 
+  children, 
+  className = '', 
+  containerClassName = '' 
+}) => {
   return (
-    <div className={className}>
+    <section className={className}>
       <div className={`container mx-auto px-4 ${containerClassName}`}>
         {children}
       </div>
-    </div>
+    </section>
   );
 };
 
