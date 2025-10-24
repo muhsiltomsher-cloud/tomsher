@@ -35,6 +35,16 @@ interface Settings {
     instagram?: string;
     linkedin?: string;
     youtube?: string;
+    pinterest?: string;
+    tiktok?: string;
+    snapchat?: string;
+    whatsapp?: string;
+    telegram?: string;
+    github?: string;
+    dribbble?: string;
+    behance?: string;
+    medium?: string;
+    reddit?: string;
   };
   seo: {
     metaTitle?: string;

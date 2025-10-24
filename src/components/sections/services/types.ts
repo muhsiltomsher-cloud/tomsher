@@ -1,6 +1,7 @@
 export interface ServicesSectionData {
   title?: string
   subtitle?: string
+  serviceIds?: string[]
   services?: Array<{
     icon: string
     title: string
