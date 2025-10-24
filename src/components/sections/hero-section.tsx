@@ -113,7 +113,13 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ data }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const content = data || defaultContent;
+  const content = {
+    ...defaultContent,
+    ...data,
+    badges: data?.badges || defaultContent.badges,
+    heading: { ...defaultContent.heading, ...data?.heading },
+    worksLink: { ...defaultContent.worksLink, ...data?.worksLink }
+  };
 
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
