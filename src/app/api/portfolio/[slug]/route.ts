@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
+import connectDB from '@/lib/mongodb';
 import Portfolio from '@/models/Portfolio';
 
 export async function GET(
@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    await dbConnect();
+    await connectDB();
     
     const portfolio = await Portfolio.findOne({ 
       slug: params.slug,
