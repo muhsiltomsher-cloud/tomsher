@@ -143,6 +143,10 @@ export default function PageBuilderEditor() {
     }
   }, [status, router, pageId, notification])
 
+  useEffect(() => {
+    setPreviewData(sectionData)
+  }, [sectionData])
+
   const handleAddSection = () => {
     setSelectedSection(null)
     setSectionData({})
@@ -321,7 +325,6 @@ export default function PageBuilderEditor() {
 
     const handleChange = (newData: any) => {
       onChange(newData)
-      setPreviewData(newData)
     }
 
     return (
