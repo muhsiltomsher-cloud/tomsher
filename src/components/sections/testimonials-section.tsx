@@ -19,7 +19,7 @@ export function TestimonialsSection() {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const response = await fetch('/api/admin/testimonials')
+        const response = await fetch('/api/testimonials')
         if (response.ok) {
           const data = await response.json()
           setTestimonials(data.slice(0, 6))
