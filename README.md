@@ -190,6 +190,41 @@ The website is fully responsive and optimized for:
 4. Run tests and linting
 5. Submit a pull request
 
+## 🔧 Troubleshooting
+
+### MongoDB Connection Issues
+
+If you encounter MongoDB connection errors like `querySrv EBADNAME`, ensure that special characters in your MongoDB password are properly URL-encoded:
+
+- `@` should be encoded as `%40`
+- `!` should be encoded as `%21`
+- `#` should be encoded as `%23`
+- `$` should be encoded as `%24`
+- `%` should be encoded as `%25`
+- `&` should be encoded as `%26`
+
+Example:
+```
+# Incorrect (will cause connection errors)
+MONGODB_URI=mongodb+srv://user:pass@word!@cluster.mongodb.net/db
+
+# Correct (URL-encoded password)
+MONGODB_URI=mongodb+srv://user:pass%40word%21@cluster.mongodb.net/db
+```
+
+You can use Node.js to encode your password:
+```bash
+node -e "console.log(encodeURIComponent('your-password'))"
+```
+
+### Dynamic Checks (Checkboxes/Switches)
+
+All dynamic form controls (checkboxes, switches, toggles) are working correctly:
+- Material-UI Switch components in admin forms (Services, Portfolio, Testimonials, etc.)
+- Native HTML checkboxes in Page Builder (Pricing Section, etc.)
+- State changes persist correctly when saving to database
+- Live preview updates in real-time when toggling checkboxes
+
 ## 📄 License
 
 This project is proprietary software owned by Tomsher Technologies LLC.
