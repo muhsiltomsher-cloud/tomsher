@@ -123,6 +123,7 @@ export default async function HomePage() {
     const FAQSectionNew = (await import('@/components/sections/FAQSectionNew')).default
     const OurProcessSection = (await import('@/components/sections/OurProcessSection')).default
     const PortfolioSectionNew = (await import('@/components/sections/PortfolioSectionNew')).default
+    const { AchievementsSection } = await import('@/components/sections/achievements-section')
     
     return (
       <div className="min-h-screen">
@@ -135,6 +136,7 @@ export default async function HomePage() {
           <StatsSection />
           <OurProcessSection />
           <PortfolioSectionNew />
+          <AchievementsSection />
           <TestimonialsSection />
           <FAQSectionNew />
           <CTASection />
@@ -167,6 +169,7 @@ export default async function HomePage() {
               'FAQ': 'FAQSectionNew',
               'CLIENTS': 'ClientsSection',
               'PROCESS': 'OurProcessSection',
+              'ACHIEVEMENTS': 'AchievementsSection',
             }
             
             const componentName = sectionData.sectionKey 

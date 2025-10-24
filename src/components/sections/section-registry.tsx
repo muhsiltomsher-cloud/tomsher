@@ -19,6 +19,9 @@ import OurProcessSection from './OurProcessSection'
 import PortfolioSectionNew from './PortfolioSectionNew'
 import FeaturesSection2 from './FeaturesSection'
 import TeamSection from './TeamSection'
+import { AchievementsSection } from './achievements-section'
+import { ClientsSection as ClientsSectionOld } from './clients-section'
+import { DevelopmentProcessSection } from './development-process-section'
 
 export const sectionRegistry: Record<string, any> = {
   'hero-section': HeroSection,
@@ -48,12 +51,14 @@ export const sectionRegistry: Record<string, any> = {
   'TestimonialsShowcase': TestimonialsShowcase,
   'PortfolioShowcase': PortfolioShowcase,
   'ContactFormSection': ContactFormSection,
+  'AchievementsSection': AchievementsSection,
+  'DevelopmentProcessSection': DevelopmentProcessSection,
   
   'Hero': HeroSection,
   'About': AboutSection,
   'Services': ServicesSection,
   'Stats': StatsSection,
-  'Portfolio': PortfolioSection,
+  'Portfolio': PortfolioSectionNew,
   'Testimonials': TestimonialsSection,
   'CTA': OldCTASection,
   'Contact': ContactSection,
@@ -61,6 +66,10 @@ export const sectionRegistry: Record<string, any> = {
   'FAQ': FAQSectionNew,
   'OurProcess': OurProcessSection,
   'Features': FeaturesSection,
+  'Achievements': AchievementsSection,
+  'CLIENTS': ClientsSection,
+  'PROCESS': OurProcessSection,
+  'ACHIEVEMENTS': AchievementsSection,
 }
 
 export function getSectionComponent(componentName: string) {
