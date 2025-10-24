@@ -34,6 +34,7 @@ interface ClientsSectionProps {
     description?: string
     activeClients?: string
     countriesServed?: string
+    showOnHomePage?: boolean
     clients?: ClientLogo[]
   }
 }
@@ -45,6 +46,7 @@ const ClientsSection = ({ data }: ClientsSectionProps) => {
   const description = data?.description || "We've helped companies of all sizes achieve their digital transformation goals."
   const activeClients = data?.activeClients || '250+'
   const countriesServed = data?.countriesServed || '30+'
+  const clientCount = clientLogos.length
 
   return (
     <section className="bg-gradient-to-b from-gray-50 to-white">
@@ -70,6 +72,9 @@ const ClientsSection = ({ data }: ClientsSectionProps) => {
               </h2>
               <p className="text-base sm:text-lg md:text-xl text-gray-600">
                 {description}
+              </p>
+              <p className="text-base text-gray-500 mt-2">
+                Showcasing {clientCount} trusted partners
               </p>
             </div>
 

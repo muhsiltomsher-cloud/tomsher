@@ -78,6 +78,7 @@ const PortfolioSectionNew = ({ data }: PortfolioSectionNewProps) => {
   const title = data?.title || 'Portfolio'
   const subtitle = data?.subtitle || 'Crafting Digital Experiences That Leave Lasting Impressions'
   const description = data?.description || 'Explore our diverse portfolio of innovative digital solutions. Each project represents our commitment to excellence in design, functionality, and user experience.'
+  const portfolioCount = portfolioItems.length
 
   return (
     <section className="bg-gradient-to-b from-[#0f172a] to-[#1e293b]">
@@ -108,6 +109,9 @@ const PortfolioSectionNew = ({ data }: PortfolioSectionNewProps) => {
             <div className="lg:pt-10">
               <p className="text-xl leading-relaxed text-gray-300">
                 {description}
+              </p>
+              <p className="text-base text-gray-400 mt-4">
+                Showcasing {portfolioCount} innovative projects
               </p>
             </div>
           </div>

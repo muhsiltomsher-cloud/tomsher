@@ -228,6 +228,72 @@ const SiteSettingsSchema = new mongoose.Schema({
       icon: String,
     }],
   },
+  homeClients: {
+    title: {
+      type: String,
+      default: 'Our Clients',
+    },
+    subtitle: {
+      type: String,
+      default: 'Trusted by Industry Leaders Worldwide',
+    },
+    description: {
+      type: String,
+      default: "We've helped companies of all sizes achieve their digital transformation goals.",
+    },
+    showOnHomePage: {
+      type: Boolean,
+      default: true,
+    },
+    activeClients: {
+      type: String,
+      default: '250+',
+    },
+    countriesServed: {
+      type: String,
+      default: '30+',
+    },
+    clients: [{
+      name: String,
+      logo: String,
+      website: String,
+    }],
+  },
+  homeDevelopmentProcess: {
+    title: {
+      type: String,
+      default: 'Our Development Process',
+    },
+    subtitle: {
+      type: String,
+      default: 'Transforming Ideas into Digital Excellence',
+    },
+    description: {
+      type: String,
+      default: 'At Tomsher, we follow a systematic approach to web development that combines creativity with technical expertise. Our proven four-phase methodology ensures successful project delivery.',
+    },
+    steps: [{
+      number: String,
+      title: String,
+      description: String,
+      icon: String,
+    }],
+  },
+  homeAchievements: {
+    title: {
+      type: String,
+      default: 'Our Achievements',
+    },
+    subtitle: {
+      type: String,
+      default: 'Numbers that speak for themselves',
+    },
+    achievements: [{
+      icon: String,
+      value: String,
+      label: String,
+    }],
+  },
   homeCTA: {
     title: {
       type: String,
