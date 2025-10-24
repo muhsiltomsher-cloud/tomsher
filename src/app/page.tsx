@@ -68,6 +68,10 @@ export default async function HomePage() {
     const { TestimonialsSection } = await import('@/components/sections/testimonials-section')
     const { CTASection } = await import('@/components/sections/cta-section')
     const { ContactSection } = await import('@/components/sections/contact-section')
+    const ClientsSection = (await import('@/components/sections/ClientsSection')).default
+    const FAQSectionNew = (await import('@/components/sections/FAQSectionNew')).default
+    const OurProcessSection = (await import('@/components/sections/OurProcessSection')).default
+    const PortfolioSectionNew = (await import('@/components/sections/PortfolioSectionNew')).default
     
     return (
       <div className="min-h-screen">
@@ -76,9 +80,12 @@ export default async function HomePage() {
           <HeroSection />
           <AboutSection />
           <ServicesSection />
+          <ClientsSection />
           <StatsSection />
-          <PortfolioSection />
+          <OurProcessSection />
+          <PortfolioSectionNew />
           <TestimonialsSection />
+          <FAQSectionNew />
           <CTASection />
           <ContactSection />
         </main>
