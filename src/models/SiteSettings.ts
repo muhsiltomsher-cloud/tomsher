@@ -156,27 +156,62 @@ const SiteSettingsSchema = new mongoose.Schema({
     },
   },
   homeAbout: {
+    yearsText: {
+      type: String,
+      default: '14+',
+    },
+    yearsLabel: {
+      type: String,
+      default: 'years of excellence',
+    },
+    tagline1: {
+      type: String,
+      default: 'Creative Designs.',
+    },
+    tagline2: {
+      type: String,
+      default: 'Meaningful Impact.',
+    },
+    tagline3: {
+      type: String,
+      default: 'Measurable Result.',
+    },
+    sectionLabel: {
+      type: String,
+      default: 'About tomsher',
+    },
     title: {
       type: String,
-      default: 'About',
+      default: 'Web Design',
     },
-    highlight: {
+    titleHighlight: {
       type: String,
-      default: 'Tomsher Technologies',
+      default: 'Company in Dubai',
     },
     description: {
       type: String,
-      default: 'Tomsher is a leading web development company in Dubai, specializing in affordable website creation and custom eCommerce website development services in Dubai and UAE.',
+      default: 'Tomsher is a leading web software solutions provider based in the UAE, specializing in web design and digital marketing. As the best web design company in Dubai, we take pride in our expert in-house web development team, delivering top-notch, high-quality services to meet all your digital needs. We have been working with multinational, semi-government, corporate, SME and start-up companies from Middle East, Africa, Asia, Europe and America. Our majority of clients are from UAE and have clientele across 30+ countries around the globe.',
     },
-    features: [{
-      title: String,
-      description: String,
-      icon: String,
-    }],
-    stats: [{
-      number: String,
-      label: String,
-    }],
+    button1Text: {
+      type: String,
+      default: 'Learn More',
+    },
+    button1Link: {
+      type: String,
+      default: '/about',
+    },
+    button2Text: {
+      type: String,
+      default: 'Contact us today',
+    },
+    button2Link: {
+      type: String,
+      default: '/contact',
+    },
+    videoUrl: {
+      type: String,
+      default: 'https://player.vimeo.com/video/1044576275?background=1&autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0',
+    },
   },
   homeStats: {
     title: {

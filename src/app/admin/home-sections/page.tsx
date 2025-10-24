@@ -33,11 +33,20 @@ interface Settings {
     stats: Array<{ label: string; value: string }>;
   };
   homeAbout?: {
+    yearsText: string;
+    yearsLabel: string;
+    tagline1: string;
+    tagline2: string;
+    tagline3: string;
+    sectionLabel: string;
     title: string;
-    highlight: string;
+    titleHighlight: string;
     description: string;
-    features: Array<{ title: string; description: string; icon: string }>;
-    stats: Array<{ number: string; label: string }>;
+    button1Text: string;
+    button1Link: string;
+    button2Text: string;
+    button2Link: string;
+    videoUrl: string;
   };
   homeStats?: {
     title: string;
@@ -72,21 +81,20 @@ export default function HomeSectionsManagement() {
       ],
     },
     homeAbout: {
-      title: 'About',
-      highlight: 'Tomsher Technologies',
-      description: 'Tomsher is a leading web development company in Dubai, specializing in affordable website creation and custom eCommerce website development services in Dubai and UAE.',
-      features: [
-        { title: '0% Outsourcing Policy', description: 'We are a fully in-house team with experienced professionals', icon: 'Users' },
-        { title: 'World-class Services', description: 'Advanced technologies and proven methodologies', icon: 'Award' },
-        { title: 'Global Reach', description: 'Serving clients across 30+ countries worldwide', icon: 'Globe' },
-        { title: 'Results Driven', description: 'Focused on delivering measurable business outcomes', icon: 'Target' }
-      ],
-      stats: [
-        { number: '500+', label: 'Projects Completed' },
-        { number: '300+', label: 'Happy Clients' },
-        { number: '30+', label: 'Countries Served' },
-        { number: '10+', label: 'Years Experience' }
-      ],
+      yearsText: '14+',
+      yearsLabel: 'years of excellence',
+      tagline1: 'Creative Designs.',
+      tagline2: 'Meaningful Impact.',
+      tagline3: 'Measurable Result.',
+      sectionLabel: 'About tomsher',
+      title: 'Web Design',
+      titleHighlight: 'Company in Dubai',
+      description: 'Tomsher is a leading web software solutions provider based in the UAE, specializing in web design and digital marketing. As the best web design company in Dubai, we take pride in our expert in-house web development team, delivering top-notch, high-quality services to meet all your digital needs. We have been working with multinational, semi-government, corporate, SME and start-up companies from Middle East, Africa, Asia, Europe and America. Our majority of clients are from UAE and have clientele across 30+ countries around the globe.',
+      button1Text: 'Learn More',
+      button1Link: '/about',
+      button2Text: 'Contact us today',
+      button2Link: '/contact',
+      videoUrl: 'https://player.vimeo.com/video/1044576275?background=1&autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0',
     },
     homeStats: {
       title: 'Our Achievements',
@@ -355,6 +363,72 @@ export default function HomeSectionsManagement() {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
+                  label="Years Text (e.g., 14+)"
+                  value={settings.homeAbout?.yearsText || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, yearsText: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Years Label"
+                  value={settings.homeAbout?.yearsLabel || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, yearsLabel: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Tagline 1"
+                  value={settings.homeAbout?.tagline1 || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, tagline1: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Tagline 2"
+                  value={settings.homeAbout?.tagline2 || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, tagline2: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  label="Tagline 3"
+                  value={settings.homeAbout?.tagline3 || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, tagline3: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Section Label"
+                  value={settings.homeAbout?.sectionLabel || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, sectionLabel: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
                   label="Title"
                   value={settings.homeAbout?.title || ''}
                   onChange={(e) => setSettings({
@@ -364,13 +438,13 @@ export default function HomeSectionsManagement() {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <TextField
-                  label="Highlight Text"
-                  value={settings.homeAbout?.highlight || ''}
+                  label="Title Highlight"
+                  value={settings.homeAbout?.titleHighlight || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { ...settings.homeAbout!, highlight: e.target.value }
+                    homeAbout: { ...settings.homeAbout!, titleHighlight: e.target.value }
                   })}
                   fullWidth
                 />
@@ -385,7 +459,63 @@ export default function HomeSectionsManagement() {
                   })}
                   fullWidth
                   multiline
-                  rows={3}
+                  rows={4}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Button 1 Text"
+                  value={settings.homeAbout?.button1Text || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, button1Text: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Button 1 Link"
+                  value={settings.homeAbout?.button1Link || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, button1Link: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Button 2 Text"
+                  value={settings.homeAbout?.button2Text || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, button2Text: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Button 2 Link"
+                  value={settings.homeAbout?.button2Link || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, button2Link: e.target.value }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Video URL (Vimeo embed URL)"
+                  value={settings.homeAbout?.videoUrl || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeAbout: { ...settings.homeAbout!, videoUrl: e.target.value }
+                  })}
+                  fullWidth
+                  helperText="Enter the full Vimeo player embed URL"
                 />
               </Grid>
             </Grid>
