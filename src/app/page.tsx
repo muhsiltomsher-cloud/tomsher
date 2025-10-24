@@ -60,7 +60,7 @@ export default async function HomePage() {
   const data = await getHomePageData()
   
   if (!data || !data.sections || data.sections.length === 0) {
-    const { HeroSection } = await import('@/components/sections/hero-section')
+    const HeroSection = (await import('@/components/sections/hero-section')).default
     const { AboutSection } = await import('@/components/sections/about-section')
     const { ServicesSection } = await import('@/components/sections/services-section')
     const { StatsSection } = await import('@/components/sections/stats-section')

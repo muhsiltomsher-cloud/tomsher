@@ -11,7 +11,8 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:seed": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} scripts/seed.ts"
+    "db:seed": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} scripts/seed.ts",
+    "db:seed-hero": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} scripts/seed-hero.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
