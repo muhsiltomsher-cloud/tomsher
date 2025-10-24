@@ -35,6 +35,41 @@ async function getHomePageData() {
   }
 }
 
+async function getHeroData() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/settings`, {
+      cache: 'no-store',
+    })
+    if (response.ok) {
+      const data = await response.json()
+      return data.homeHero || null
+    }
+  } catch (error) {
+    console.error('Error fetching hero data:', error)
+  }
+  return null
+}
+
+async function getServicesData() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/admin/services`, {
+      cache: 'no-store',
+    })
+    if (response.ok) {
+      const data = await response.json()
+      return data
+        .filter((s: any) => s.icon && s.backgroundImage)
+        .sort((a: any, b: any) => a.order - b.order)
+        .slice(0, 5)
+    }
+  } catch (error) {
+    console.error('Error fetching services:', error)
+  }
+  return []
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getHomePageData()
   
@@ -58,6 +93,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const data = await getHomePageData()
+  const heroData = await getHeroData()
+  const servicesData = await getServicesData()
   
   if (!data || !data.sections || data.sections.length === 0) {
     const HeroSection = (await import('@/components/sections/hero-section')).default
@@ -77,9 +114,9 @@ export default async function HomePage() {
       <div className="min-h-screen">
         <Header />
         <main>
-          <HeroSection />
+          <HeroSection data={heroData} />
           <AboutSection />
-          <ServicesSection />
+          <ServicesSection data={servicesData} />
           <ClientsSection />
           <StatsSection />
           <OurProcessSection />
