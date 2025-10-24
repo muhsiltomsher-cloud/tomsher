@@ -7,6 +7,20 @@ async function getHomePageData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     
+    const sectionContentResponse = await fetch(`${baseUrl}/api/admin/section-content?pageType=HOME`, {
+      cache: 'no-store',
+    })
+    
+    if (sectionContentResponse.ok) {
+      const sectionContents = await sectionContentResponse.json()
+      if (sectionContents && sectionContents.length > 0) {
+        return {
+          page: { title: 'Home' },
+          sections: sectionContents
+        }
+      }
+    }
+    
     const pageContentResponse = await fetch(`${baseUrl}/api/page-content/HOME`, {
       cache: 'no-store',
     })
@@ -136,10 +150,29 @@ export default async function HomePage() {
       <Header />
       <main>
         {data.sections
-          .filter((sectionData: any) => sectionData.isVisible !== false)
+          .filter((sectionData: any) => sectionData.isActive !== false && sectionData.isVisible !== false)
           .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
           .map((sectionData: any) => {
-            const componentName = sectionData.componentName || sectionData.section?.componentName || sectionData.section?.name
+            const sectionKeyToComponent: Record<string, string> = {
+              'HERO': 'hero-section',
+              'ABOUT': 'about-section',
+              'SERVICES': 'services-section',
+              'STATS': 'stats-section',
+              'PORTFOLIO': 'PortfolioSectionNew',
+              'TESTIMONIALS': 'testimonials-section',
+              'CTA': 'cta-section',
+              'CONTACT': 'contact-section',
+              'FEATURES': 'features-section',
+              'TEAM': 'team-section',
+              'FAQ': 'FAQSectionNew',
+              'CLIENTS': 'ClientsSection',
+              'PROCESS': 'OurProcessSection',
+            }
+            
+            const componentName = sectionData.sectionKey 
+              ? sectionKeyToComponent[sectionData.sectionKey]
+              : (sectionData.componentName || sectionData.section?.componentName || sectionData.section?.name)
+            
             if (!componentName) {
               console.warn('Section missing componentName:', sectionData)
               return null
@@ -164,7 +197,7 @@ export default async function HomePage() {
             
             return (
               <SectionComponent
-                key={sectionData._id || sectionData.componentName}
+                key={sectionData._id || sectionData.sectionKey || sectionData.componentName}
                 {...props}
               />
             )

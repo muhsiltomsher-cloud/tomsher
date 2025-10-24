@@ -17,6 +17,8 @@ import ClientsSection from './ClientsSection'
 import FAQSectionNew from './FAQSectionNew'
 import OurProcessSection from './OurProcessSection'
 import PortfolioSectionNew from './PortfolioSectionNew'
+import FeaturesSection2 from './FeaturesSection'
+import TeamSection from './TeamSection'
 
 export const sectionRegistry: Record<string, any> = {
   'hero-section': HeroSection,
@@ -27,6 +29,8 @@ export const sectionRegistry: Record<string, any> = {
   'testimonials-section': TestimonialsSection,
   'cta-section': OldCTASection,
   'contact-section': ContactSection,
+  'features-section': FeaturesSection2,
+  'team-section': TeamSection,
   
   'HeroSection': HeroSection,
   'AboutSection': AboutSection,
