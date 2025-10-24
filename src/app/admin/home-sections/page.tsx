@@ -16,7 +16,7 @@ import {
   AccordionDetails,
   IconButton,
 } from '@mui/material';
-import { Save, ExpandMore, Add, Delete } from '@mui/icons-material';
+import { Save, ExpandMore, Add, Delete, CloudUpload } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -40,24 +40,20 @@ interface Settings {
     };
   };
   homeAbout?: {
-    leftContent: {
-      yearsText: string;
-      yearsLabel: string;
-      tagline1: string;
-      tagline2: string;
-      tagline3: string;
-    };
-    rightContent: {
-      sectionLabel: string;
-      title: string;
-      titleHighlight: string;
-      description: string;
-      button1Text: string;
-      button1Link: string;
-      button2Text: string;
-      button2Link: string;
-      videoUrl: string;
-    };
+    yearsText: string;
+    yearsLabel: string;
+    tagline1: string;
+    tagline2: string;
+    tagline3: string;
+    sectionLabel: string;
+    title: string;
+    titleHighlight: string;
+    description: string;
+    button1Text: string;
+    button1Link: string;
+    button2Text: string;
+    button2Link: string;
+    videoUrl: string;
   };
   homeStats?: {
     title: string;
@@ -91,6 +87,7 @@ interface Settings {
 export default function HomeSectionsManagement() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [settings, setSettings] = useState<Settings>({
     homeHero: {
       backgroundImage: '/images/bg-hero.png',
@@ -113,24 +110,20 @@ export default function HomeSectionsManagement() {
       }
     },
     homeAbout: {
-      leftContent: {
-        yearsText: '14+',
-        yearsLabel: 'years of excellence',
-        tagline1: 'Creative Designs.',
-        tagline2: 'Meaningful Impact.',
-        tagline3: 'Measurable Result.',
-      },
-      rightContent: {
-        sectionLabel: 'About tomsher',
-        title: 'Web Design',
-        titleHighlight: 'Company in Dubai',
-        description: 'Tomsher is a leading web software solutions provider based in the UAE, specializing in web design and digital marketing. As the best web design company in Dubai, we take pride in our expert in-house web development team, delivering top-notch, high-quality services to meet all your digital needs. We have been working with multinational, semi-government, corporate, SME and start-up companies from Middle East, Africa, Asia, Europe and America. Our majority of clients are from UAE and have clientele across 30+ countries around the globe.',
-        button1Text: 'Learn More',
-        button1Link: '/about',
-        button2Text: 'Contact us today',
-        button2Link: '/contact',
-        videoUrl: 'https://player.vimeo.com/video/1044576275?background=1&autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0',
-      },
+      yearsText: '14+',
+      yearsLabel: 'years of excellence',
+      tagline1: 'Creative Designs.',
+      tagline2: 'Meaningful Impact.',
+      tagline3: 'Measurable Result.',
+      sectionLabel: 'About tomsher',
+      title: 'Web Design',
+      titleHighlight: 'Company in Dubai',
+      description: 'Tomsher is a leading web software solutions provider based in the UAE, specializing in web design and digital marketing. As the best web design company in Dubai, we take pride in our expert in-house web development team, delivering top-notch, high-quality services to meet all your digital needs. We have been working with multinational, semi-government, corporate, SME and start-up companies from Middle East, Africa, Asia, Europe and America. Our majority of clients are from UAE and have clientele across 30+ countries around the globe.',
+      button1Text: 'Learn More',
+      button1Link: '/about',
+      button2Text: 'Contact us today',
+      button2Link: '/contact',
+      videoUrl: 'https://player.vimeo.com/video/1044576275?background=1&autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0',
     },
     homeStats: {
       title: 'Our Achievements',
@@ -198,6 +191,38 @@ export default function HomeSectionsManagement() {
       toast.error('Failed to load settings');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, field: 'backgroundImage') => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/admin/media/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSettings({
+          ...settings,
+          homeHero: { ...settings.homeHero!, [field]: data.url }
+        });
+        toast.success('Image uploaded successfully!');
+      } else {
+        toast.error('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error('Failed to upload image');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -275,6 +300,24 @@ export default function HomeSectionsManagement() {
                   })}
                   fullWidth
                 />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  startIcon={<CloudUpload />}
+                  disabled={uploading}
+                  fullWidth
+                  sx={{ height: '56px' }}
+                >
+                  {uploading ? 'Uploading...' : 'Upload Background Image'}
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, 'backgroundImage')}
+                  />
+                </Button>
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
@@ -484,26 +527,13 @@ export default function HomeSectionsManagement() {
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={3}>
-              {/* Left Content Section */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-                  Left Content
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
-              </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Years Text (e.g., 14+)"
-                  value={settings.homeAbout?.leftContent?.yearsText || ''}
+                  value={settings.homeAbout?.yearsText || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      leftContent: { 
-                        ...settings.homeAbout?.leftContent!, 
-                        yearsText: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, yearsText: e.target.value }
                   })}
                   fullWidth
                 />
@@ -511,16 +541,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Years Label"
-                  value={settings.homeAbout?.leftContent?.yearsLabel || ''}
+                  value={settings.homeAbout?.yearsLabel || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      leftContent: { 
-                        ...settings.homeAbout?.leftContent!, 
-                        yearsLabel: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, yearsLabel: e.target.value }
                   })}
                   fullWidth
                 />
@@ -528,16 +552,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={4}>
                 <TextField
                   label="Tagline 1"
-                  value={settings.homeAbout?.leftContent?.tagline1 || ''}
+                  value={settings.homeAbout?.tagline1 || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      leftContent: { 
-                        ...settings.homeAbout?.leftContent!, 
-                        tagline1: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, tagline1: e.target.value }
                   })}
                   fullWidth
                 />
@@ -545,16 +563,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={4}>
                 <TextField
                   label="Tagline 2"
-                  value={settings.homeAbout?.leftContent?.tagline2 || ''}
+                  value={settings.homeAbout?.tagline2 || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      leftContent: { 
-                        ...settings.homeAbout?.leftContent!, 
-                        tagline2: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, tagline2: e.target.value }
                   })}
                   fullWidth
                 />
@@ -562,41 +574,26 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={4}>
                 <TextField
                   label="Tagline 3"
-                  value={settings.homeAbout?.leftContent?.tagline3 || ''}
+                  value={settings.homeAbout?.tagline3 || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      leftContent: { 
-                        ...settings.homeAbout?.leftContent!, 
-                        tagline3: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, tagline3: e.target.value }
                   })}
                   fullWidth
                 />
               </Grid>
 
-              {/* Right Content Section */}
-              <Grid item xs={12} sx={{ mt: 3 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-                  Right Content
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
+              <Grid item xs={12} sx={{ mt: 2 }}>
+                <Divider />
               </Grid>
+
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Section Label"
-                  value={settings.homeAbout?.rightContent?.sectionLabel || ''}
+                  value={settings.homeAbout?.sectionLabel || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        sectionLabel: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, sectionLabel: e.target.value }
                   })}
                   fullWidth
                 />
@@ -604,16 +601,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Title"
-                  value={settings.homeAbout?.rightContent?.title || ''}
+                  value={settings.homeAbout?.title || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        title: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, title: e.target.value }
                   })}
                   fullWidth
                 />
@@ -621,16 +612,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12}>
                 <TextField
                   label="Title Highlight"
-                  value={settings.homeAbout?.rightContent?.titleHighlight || ''}
+                  value={settings.homeAbout?.titleHighlight || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        titleHighlight: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, titleHighlight: e.target.value }
                   })}
                   fullWidth
                 />
@@ -638,16 +623,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12}>
                 <TextField
                   label="Description"
-                  value={settings.homeAbout?.rightContent?.description || ''}
+                  value={settings.homeAbout?.description || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        description: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, description: e.target.value }
                   })}
                   fullWidth
                   multiline
@@ -657,16 +636,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Button 1 Text"
-                  value={settings.homeAbout?.rightContent?.button1Text || ''}
+                  value={settings.homeAbout?.button1Text || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        button1Text: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, button1Text: e.target.value }
                   })}
                   fullWidth
                 />
@@ -674,16 +647,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Button 1 Link"
-                  value={settings.homeAbout?.rightContent?.button1Link || ''}
+                  value={settings.homeAbout?.button1Link || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        button1Link: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, button1Link: e.target.value }
                   })}
                   fullWidth
                 />
@@ -691,16 +658,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Button 2 Text"
-                  value={settings.homeAbout?.rightContent?.button2Text || ''}
+                  value={settings.homeAbout?.button2Text || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        button2Text: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, button2Text: e.target.value }
                   })}
                   fullWidth
                 />
@@ -708,16 +669,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Button 2 Link"
-                  value={settings.homeAbout?.rightContent?.button2Link || ''}
+                  value={settings.homeAbout?.button2Link || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        button2Link: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, button2Link: e.target.value }
                   })}
                   fullWidth
                 />
@@ -725,16 +680,10 @@ export default function HomeSectionsManagement() {
               <Grid item xs={12}>
                 <TextField
                   label="Video URL (Vimeo embed URL)"
-                  value={settings.homeAbout?.rightContent?.videoUrl || ''}
+                  value={settings.homeAbout?.videoUrl || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeAbout: { 
-                      ...settings.homeAbout!, 
-                      rightContent: { 
-                        ...settings.homeAbout?.rightContent!, 
-                        videoUrl: e.target.value 
-                      }
-                    }
+                    homeAbout: { ...settings.homeAbout!, videoUrl: e.target.value }
                   })}
                   fullWidth
                   helperText="Enter the full Vimeo player embed URL"

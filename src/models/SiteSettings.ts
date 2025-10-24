@@ -312,6 +312,100 @@ const SiteSettingsSchema = new mongoose.Schema({
       default: 'Contact Us',
     },
   },
+  aboutHero: {
+    backgroundImage: {
+      type: String,
+      default: '/images/about-hero.jpg',
+    },
+    backgroundColor: {
+      type: String,
+      default: '#060044',
+    },
+    title: {
+      type: String,
+      default: 'About Us',
+    },
+    subtitle: {
+      type: String,
+      default: 'Leading Web Development Company in Dubai',
+    },
+    description: {
+      type: String,
+      default: 'Learn more about our mission, vision, and the team behind our success in web development and digital solutions.',
+    },
+  },
+  aboutMission: {
+    title: {
+      type: String,
+      default: 'Our Mission',
+    },
+    description: {
+      type: String,
+      default: 'To empower businesses with innovative digital solutions that drive growth and success.',
+    },
+    image: {
+      type: String,
+      default: '/images/mission.jpg',
+    },
+  },
+  aboutVision: {
+    title: {
+      type: String,
+      default: 'Our Vision',
+    },
+    description: {
+      type: String,
+      default: 'To be the leading web development company in the Middle East, known for excellence and innovation.',
+    },
+    image: {
+      type: String,
+      default: '/images/vision.jpg',
+    },
+  },
+  aboutValues: {
+    title: {
+      type: String,
+      default: 'Our Values',
+    },
+    subtitle: {
+      type: String,
+      default: 'What drives us forward',
+    },
+    values: [{
+      icon: String,
+      title: String,
+      description: String,
+    }],
+  },
+  aboutTeam: {
+    title: {
+      type: String,
+      default: 'Our Team',
+    },
+    subtitle: {
+      type: String,
+      default: 'Meet the experts behind Tomsher',
+    },
+    description: {
+      type: String,
+      default: 'Our team consists of talented developers, designers, and digital marketing experts dedicated to delivering exceptional results.',
+    },
+  },
+  aboutStats: {
+    title: {
+      type: String,
+      default: 'Our Achievements',
+    },
+    subtitle: {
+      type: String,
+      default: 'Numbers that speak for themselves',
+    },
+    stats: [{
+      label: String,
+      value: String,
+      icon: String,
+    }],
+  },
   footer: {
     description: {
       type: String,
