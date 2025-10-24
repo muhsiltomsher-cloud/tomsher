@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import FooterSEO from './FooterSEO'
 import { 
   MapPin, 
   Phone, 
@@ -83,292 +84,205 @@ export function Footer() {
     fetchData()
   }, [])
   return (
-    <footer className="bg-gray-900 text-white">
-      {/* Main Footer */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">
-          {/* Company Info */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="inline-block mb-6">
-              <Image
-                src={settings.logoFooter || settings.logoWhite || settings.logo || '/logo-white.svg'}
-                alt={settings.siteName || 'Tomsher Technologies'}
-                width={180}
-                height={45}
-                className="h-10 w-auto"
-              />
-            </Link>
-            {(settings.footer?.description || settings.description) && (
-              <p className="text-gray-300 mb-6 leading-relaxed">
-                {settings.footer?.description || settings.description}
-              </p>
+    <footer className="bg-[#0f172a] text-white">
+      <div className="container mx-auto px-4">
+        {/* Follow Us Section */}
+        <div className="flex flex-col items-center justify-center pb-12 sm:pb-16 pt-20">
+          <h3 className="text-2xl font-light mb-8">Follow Us</h3>
+          <div className="flex gap-6">
+            {settings.facebook && (
+              <a href={settings.facebook} target="_blank" rel="noopener noreferrer" className="group">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white/5 hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+                  <Facebook className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
+                </div>
+              </a>
             )}
-            
-            {/* Contact Info */}
-            <div className="space-y-3">
-              {settings.address && (
-                <div className="flex items-center space-x-3">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  <span className="text-gray-300">{settings.address}</span>
+            {settings.twitter && (
+              <a href={settings.twitter} target="_blank" rel="noopener noreferrer" className="group">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white/5 hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+                  <Twitter className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
                 </div>
-              )}
-              {settings.phone && (
-                <div className="flex items-center space-x-3">
-                  <Phone className="h-5 w-5 text-primary" />
-                  <span className="text-gray-300">{settings.phone}</span>
+              </a>
+            )}
+            {settings.linkedin && (
+              <a href={settings.linkedin} target="_blank" rel="noopener noreferrer" className="group">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white/5 hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+                  <Linkedin className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
                 </div>
-              )}
-              {settings.email && (
-                <div className="flex items-center space-x-3">
-                  <Mail className="h-5 w-5 text-primary" />
-                  <span className="text-gray-300">{settings.email}</span>
+              </a>
+            )}
+            {settings.instagram && (
+              <a href={settings.instagram} target="_blank" rel="noopener noreferrer" className="group">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white/5 hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+                  <Instagram className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
                 </div>
-              )}
-            </div>
+              </a>
+            )}
+            {settings.youtube && (
+              <a href={settings.youtube} target="_blank" rel="noopener noreferrer" className="group">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-white/5 hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
+                  <Youtube className="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors" />
+                </div>
+              </a>
+            )}
           </div>
-
-          {/* Dynamic Menu Columns */}
-          {menuItems.filter(item => item.children && item.children.length > 0).slice(0, 3).map((menuItem) => (
-            <div key={menuItem._id}>
-              <h3 className="text-lg font-semibold mb-6">{menuItem.label}</h3>
-              <ul className="space-y-3">
-                {menuItem.children?.map((child) => (
-                  <li key={child._id}>
-                    <Link
-                      href={child.url}
-                      className="text-gray-300 hover:text-primary transition-colors duration-200 flex items-center group"
-                    >
-                      <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                      {child.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-          
-          {/* Quick Links (if less than 3 menu groups) */}
-          {menuItems.filter(item => item.children && item.children.length > 0).length < 3 && (
-            <div>
-              <h3 className="text-lg font-semibold mb-6">Quick Links</h3>
-              <ul className="space-y-3">
-                {menuItems.filter(item => !item.children || item.children.length === 0).slice(0, 6).map((item) => (
-                  <li key={item._id}>
-                    <Link
-                      href={item.url}
-                      className="text-gray-300 hover:text-primary transition-colors duration-200 flex items-center group"
-                    >
-                      <ArrowRight className="h-3 w-3 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
 
-        {/* Newsletter */}
-        {(settings.footer?.showNewsletter !== false) && (
-          <div className="border-t border-gray-800 mt-12 pt-12">
-            <div className="grid lg:grid-cols-2 gap-8 items-center">
-              <div>
-                <h3 className="text-2xl font-bold mb-4">
-                  {settings.footer?.newsletterTitle || 'Stay Updated'}
-                </h3>
-                <p className="text-gray-300">
-                  {settings.footer?.newsletterDescription || 'Subscribe to our newsletter for the latest updates on web development trends and digital marketing insights.'}
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-primary"
-                />
-                <button className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-200 font-medium">
-                  Subscribe
-                </button>
-              </div>
-            </div>
+        {/* Footer Links Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div>
+            <h3 className="text-base sm:text-lg font-medium mb-4 sm:mb-6">Design Services</h3>
+            <ul className="space-y-3 sm:space-y-4">
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Corporate Branding
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Logo Designing
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Company Profile
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Digital Brochure
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Content Creation
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Photo/Video Production
+                </Link>
+              </li>
+            </ul>
           </div>
-        )}
-      </div>
 
-      {/* Bottom Footer */}
-      <div className="border-t border-gray-800">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
-            <div className="text-gray-300 text-sm">
-              © {new Date().getFullYear()} | {settings.footer?.copyrightText || `All rights reserved by ${settings.siteName || 'Tomsher Technologies'}.`}
-            </div>
-            
-            {/* Social Links */}
-            <div className="flex items-center space-x-4">
-              {settings.facebook && (
-                <Link
-                  href={settings.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Facebook className="h-5 w-5" />
+          <div>
+            <h3 className="text-base sm:text-lg font-medium mb-4 sm:mb-6">Development</h3>
+            <ul className="space-y-3 sm:space-y-4">
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Custom Website
                 </Link>
-              )}
-              {settings.twitter && (
-                <Link
-                  href={settings.twitter}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Twitter className="h-5 w-5" />
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  WordPress Website
                 </Link>
-              )}
-              {settings.instagram && (
-                <Link
-                  href={settings.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Instagram className="h-5 w-5" />
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  E-commerce Solutions
                 </Link>
-              )}
-              {settings.linkedin && (
-                <Link
-                  href={settings.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Linkedin className="h-5 w-5" />
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Mobile Applications
                 </Link>
-              )}
-              {settings.youtube && (
-                <Link
-                  href={settings.youtube}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Youtube className="h-5 w-5" />
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Web Applications
                 </Link>
-              )}
-              {settings.pinterest && (
-                <Link
-                  href={settings.pinterest}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Camera className="h-5 w-5" />
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Custom Products
                 </Link>
-              )}
-              {settings.tiktok && (
-                <Link
-                  href={settings.tiktok}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Music2 className="h-5 w-5" />
-                </Link>
-              )}
-              {settings.snapchat && (
-                <Link
-                  href={settings.snapchat}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Camera className="h-5 w-5" />
-                </Link>
-              )}
-              {settings.whatsapp && (
-                <Link
-                  href={settings.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <MessageCircle className="h-5 w-5" />
-                </Link>
-              )}
-              {settings.telegram && (
-                <Link
-                  href={settings.telegram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Send className="h-5 w-5" />
-                </Link>
-              )}
-              {settings.github && (
-                <Link
-                  href={settings.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Github className="h-5 w-5" />
-                </Link>
-              )}
-              {settings.dribbble && (
-                <Link
-                  href={settings.dribbble}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Dribbble className="h-5 w-5" />
-                </Link>
-              )}
-              {settings.behance && (
-                <Link
-                  href={settings.behance}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <Palette className="h-5 w-5" />
-                </Link>
-              )}
-              {settings.medium && (
-                <Link
-                  href={settings.medium}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <BookOpen className="h-5 w-5" />
-                </Link>
-              )}
-              {settings.reddit && (
-                <Link
-                  href={settings.reddit}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary transition-colors duration-200"
-                >
-                  <MessageSquare className="h-5 w-5" />
-                </Link>
-              )}
-            </div>
+              </li>
+            </ul>
+          </div>
 
-            {/* Legal Links */}
-            <div className="flex items-center space-x-6 text-sm">
-              <Link href="/privacy-policy" className="text-gray-300 hover:text-primary transition-colors duration-200">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-gray-300 hover:text-primary transition-colors duration-200">
-                Terms of Service
-              </Link>
-              <Link href="/cookies" className="text-gray-300 hover:text-primary transition-colors duration-200">
-                Cookies
-              </Link>
-            </div>
+          <div>
+            <h3 className="text-base sm:text-lg font-medium mb-4 sm:mb-6">Digital Services</h3>
+            <ul className="space-y-3 sm:space-y-4">
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Social Media Marketing
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Google PPC Ads
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Email Marketing
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Payment Integration
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Business Setup
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-base sm:text-lg font-medium mb-4 sm:mb-6">Solutions</h3>
+            <ul className="space-y-3 sm:space-y-4">
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Enterprise Solutions
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Small Business
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Healthcare
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Education
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-gray-400 hover:text-primary transition-colors">
+                  Retail
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Add FooterSEO Component */}
+        <FooterSEO />
+
+        {/* Bottom Bar */}
+        <div className="pt-8 pb-10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-400 text-sm">
+            © {new Date().getFullYear()} Tomsher Technologies LLC. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm">
+            <Link href="/privacy-policy" className="text-gray-400 hover:text-primary transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="text-gray-400 hover:text-primary transition-colors">
+              Terms of Service
+            </Link>
+            <Link href="/sitemap" className="text-gray-400 hover:text-primary transition-colors">
+              Sitemap
+            </Link>
           </div>
         </div>
       </div>
