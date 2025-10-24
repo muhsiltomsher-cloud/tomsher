@@ -28,8 +28,6 @@ export interface IPage extends Document {
   title: string;
   slug: string;
   description?: string;
-  metaTitle?: string;
-  metaDescription?: string;
   status: PageStatus;
   type: PageType;
   authorId: mongoose.Types.ObjectId;
@@ -85,12 +83,6 @@ const PageSchema = new Schema<IPage>(
       trim: true,
     },
     description: {
-      type: String,
-    },
-    metaTitle: {
-      type: String,
-    },
-    metaDescription: {
       type: String,
     },
     status: {

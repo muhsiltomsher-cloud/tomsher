@@ -5,72 +5,15 @@ const PageContentSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    enum: ['HOME', 'ABOUT', 'SERVICES', 'PORTFOLIO', 'BLOG', 'CONTACT', 'PRIVACY', 'TERMS'],
+    enum: ['PRIVACY', 'TERMS', 'REFUND', 'SHIPPING', 'DISCLAIMER'],
   },
   title: {
     type: String,
     required: true,
   },
-  subtitle: {
+  content: {
     type: String,
-  },
-  heroImage: {
-    type: String,
-  },
-  heroTitle: {
-    type: String,
-  },
-  heroSubtitle: {
-    type: String,
-  },
-  heroButtonText: {
-    type: String,
-  },
-  heroButtonUrl: {
-    type: String,
-  },
-  sections: [{
-    componentName: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      enum: ['TEXT', 'IMAGE_TEXT', 'STATS', 'FEATURES', 'CTA', 'FAQ', 'TEAM', 'TESTIMONIALS', 'HERO', 'ABOUT', 'SERVICES', 'CLIENTS', 'PORTFOLIO', 'PROCESS', 'CONTACT', 'CUSTOM'],
-      required: false,
-    },
-    title: String,
-    subtitle: String,
-    content: String,
-    image: String,
-    imagePosition: {
-      type: String,
-      enum: ['left', 'right', 'top', 'bottom'],
-      default: 'right',
-    },
-    items: [{
-      title: String,
-      description: String,
-      icon: String,
-      image: String,
-      value: String,
-    }],
-    buttonText: String,
-    buttonUrl: String,
-    isVisible: {
-      type: Boolean,
-      default: true,
-    },
-    order: {
-      type: Number,
-      default: 0,
-    },
-  }],
-  seo: {
-    metaTitle: String,
-    metaDescription: String,
-    keywords: [String],
-    ogImage: String,
+    required: true,
   },
   isActive: {
     type: Boolean,

@@ -1,14 +1,16 @@
 import mongoose from 'mongoose';
 
 const SEOSchema = new mongoose.Schema({
-  pageId: {
+  contentId: {
     type: mongoose.Schema.Types.ObjectId,
-    refPath: 'pageType',
+    required: true,
   },
-  pageType: {
+  contentType: {
     type: String,
-    enum: ['Page', 'CustomPage', 'BlogPost', 'Portfolio', 'Service'],
+    required: true,
+    enum: ['Page', 'BlogPost', 'Portfolio', 'Service', 'CustomPage'],
   },
+  
   metaTitle: {
     type: String,
     maxlength: 60,
@@ -21,6 +23,10 @@ const SEOSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  focusKeyword: {
+    type: String,
+  },
+  
   ogTitle: {
     type: String,
   },
@@ -34,6 +40,7 @@ const SEOSchema = new mongoose.Schema({
     type: String,
     default: 'website',
   },
+  
   twitterCard: {
     type: String,
     enum: ['summary', 'summary_large_image', 'app', 'player'],
@@ -48,6 +55,7 @@ const SEOSchema = new mongoose.Schema({
   twitterImage: {
     type: String,
   },
+  
   canonicalUrl: {
     type: String,
   },
@@ -58,9 +66,7 @@ const SEOSchema = new mongoose.Schema({
   structuredData: {
     type: mongoose.Schema.Types.Mixed,
   },
-  focusKeyword: {
-    type: String,
-  },
+  
   readabilityScore: {
     type: Number,
     min: 0,
@@ -74,6 +80,8 @@ const SEOSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
+
+SEOSchema.index({ contentId: 1, contentType: 1 }, { unique: true });
 
 const SEO = mongoose.models.SEO || mongoose.model('SEO', SEOSchema);
 
