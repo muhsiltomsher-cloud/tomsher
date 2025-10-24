@@ -103,6 +103,26 @@ export default function PageContentManagement() {
     }
   };
 
+  const handleInitializeHome = async () => {
+    try {
+      const response = await fetch('/api/admin/page-content/init-home', {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message || 'Home page initialized successfully!');
+        fetchPageContents();
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Failed to initialize home page');
+      }
+    } catch (error) {
+      console.error('Error initializing home page:', error);
+      toast.error('Failed to initialize home page');
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const url = editingItem
@@ -232,6 +252,13 @@ export default function PageContentManagement() {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleInitializeHome}
+            >
+              Initialize Home Page
+            </Button>
             <Button
               variant="contained"
               startIcon={<Add />}

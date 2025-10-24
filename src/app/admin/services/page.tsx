@@ -49,6 +49,8 @@ export default function ServicesManagement() {
     description: '',
     shortDescription: '',
     icon: '',
+    backgroundImage: '',
+    link: '',
     category: '',
     features: '',
     isActive: true,
@@ -113,6 +115,8 @@ export default function ServicesManagement() {
       description: (service as any).description || '',
       shortDescription: service.shortDescription || '',
       icon: (service as any).icon || '',
+      backgroundImage: (service as any).backgroundImage || '',
+      link: (service as any).link || '',
       category: service.category,
       features: (service as any).features?.join('\n') || '',
       isActive: service.isActive,
@@ -150,6 +154,8 @@ export default function ServicesManagement() {
       description: '',
       shortDescription: '',
       icon: '',
+      backgroundImage: '',
+      link: '',
       category: '',
       features: '',
       isActive: true,
@@ -271,11 +277,25 @@ export default function ServicesManagement() {
                 required
               />
               <TextField
-                label="Icon"
+                label="Icon URL"
                 value={formData.icon}
                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
                 fullWidth
-                helperText="Icon name (e.g., Code, Smartphone, ShoppingCart)"
+                helperText="Full URL to icon image (e.g., /images/services/icon.png)"
+              />
+              <TextField
+                label="Background Image URL"
+                value={formData.backgroundImage}
+                onChange={(e) => setFormData({ ...formData, backgroundImage: e.target.value })}
+                fullWidth
+                helperText="Full URL to background image (e.g., /images/gradient-1.png)"
+              />
+              <TextField
+                label="Link URL"
+                value={formData.link}
+                onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                fullWidth
+                helperText="Optional link URL (e.g., /services/web-development)"
               />
               <TextField
                 label="Features (one per line)"
