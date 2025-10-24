@@ -1,209 +1,172 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { 
-  Code, 
-  ShoppingCart, 
-  Smartphone, 
-  TrendingUp,
-  Search,
-  Palette,
-  Database,
-  Cloud,
-  ArrowRight
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import React, { useEffect, useState } from 'react';
 
-interface Service {
-  _id: string
-  title: string
-  description: string
-  features: string[]
-  icon: string
-  slug: string
+interface ServiceItemProps {
+  colSpan: string;
+  backgroundImage: string;
+  icon: string;
+  title: string;
+  description: string;
+  link?: string;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
+interface ServiceData {
+  _id: string;
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  backgroundImage: string;
+  link?: string;
+  order: number;
 }
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5
-    }
-  }
-}
+const ArrowSVG: React.FC = () => (
+  <svg
+    className="absolute top-6 right-6 w-8 h-8 text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M17 8l4 4m0 0l-4 4m4-4H3"
+    />
+  </svg>
+);
 
-const iconMap: Record<string, any> = {
-  Code,
-  ShoppingCart,
-  Smartphone,
-  TrendingUp,
-  Search,
-  Palette,
-  Database,
-  Cloud,
-}
+const ServiceItem: React.FC<ServiceItemProps> = ({ 
+  colSpan, 
+  backgroundImage, 
+  icon, 
+  title, 
+  description, 
+  link 
+}) => (
+  <div
+    className={`relative !bg-white/50 p-6 overflow-hidden group cursor-pointer ${colSpan} min-h-[350px] transition-all duration-500 ease-in-out rounded-lg hover:shadow-xl`}
+    style={{
+      backgroundImage: `url('${backgroundImage}')`,
+      backgroundPosition: "left center",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+    }}
+    onClick={() => link && window.open(link, '_blank')}
+  >
+    <ArrowSVG />
+    <div className="relative z-10 h-full flex flex-col justify-end">
+      <div className="transform transition-all duration-500 ease-in-out group-hover:-translate-y-8">
+        <img
+          src={icon}
+          alt={title}
+          className="w-[110px] h-auto bg-transparent rounded mb-4 transition-transform duration-500 object-contain group-hover:scale-90"
+        />
+        <h3 className="text-[30px] font-light text-primary mb-2 transition-all duration-500">
+          {title}
+        </h3>
+        <p className="text-black font-light text-[18px] transform transition-all duration-500 ease-in-out opacity-0 max-h-0 group-hover:max-h-[150px] group-hover:opacity-100">
+          {description}
+        </p>
+      </div>
+    </div>
+  </div>
+);
 
 export function ServicesSection() {
-  const [services, setServices] = useState<Service[]>([])
-  const [loading, setLoading] = useState(true)
+  const [services, setServices] = useState<ServiceData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await fetch('/api/admin/services')
+        const response = await fetch('/api/admin/services');
         if (response.ok) {
-          const data = await response.json()
-          setServices(data.slice(0, 6))
+          const data = await response.json();
+          const sortedServices = data
+            .filter((s: ServiceData) => s.icon && s.backgroundImage)
+            .sort((a: ServiceData, b: ServiceData) => a.order - b.order)
+            .slice(0, 5);
+          setServices(sortedServices);
         }
       } catch (error) {
-        console.error('Error fetching services:', error)
+        console.error('Error fetching services:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchServices()
-  }, [])
+    fetchServices();
+  }, []);
 
   if (loading) {
     return (
-      <section className="section-padding bg-white">
+      <section className="bg-[#bee1e6] py-[100px]">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <p className="text-gray-600">Loading services...</p>
           </div>
         </div>
       </section>
-    )
+    );
   }
 
   if (services.length === 0) {
-    return null
+    return null;
   }
 
   return (
-    <section className="section-padding bg-white">
+    <section className="bg-[#bee1e6] py-[100px]">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-16"
-        >
-          <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
-            Our <span className="gradient-text">Services</span>
-          </h2>
-          <p className="text-lg text-gray-600 leading-relaxed">
-            We offer comprehensive digital solutions to help your business thrive in the digital landscape. 
-            From web development to digital marketing, we've got you covered.
-          </p>
-        </motion.div>
+        <div id="services">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
+            <div className="mb-4 md:mb-0 space-y-[30px]">
+              <p className="text-[18px] pt-[15px] font-semibold text-primary leading-tight">
+                Services
+              </p>
+              <p className="text-5xl font-light text-black">
+                Sell here, there, and everywhere
+              </p>
+            </div>
 
-        {/* Services Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {services.map((service, index) => {
-            const IconComponent = iconMap[service.icon] || Code
-            return (
-              <motion.div
-                key={service._id}
-                variants={itemVariants}
-                className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 card-hover"
-              >
-                {/* Icon */}
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors duration-300">
-                  <IconComponent className="h-8 w-8 text-primary" />
-                </div>
-
-                {/* Content */}
-                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary transition-colors duration-300">
-                  {service.title}
-                </h3>
-                
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {service.description}
-                </p>
-
-                {/* Features */}
-                {service.features && service.features.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {service.features.map((feature, featureIndex) => (
-                      <span
-                        key={featureIndex}
-                        className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
-                      >
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                {/* CTA */}
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="inline-flex items-center text-primary font-medium hover:text-primary/80 transition-colors duration-200 group/link"
-                >
-                  Learn More
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover/link:translate-x-1 transition-transform duration-200" />
-                </Link>
-              </motion.div>
-            )
-          })}
-        </motion.div>
-
-        {/* CTA Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-center mt-16"
-        >
-          <div className="bg-gradient-to-r from-primary/10 to-blue-500/10 rounded-2xl p-8 lg:p-12">
-            <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
-              Ready to Transform Your Business?
-            </h3>
-            <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-              Let's discuss your project and create a custom solution that drives results. 
-              Our team is ready to bring your vision to life.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg">
-                <Link href="/contact">
-                  Get Free Consultation
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/portfolio">
-                  View Our Work
-                </Link>
-              </Button>
+            <div>
+              <p className="text-[20px] leading-normal text-gray-500">
+                Tomsher is a leading web software solutions provider based in the UAE, specializing in web design and digital marketing. As the best web design company in Dubai, we take pride in our expert in-house web development team, delivering top-notch, high-quality services to meet all your digital needs.
+              </p>
             </div>
           </div>
-        </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            <div className="md:col-span-3 lg:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+              {services.slice(0, 4).map((service: ServiceData, index: number) => (
+                <ServiceItem
+                  key={service._id}
+                  colSpan={index === 0 || index === 2 ? "col-span-2" : ""}
+                  backgroundImage={service.backgroundImage || ''}
+                  icon={service.icon || ''}
+                  title={`0${index + 1}. ${service.title}`}
+                  description={service.description}
+                  link={service.link}
+                />
+              ))}
+            </div>
+
+            {services.slice(4, 5).map((service: ServiceData) => (
+              <ServiceItem
+                key={service._id}
+                colSpan="md:col-span-1 flex flex-col justify-end items-start"
+                backgroundImage={service.backgroundImage || ''}
+                icon={service.icon || ''}
+                title={`05. ${service.title}`}
+                description={service.description}
+                link={service.link}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
-  )
+  );
 }

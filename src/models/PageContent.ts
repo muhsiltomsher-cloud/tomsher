@@ -30,9 +30,14 @@ const PageContentSchema = new mongoose.Schema({
     type: String,
   },
   sections: [{
+    componentName: {
+      type: String,
+      required: true,
+    },
     type: {
       type: String,
-      enum: ['TEXT', 'IMAGE_TEXT', 'STATS', 'FEATURES', 'CTA', 'FAQ', 'TEAM', 'TESTIMONIALS'],
+      enum: ['TEXT', 'IMAGE_TEXT', 'STATS', 'FEATURES', 'CTA', 'FAQ', 'TEAM', 'TESTIMONIALS', 'HERO', 'ABOUT', 'SERVICES', 'CLIENTS', 'PORTFOLIO', 'PROCESS', 'CONTACT', 'CUSTOM'],
+      required: false,
     },
     title: String,
     subtitle: String,
@@ -52,6 +57,10 @@ const PageContentSchema = new mongoose.Schema({
     }],
     buttonText: String,
     buttonUrl: String,
+    isVisible: {
+      type: Boolean,
+      default: true,
+    },
     order: {
       type: Number,
       default: 0,

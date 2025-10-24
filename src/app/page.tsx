@@ -98,35 +98,40 @@ export default async function HomePage() {
     <div className="min-h-screen">
       <Header />
       <main>
-        {data.sections.map((sectionData: any) => {
-          const section = sectionData.section
-          if (!section) return null
-          
-          const componentName = section.componentName || section.name
-          const SectionComponent = getSectionComponent(componentName)
-          
-          if (!SectionComponent) {
-            console.warn(`Section component not found: ${componentName}`)
-            return null
-          }
-          
-          const props: any = {}
-          
-          if (sectionData.content) {
-            props.data = sectionData.content
-          }
-          
-          if (sectionData.variant) {
-            props.variant = sectionData.variant
-          }
-          
-          return (
-            <SectionComponent
-              key={sectionData._id}
-              {...props}
-            />
-          )
-        })}
+        {data.sections
+          .filter((sectionData: any) => sectionData.isVisible !== false)
+          .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
+          .map((sectionData: any) => {
+            const componentName = sectionData.componentName || sectionData.section?.componentName || sectionData.section?.name
+            if (!componentName) {
+              console.warn('Section missing componentName:', sectionData)
+              return null
+            }
+            
+            const SectionComponent = getSectionComponent(componentName)
+            
+            if (!SectionComponent) {
+              console.warn(`Section component not found: ${componentName}`)
+              return null
+            }
+            
+            const props: any = {}
+            
+            if (sectionData.content) {
+              props.data = sectionData.content
+            }
+            
+            if (sectionData.variant) {
+              props.variant = sectionData.variant
+            }
+            
+            return (
+              <SectionComponent
+                key={sectionData._id || sectionData.componentName}
+                {...props}
+              />
+            )
+          })}
       </main>
       <Footer />
     </div>

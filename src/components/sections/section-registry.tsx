@@ -1,6 +1,6 @@
 import HeroSection from './hero-section'
 import { AboutSection } from './about-section'
-import { ServicesSection as OldServicesSection } from './services-section'
+import { ServicesSection } from './services-section'
 import { StatsSection } from './stats-section'
 import { PortfolioSection } from './portfolio-section'
 import { TestimonialsSection } from './testimonials-section'
@@ -21,41 +21,42 @@ import PortfolioSectionNew from './PortfolioSectionNew'
 export const sectionRegistry: Record<string, any> = {
   'hero-section': HeroSection,
   'about-section': AboutSection,
-  'services-section': OldServicesSection,
+  'services-section': ServicesSection,
   'stats-section': StatsSection,
   'portfolio-section': PortfolioSection,
   'testimonials-section': TestimonialsSection,
   'cta-section': OldCTASection,
   'contact-section': ContactSection,
   
-  'HeroSection': HeroSectionNew,
-  'ServicesSection': ServicesSectionNew,
-  'CTASection': CTASectionNew,
-  'FeaturesSection': FeaturesSection,
-  'TestimonialsShowcase': TestimonialsShowcase,
-  'PortfolioShowcase': PortfolioShowcase,
-  'ContactFormSection': ContactFormSection,
+  'HeroSection': HeroSection,
+  'AboutSection': AboutSection,
+  'ServicesSection': ServicesSection,
+  'StatsSection': StatsSection,
+  'PortfolioSection': PortfolioSection,
+  'TestimonialsSection': TestimonialsSection,
+  'CTASection': OldCTASection,
+  'ContactSection': ContactSection,
   'ClientsSection': ClientsSection,
   'FAQSectionNew': FAQSectionNew,
   'OurProcessSection': OurProcessSection,
   'PortfolioSectionNew': PortfolioSectionNew,
+  'FeaturesSection': FeaturesSection,
+  'TestimonialsShowcase': TestimonialsShowcase,
+  'PortfolioShowcase': PortfolioShowcase,
+  'ContactFormSection': ContactFormSection,
   
-  'Hero': HeroSectionNew,
-  'Services': ServicesSectionNew,
-  'CTA': CTASectionNew,
-  'Features': FeaturesSection,
-  'Testimonials': TestimonialsSection,
-  'TestimonialsNew': TestimonialsShowcase,
-  'Portfolio': PortfolioSection,
-  'PortfolioNew': PortfolioShowcase,
+  'Hero': HeroSection,
   'About': AboutSection,
+  'Services': ServicesSection,
   'Stats': StatsSection,
+  'Portfolio': PortfolioSection,
+  'Testimonials': TestimonialsSection,
+  'CTA': OldCTASection,
   'Contact': ContactSection,
-  'ContactForm': ContactFormSection,
   'Clients': ClientsSection,
   'FAQ': FAQSectionNew,
   'OurProcess': OurProcessSection,
-  'PortfolioShowcaseNew': PortfolioSectionNew,
+  'Features': FeaturesSection,
 }
 
 export function getSectionComponent(componentName: string) {
