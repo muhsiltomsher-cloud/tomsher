@@ -23,14 +23,21 @@ import toast from 'react-hot-toast';
 interface Settings {
   _id?: string;
   homeHero?: {
-    title: string;
-    highlight: string;
-    subtitle: string;
-    badge: string;
-    features: string[];
-    ctaPrimary: string;
-    ctaSecondary: string;
-    stats: Array<{ label: string; value: string }>;
+    backgroundImage: string;
+    backgroundColor: string;
+    badges: Array<{ text: string; icon: string }>;
+    heading: {
+      line1: string;
+      line1Highlight: string;
+      line2: string;
+      line2Highlight: string;
+      line3: string;
+    };
+    description: string;
+    worksLink: {
+      text: string;
+      url: string;
+    };
   };
   homeAbout?: {
     leftContent: {
@@ -86,19 +93,24 @@ export default function HomeSectionsManagement() {
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState<Settings>({
     homeHero: {
-      title: 'Transform Your Business with',
-      highlight: 'Innovative Web Solutions',
-      subtitle: 'Leading web development company in Dubai, UAE specializing in custom website development, eCommerce solutions, and digital marketing services.',
-      badge: '#1 Web Development Company in Dubai',
-      features: ['Custom Web Development', 'E-commerce Solutions', 'Digital Marketing', 'Mobile App Development'],
-      ctaPrimary: 'Get Started Today',
-      ctaSecondary: 'View Our Work',
-      stats: [
-        { label: 'Projects Completed', value: '500+' },
-        { label: 'Happy Clients', value: '300+' },
-        { label: 'Countries Served', value: '30+' },
-        { label: 'Years Experience', value: '10+' }
+      backgroundImage: '/images/bg-hero.png',
+      backgroundColor: '#060044',
+      badges: [
+        { text: 'Trusted by Global Brands', icon: 'globe' },
+        { text: 'Web Design & Digital Growth Experts', icon: 'rocket' }
       ],
+      heading: {
+        line1: 'Build Your',
+        line1Highlight: 'Digital World',
+        line2: 'with',
+        line2Highlight: 'Tomsher',
+        line3: 'Powerful, Scalable, Business-Driven Websites'
+      },
+      description: 'We create award-winning, conversion-focused websites and robust digital solutions for forward-thinking brands. Partner with Tomsher for next-level performance and scalable growth.',
+      worksLink: {
+        text: 'Our works',
+        url: '/works'
+      }
     },
     homeAbout: {
       leftContent: {
@@ -255,98 +267,42 @@ export default function HomeSectionsManagement() {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
-                  label="Title"
-                  value={settings.homeHero?.title || ''}
+                  label="Background Image URL"
+                  value={settings.homeHero?.backgroundImage || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeHero: { ...settings.homeHero!, title: e.target.value }
+                    homeHero: { ...settings.homeHero!, backgroundImage: e.target.value }
                   })}
                   fullWidth
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
-                  label="Highlight Text"
-                  value={settings.homeHero?.highlight || ''}
+                  label="Background Color"
+                  value={settings.homeHero?.backgroundColor || ''}
                   onChange={(e) => setSettings({
                     ...settings,
-                    homeHero: { ...settings.homeHero!, highlight: e.target.value }
+                    homeHero: { ...settings.homeHero!, backgroundColor: e.target.value }
                   })}
                   fullWidth
+                  helperText="Hex color code (e.g., #060044)"
                 />
               </Grid>
+              
               <Grid item xs={12}>
-                <TextField
-                  label="Subtitle"
-                  value={settings.homeHero?.subtitle || ''}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    homeHero: { ...settings.homeHero!, subtitle: e.target.value }
-                  })}
-                  fullWidth
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Badge Text"
-                  value={settings.homeHero?.badge || ''}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    homeHero: { ...settings.homeHero!, badge: e.target.value }
-                  })}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Features (comma-separated)"
-                  value={settings.homeHero?.features?.join(', ') || ''}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    homeHero: { ...settings.homeHero!, features: e.target.value.split(',').map(f => f.trim()) }
-                  })}
-                  fullWidth
-                  helperText="Separate features with commas"
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Primary CTA Text"
-                  value={settings.homeHero?.ctaPrimary || ''}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    homeHero: { ...settings.homeHero!, ctaPrimary: e.target.value }
-                  })}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Secondary CTA Text"
-                  value={settings.homeHero?.ctaSecondary || ''}
-                  onChange={(e) => setSettings({
-                    ...settings,
-                    homeHero: { ...settings.homeHero!, ctaSecondary: e.target.value }
-                  })}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" gutterBottom>Stats</Typography>
-                {settings.homeHero?.stats?.map((stat, index) => (
+                <Typography variant="subtitle2" gutterBottom>Badges</Typography>
+                {settings.homeHero?.badges?.map((badge, index) => (
                   <Grid container spacing={2} key={index} sx={{ mb: 2 }}>
                     <Grid item xs={5}>
                       <TextField
-                        label="Value"
-                        value={stat.value}
+                        label="Badge Text"
+                        value={badge.text}
                         onChange={(e) => {
-                          const newStats = [...(settings.homeHero?.stats || [])];
-                          newStats[index].value = e.target.value;
+                          const newBadges = [...(settings.homeHero?.badges || [])];
+                          newBadges[index].text = e.target.value;
                           setSettings({
                             ...settings,
-                            homeHero: { ...settings.homeHero!, stats: newStats }
+                            homeHero: { ...settings.homeHero!, badges: newBadges }
                           });
                         }}
                         fullWidth
@@ -355,14 +311,14 @@ export default function HomeSectionsManagement() {
                     </Grid>
                     <Grid item xs={6}>
                       <TextField
-                        label="Label"
-                        value={stat.label}
+                        label="Icon (globe or rocket)"
+                        value={badge.icon}
                         onChange={(e) => {
-                          const newStats = [...(settings.homeHero?.stats || [])];
-                          newStats[index].label = e.target.value;
+                          const newBadges = [...(settings.homeHero?.badges || [])];
+                          newBadges[index].icon = e.target.value;
                           setSettings({
                             ...settings,
-                            homeHero: { ...settings.homeHero!, stats: newStats }
+                            homeHero: { ...settings.homeHero!, badges: newBadges }
                           });
                         }}
                         fullWidth
@@ -372,10 +328,10 @@ export default function HomeSectionsManagement() {
                     <Grid item xs={1}>
                       <IconButton
                         onClick={() => {
-                          const newStats = settings.homeHero?.stats?.filter((_, i) => i !== index) || [];
+                          const newBadges = settings.homeHero?.badges?.filter((_, i) => i !== index) || [];
                           setSettings({
                             ...settings,
-                            homeHero: { ...settings.homeHero!, stats: newStats }
+                            homeHero: { ...settings.homeHero!, badges: newBadges }
                           });
                         }}
                         color="error"
@@ -388,17 +344,134 @@ export default function HomeSectionsManagement() {
                 <Button
                   startIcon={<Add />}
                   onClick={() => {
-                    const newStats = [...(settings.homeHero?.stats || []), { value: '', label: '' }];
+                    const newBadges = [...(settings.homeHero?.badges || []), { text: '', icon: 'globe' }];
                     setSettings({
                       ...settings,
-                      homeHero: { ...settings.homeHero!, stats: newStats }
+                      homeHero: { ...settings.homeHero!, badges: newBadges }
                     });
                   }}
                   variant="outlined"
                   size="small"
                 >
-                  Add Stat
+                  Add Badge
                 </Button>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>Heading</Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Line 1"
+                  value={settings.homeHero?.heading?.line1 || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeHero: { 
+                      ...settings.homeHero!, 
+                      heading: { ...settings.homeHero?.heading!, line1: e.target.value }
+                    }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Line 1 Highlight"
+                  value={settings.homeHero?.heading?.line1Highlight || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeHero: { 
+                      ...settings.homeHero!, 
+                      heading: { ...settings.homeHero?.heading!, line1Highlight: e.target.value }
+                    }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Line 2"
+                  value={settings.homeHero?.heading?.line2 || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeHero: { 
+                      ...settings.homeHero!, 
+                      heading: { ...settings.homeHero?.heading!, line2: e.target.value }
+                    }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Line 2 Highlight"
+                  value={settings.homeHero?.heading?.line2Highlight || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeHero: { 
+                      ...settings.homeHero!, 
+                      heading: { ...settings.homeHero?.heading!, line2Highlight: e.target.value }
+                    }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Line 3"
+                  value={settings.homeHero?.heading?.line3 || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeHero: { 
+                      ...settings.homeHero!, 
+                      heading: { ...settings.homeHero?.heading!, line3: e.target.value }
+                    }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  label="Description"
+                  value={settings.homeHero?.description || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeHero: { ...settings.homeHero!, description: e.target.value }
+                  })}
+                  fullWidth
+                  multiline
+                  rows={3}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Works Link Text"
+                  value={settings.homeHero?.worksLink?.text || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeHero: { 
+                      ...settings.homeHero!, 
+                      worksLink: { ...settings.homeHero?.worksLink!, text: e.target.value }
+                    }
+                  })}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  label="Works Link URL"
+                  value={settings.homeHero?.worksLink?.url || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    homeHero: { 
+                      ...settings.homeHero!, 
+                      worksLink: { ...settings.homeHero?.worksLink!, url: e.target.value }
+                    }
+                  })}
+                  fullWidth
+                />
               </Grid>
             </Grid>
           </AccordionDetails>
