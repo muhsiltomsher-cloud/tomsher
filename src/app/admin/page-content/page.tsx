@@ -24,11 +24,8 @@ import {
   Switch,
   FormControlLabel,
   MenuItem,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from '@mui/material';
-import { Add, Edit, Delete, ExpandMore } from '@mui/icons-material';
+import { Add, Edit, Delete } from '@mui/icons-material';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -36,31 +33,16 @@ interface PageContent {
   _id: string;
   pageType: string;
   title: string;
-  subtitle?: string;
-  heroImage?: string;
-  heroTitle?: string;
-  heroSubtitle?: string;
-  heroButtonText?: string;
-  heroButtonUrl?: string;
-  sections: any[];
-  seo?: {
-    metaTitle?: string;
-    metaDescription?: string;
-    keywords?: string[];
-    ogImage?: string;
-  };
+  content: string;
   isActive: boolean;
 }
 
 const PAGE_TYPES = [
-  { value: 'HOME', label: 'Home Page' },
-  { value: 'ABOUT', label: 'About Page' },
-  { value: 'SERVICES', label: 'Services Listing' },
-  { value: 'PORTFOLIO', label: 'Portfolio Listing' },
-  { value: 'BLOG', label: 'Blog Listing' },
-  { value: 'CONTACT', label: 'Contact Page' },
   { value: 'PRIVACY', label: 'Privacy Policy' },
-  { value: 'TERMS', label: 'Terms of Service' },
+  { value: 'TERMS', label: 'Terms and Conditions' },
+  { value: 'REFUND', label: 'Refund Policy' },
+  { value: 'SHIPPING', label: 'Shipping Policy' },
+  { value: 'DISCLAIMER', label: 'Disclaimer' },
 ];
 
 export default function PageContentManagement() {
@@ -69,18 +51,9 @@ export default function PageContentManagement() {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingItem, setEditingItem] = useState<PageContent | null>(null);
   const [formData, setFormData] = useState({
-    pageType: 'HOME',
+    pageType: 'PRIVACY',
     title: '',
-    subtitle: '',
-    heroImage: '',
-    heroTitle: '',
-    heroSubtitle: '',
-    heroButtonText: '',
-    heroButtonUrl: '',
-    metaTitle: '',
-    metaDescription: '',
-    keywords: '',
-    ogImage: '',
+    content: '',
     isActive: true,
   });
 
@@ -103,25 +76,6 @@ export default function PageContentManagement() {
     }
   };
 
-  const handleInitializeHome = async () => {
-    try {
-      const response = await fetch('/api/admin/page-content/init-home', {
-        method: 'POST',
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        toast.success(data.message || 'Home page initialized successfully!');
-        fetchPageContents();
-      } else {
-        const error = await response.json();
-        toast.error(error.error || 'Failed to initialize home page');
-      }
-    } catch (error) {
-      console.error('Error initializing home page:', error);
-      toast.error('Failed to initialize home page');
-    }
-  };
 
   const handleSubmit = async () => {
     try {
@@ -132,20 +86,8 @@ export default function PageContentManagement() {
       const payload = {
         pageType: formData.pageType,
         title: formData.title,
-        subtitle: formData.subtitle,
-        heroImage: formData.heroImage,
-        heroTitle: formData.heroTitle,
-        heroSubtitle: formData.heroSubtitle,
-        heroButtonText: formData.heroButtonText,
-        heroButtonUrl: formData.heroButtonUrl,
-        seo: {
-          metaTitle: formData.metaTitle,
-          metaDescription: formData.metaDescription,
-          keywords: formData.keywords.split(',').map(k => k.trim()).filter(k => k),
-          ogImage: formData.ogImage,
-        },
+        content: formData.content,
         isActive: formData.isActive,
-        sections: editingItem?.sections || [],
       };
 
       const response = await fetch(url, {
@@ -172,16 +114,7 @@ export default function PageContentManagement() {
     setFormData({
       pageType: item.pageType,
       title: item.title,
-      subtitle: item.subtitle || '',
-      heroImage: item.heroImage || '',
-      heroTitle: item.heroTitle || '',
-      heroSubtitle: item.heroSubtitle || '',
-      heroButtonText: item.heroButtonText || '',
-      heroButtonUrl: item.heroButtonUrl || '',
-      metaTitle: item.seo?.metaTitle || '',
-      metaDescription: item.seo?.metaDescription || '',
-      keywords: item.seo?.keywords?.join(', ') || '',
-      ogImage: item.seo?.ogImage || '',
+      content: item.content,
       isActive: item.isActive,
     });
     setOpenDialog(true);
@@ -211,18 +144,9 @@ export default function PageContentManagement() {
     setOpenDialog(false);
     setEditingItem(null);
     setFormData({
-      pageType: 'HOME',
+      pageType: 'PRIVACY',
       title: '',
-      subtitle: '',
-      heroImage: '',
-      heroTitle: '',
-      heroSubtitle: '',
-      heroButtonText: '',
-      heroButtonUrl: '',
-      metaTitle: '',
-      metaDescription: '',
-      keywords: '',
-      ogImage: '',
+      content: '',
       isActive: true,
     });
   };
@@ -245,20 +169,13 @@ export default function PageContentManagement() {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Box>
             <Typography variant="h4" component="h1">
-              Page Content Management
+              Static Page Content
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              Manage dynamic content for all pages
+              Manage Terms, Privacy Policy, and other static pages
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleInitializeHome}
-            >
-              Initialize Home Page
-            </Button>
             <Button
               variant="contained"
               startIcon={<Add />}
@@ -278,7 +195,6 @@ export default function PageContentManagement() {
               <TableRow>
                 <TableCell>Page Type</TableCell>
                 <TableCell>Title</TableCell>
-                <TableCell>Hero Section</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
@@ -286,7 +202,7 @@ export default function PageContentManagement() {
             <TableBody>
               {pageContents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center">
+                  <TableCell colSpan={4} align="center">
                     <Typography variant="body2" color="text.secondary" sx={{ py: 4 }}>
                       No page content yet. Click "Add Page Content" to get started.
                     </Typography>
@@ -302,22 +218,6 @@ export default function PageContentManagement() {
                       <Typography variant="body2" fontWeight="bold">
                         {item.title}
                       </Typography>
-                      {item.subtitle && (
-                        <Typography variant="caption" color="text.secondary">
-                          {item.subtitle}
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {item.heroTitle ? (
-                        <Typography variant="caption">
-                          {item.heroTitle}
-                        </Typography>
-                      ) : (
-                        <Typography variant="caption" color="text.secondary">
-                          No hero section
-                        </Typography>
-                      )}
                     </TableCell>
                     <TableCell>
                       <Chip
@@ -361,108 +261,24 @@ export default function PageContentManagement() {
                 ))}
               </TextField>
 
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                  <Typography variant="subtitle1" fontWeight="bold">Basic Information</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <TextField
-                      label="Page Title"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      fullWidth
-                      required
-                    />
-                    <TextField
-                      label="Subtitle"
-                      value={formData.subtitle}
-                      onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
-                      fullWidth
-                      multiline
-                      rows={2}
-                    />
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
+              <TextField
+                label="Page Title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                fullWidth
+                required
+              />
 
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                  <Typography variant="subtitle1" fontWeight="bold">Hero Section</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <TextField
-                      label="Hero Image URL"
-                      value={formData.heroImage}
-                      onChange={(e) => setFormData({ ...formData, heroImage: e.target.value })}
-                      fullWidth
-                    />
-                    <TextField
-                      label="Hero Title"
-                      value={formData.heroTitle}
-                      onChange={(e) => setFormData({ ...formData, heroTitle: e.target.value })}
-                      fullWidth
-                    />
-                    <TextField
-                      label="Hero Subtitle"
-                      value={formData.heroSubtitle}
-                      onChange={(e) => setFormData({ ...formData, heroSubtitle: e.target.value })}
-                      fullWidth
-                      multiline
-                      rows={2}
-                    />
-                    <TextField
-                      label="Hero Button Text"
-                      value={formData.heroButtonText}
-                      onChange={(e) => setFormData({ ...formData, heroButtonText: e.target.value })}
-                      fullWidth
-                    />
-                    <TextField
-                      label="Hero Button URL"
-                      value={formData.heroButtonUrl}
-                      onChange={(e) => setFormData({ ...formData, heroButtonUrl: e.target.value })}
-                      fullWidth
-                    />
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
-
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMore />}>
-                  <Typography variant="subtitle1" fontWeight="bold">SEO Settings</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <TextField
-                      label="Meta Title"
-                      value={formData.metaTitle}
-                      onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
-                      fullWidth
-                    />
-                    <TextField
-                      label="Meta Description"
-                      value={formData.metaDescription}
-                      onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
-                      fullWidth
-                      multiline
-                      rows={3}
-                    />
-                    <TextField
-                      label="Keywords (comma-separated)"
-                      value={formData.keywords}
-                      onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
-                      fullWidth
-                    />
-                    <TextField
-                      label="OG Image URL"
-                      value={formData.ogImage}
-                      onChange={(e) => setFormData({ ...formData, ogImage: e.target.value })}
-                      fullWidth
-                    />
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
+              <TextField
+                label="Content"
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                fullWidth
+                required
+                multiline
+                rows={15}
+                helperText="You can use HTML for formatting"
+              />
 
               <FormControlLabel
                 control={

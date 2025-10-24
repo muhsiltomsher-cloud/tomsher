@@ -1,28 +1,5 @@
 import mongoose from 'mongoose';
 
-const CustomPageSectionSchema = new mongoose.Schema({
-  sectionId: {
-    type: String,
-    required: true,
-  },
-  componentName: {
-    type: String,
-    required: true,
-  },
-  order: {
-    type: Number,
-    default: 0,
-  },
-  data: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {},
-  },
-  isVisible: {
-    type: Boolean,
-    default: true,
-  },
-});
-
 const CustomPageSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -36,20 +13,12 @@ const CustomPageSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  sections: [CustomPageSectionSchema],
+  content: {
+    type: String,
+  },
   isPublished: {
     type: Boolean,
     default: false,
-  },
-  seoTitle: {
-    type: String,
-  },
-  seoDescription: {
-    type: String,
-  },
-  seoKeywords: {
-    type: [String],
-    default: [],
   },
 }, {
   timestamps: true,

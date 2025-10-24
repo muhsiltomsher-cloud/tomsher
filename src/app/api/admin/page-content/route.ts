@@ -29,10 +29,24 @@ export async function POST(request: Request) {
 
     await connectDB();
     const data = await request.json();
+    
+    const existingContent = await PageContent.findOne({
+      pageType: data.pageType,
+    });
+    
+    if (existingContent) {
+      const updated = await PageContent.findByIdAndUpdate(
+        existingContent._id,
+        data,
+        { new: true }
+      );
+      return NextResponse.json(updated);
+    }
+    
     const pageContent = await PageContent.create(data);
     return NextResponse.json(pageContent, { status: 201 });
   } catch (error) {
-    console.error('Error creating page content:', error);
+    console.error('Error creating/updating page content:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
