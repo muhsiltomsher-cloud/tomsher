@@ -1,181 +1,242 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { 
-  ArrowRight, 
-  Play, 
-  CheckCircle, 
-  Star,
-  Users,
-  Globe,
-  Award
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+
+const ArrowRight = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
+const GlobeIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={14}
+    height={14}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    focusable="false"
+    {...props}
+  >
+    <circle cx="12" cy="12" r="10" />
+    <ellipse cx="12" cy="12" rx="10" ry="4" />
+    <path d="M2 12a10 10 0 0 0 20 0" />
+  </svg>
+);
+
+const RocketIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={14}
+    height={14}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    focusable="false"
+    {...props}
+  >
+    <path d="M21 3a2.83 2.83 0 0 1-6.58 1.04L7 10.46V13H9.54l6.43-7.41A2.83 2.83 0 0 1 21 3z"/>
+    <path d="M14 10l-2.51 2.51a7.433 7.433 0 0 1-6.32 2.07l6.85-6.85"/>
+    <path d="M15 15l2 2m1-1l-2-2" />
+  </svg>
+);
+
+interface Badge {
+  text: string;
+  icon: string;
+}
 
 interface HeroContent {
-  title: string
-  highlight: string
-  subtitle: string
-  badge: string
-  features: string[]
-  ctaPrimary: string
-  ctaSecondary: string
-  stats: Array<{ label: string; value: string }>
+  backgroundImage: string;
+  backgroundColor: string;
+  badges: Badge[];
+  heading: {
+    line1: string;
+    line1Highlight: string;
+    line2: string;
+    line2Highlight: string;
+    line3: string;
+  };
+  description: string;
+  worksLink: {
+    text: string;
+    url: string;
+  };
 }
 
 const defaultContent: HeroContent = {
-  title: 'Transform Your Business with',
-  highlight: 'Innovative Web Solutions',
-  subtitle: 'Leading web development company in Dubai, UAE specializing in custom website development, eCommerce solutions, and digital marketing services.',
-  badge: '#1 Web Development Company in Dubai',
-  features: [
-    'Custom Web Development',
-    'E-commerce Solutions', 
-    'Digital Marketing',
-    'Mobile App Development'
+  backgroundImage: '/images/bg-hero.png',
+  backgroundColor: '#060044',
+  badges: [
+    { text: 'Trusted by Global Brands', icon: 'globe' },
+    { text: 'Web Design & Digital Growth Experts', icon: 'rocket' }
   ],
-  stats: [
-    { label: 'Projects Completed', value: '500+' },
-    { label: 'Happy Clients', value: '300+' },
-    { label: 'Countries Served', value: '30+' },
-    { label: 'Years Experience', value: '10+' }
-  ],
-  ctaPrimary: 'Get Started Today',
-  ctaSecondary: 'View Our Work'
-}
+  heading: {
+    line1: 'Build Your',
+    line1Highlight: 'Digital World',
+    line2: 'with',
+    line2Highlight: 'Tomsher',
+    line3: 'Powerful, Scalable, Business-Driven Websites'
+  },
+  description: 'We create award-winning, conversion-focused websites and robust digital solutions for forward-thinking brands. Partner with Tomsher for next-level performance and scalable growth.',
+  worksLink: {
+    text: 'Our works',
+    url: '/works'
+  }
+};
 
-export function HeroSection() {
-  const [content, setContent] = useState<HeroContent>(defaultContent)
-  const [loading, setLoading] = useState(true)
+const HeroSection: React.FC = () => {
+  const [content, setContent] = useState<HeroContent>(defaultContent);
+  const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/settings')
+        const response = await fetch('/api/settings');
         if (response.ok) {
-          const data = await response.json()
+          const data = await response.json();
           if (data.homeHero) {
             setContent({
-              title: data.homeHero.title || defaultContent.title,
-              highlight: data.homeHero.highlight || defaultContent.highlight,
-              subtitle: data.homeHero.subtitle || defaultContent.subtitle,
-              badge: data.homeHero.badge || defaultContent.badge,
-              features: data.homeHero.features || defaultContent.features,
-              ctaPrimary: data.homeHero.ctaPrimary || defaultContent.ctaPrimary,
-              ctaSecondary: data.homeHero.ctaSecondary || defaultContent.ctaSecondary,
-              stats: data.homeHero.stats && data.homeHero.stats.length > 0 
-                ? data.homeHero.stats 
-                : defaultContent.stats,
-            })
+              backgroundImage: data.homeHero.backgroundImage || defaultContent.backgroundImage,
+              backgroundColor: data.homeHero.backgroundColor || defaultContent.backgroundColor,
+              badges: data.homeHero.badges && data.homeHero.badges.length > 0 
+                ? data.homeHero.badges 
+                : defaultContent.badges,
+              heading: data.homeHero.heading || defaultContent.heading,
+              description: data.homeHero.description || defaultContent.description,
+              worksLink: data.homeHero.worksLink || defaultContent.worksLink,
+            });
           }
         }
       } catch (error) {
-        console.error('Error fetching hero content:', error)
+        console.error('Error fetching hero content:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
+        setTimeout(() => setIsVisible(true), 100);
       }
-    }
+    };
 
-    fetchContent()
-  }, [])
+    fetchContent();
+  }, []);
+
+  const renderIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'globe':
+        return <GlobeIcon />;
+      case 'rocket':
+        return <RocketIcon />;
+      default:
+        return <GlobeIcon />;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ height: 900, backgroundColor: content.backgroundColor }}
+      />
+    );
+  }
 
   return (
-    <section className="relative min-h-screen flex items-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-      </div>
+    <div
+      className="relative w-full overflow-hidden"
+      style={{ height: 900, backgroundColor: content.backgroundColor }}
+    >
+      <div
+        className={`absolute inset-0 bg-cover bg-center z-0 transition-all duration-1000 ${
+          isVisible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
+        }`}
+        style={{
+          backgroundImage: `url('${content.backgroundImage}')`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+        }}
+        aria-hidden={true}
+      />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
-          {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="space-y-8"
-          >
-            {/* Badge */}
-            <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
-              <Award className="h-4 w-4" />
-              <span>{content.badge}</span>
-            </div>
+      <div className="container mx-auto px-4 relative z-[2] h-full w-full flex flex-col justify-end">
+        <div className="w-full pb-[60px] relative">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+            <div>
+              <div
+                className={`flex flex-wrap gap-4 mb-6 transition-all duration-700 delay-300 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+                }`}
+                aria-label="Key selling points"
+              >
+                {content.badges.map((badge, index) => (
+                  <span 
+                    key={index}
+                    className="flex items-center gap-2 bg-black/20 backdrop-blur-lg border border-white/10 shadow-lg text-white text-xs font-semibold px-3 py-1.5 rounded-full"
+                  >
+                    {renderIcon(badge.icon)}
+                    {badge.text}
+                  </span>
+                ))}
+              </div>
 
-            {/* Title */}
-            <div className="space-y-4">
-              <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                {content.title}{' '}
-                <span className="gradient-text">{content.highlight}</span>
+              <h1
+                className={`text-[40px] md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight transition-all duration-700 delay-500 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+                }`}
+              >
+                {content.heading.line1} <span className="text-white">{content.heading.line1Highlight}</span>
+                <br />
+                {content.heading.line2} <span className="text-white">{content.heading.line2Highlight}</span>
+                <br />
+                {content.heading.line3}
               </h1>
-              
-              <p className="text-lg lg:text-xl text-gray-600 leading-relaxed max-w-2xl">
-                {content.subtitle}
+
+              <p
+                className={`text-gray-400 max-w-md mt-8 md:mt-12 transition-all duration-700 delay-700 ${
+                  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+                }`}
+              >
+                {content.description}
               </p>
             </div>
 
-            {/* Features */}
-            <div className="grid grid-cols-2 gap-4">
-              {content.features.map((feature, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700 font-medium">{feature}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg" className="group">
-                <Link href="/contact">
-                  {content.ctaPrimary}
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
-              
-              <Button asChild variant="outline" size="lg" className="group">
-                <Link href="/portfolio">
-                  <Play className="mr-2 h-5 w-5" />
-                  {content.ctaSecondary}
-                </Link>
-              </Button>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-8 border-t border-gray-200">
-              {content.stats.map((stat, index) => (
-                <div key={index} className="text-center lg:text-left">
-                  <div className="text-2xl lg:text-3xl font-bold text-primary">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-gray-600">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative"
-          >
-            <div className="relative z-10 bg-gradient-to-br from-primary/20 to-blue-500/20 rounded-2xl p-8 min-h-[400px] flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-32 h-32 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Globe className="h-16 w-16 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">Web Development</h3>
-                <p className="text-gray-600">Creating digital experiences that matter</p>
-              </div>
-            </div>
-          </motion.div>
+            <Link
+              href={content.worksLink.url}
+              className={`self-end text-white text-base md:text-lg font-semibold flex items-center gap-2 whitespace-nowrap hover:underline transition-all duration-700 delay-700 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+              }`}
+              aria-label={`View ${content.worksLink.text}`}
+            >
+              {content.worksLink.text}
+              <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
       </div>
-    </section>
-  )
-}
+    </div>
+  );
+};
+
+export default HeroSection;

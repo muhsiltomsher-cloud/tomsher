@@ -1,4 +1,4 @@
-import { HeroSection } from './hero-section'
+import HeroSection from './hero-section'
 import { AboutSection } from './about-section'
 import { ServicesSection as OldServicesSection } from './services-section'
 import { StatsSection } from './stats-section'

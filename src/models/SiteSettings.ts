@@ -106,38 +106,54 @@ const SiteSettingsSchema = new mongoose.Schema({
     },
   },
   homeHero: {
-    title: {
+    backgroundImage: {
       type: String,
-      default: 'Transform Your Business with',
+      default: '/images/bg-hero.png',
     },
-    highlight: {
+    backgroundColor: {
       type: String,
-      default: 'Innovative Web Solutions',
+      default: '#060044',
     },
-    subtitle: {
-      type: String,
-      default: 'Leading web development company in Dubai, UAE specializing in custom website development, eCommerce solutions, and digital marketing services.',
-    },
-    badge: {
-      type: String,
-      default: '#1 Web Development Company in Dubai',
-    },
-    features: {
-      type: [String],
-      default: ['Custom Web Development', 'E-commerce Solutions', 'Digital Marketing', 'Mobile App Development'],
-    },
-    ctaPrimary: {
-      type: String,
-      default: 'Get Started Today',
-    },
-    ctaSecondary: {
-      type: String,
-      default: 'View Our Work',
-    },
-    stats: [{
-      label: String,
-      value: String,
+    badges: [{
+      text: String,
+      icon: String,
     }],
+    heading: {
+      line1: {
+        type: String,
+        default: 'Build Your',
+      },
+      line1Highlight: {
+        type: String,
+        default: 'Digital World',
+      },
+      line2: {
+        type: String,
+        default: 'with',
+      },
+      line2Highlight: {
+        type: String,
+        default: 'Tomsher',
+      },
+      line3: {
+        type: String,
+        default: 'Powerful, Scalable, Business-Driven Websites',
+      },
+    },
+    description: {
+      type: String,
+      default: 'We create award-winning, conversion-focused websites and robust digital solutions for forward-thinking brands. Partner with Tomsher for next-level performance and scalable growth.',
+    },
+    worksLink: {
+      text: {
+        type: String,
+        default: 'Our works',
+      },
+      url: {
+        type: String,
+        default: '/works',
+      },
+    },
   },
   homeAbout: {
     title: {
