@@ -11,6 +11,7 @@ import Contact from '@/models/Contact';
 import TeamMember from '@/models/TeamMember';
 import Media from '@/models/Media';
 
+export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);

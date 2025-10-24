@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import PageSection from '@/models/PageSection';
 
+export const dynamic = 'force-dynamic';
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

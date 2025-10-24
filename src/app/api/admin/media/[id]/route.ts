@@ -5,6 +5,7 @@ import connectDB from '@/lib/mongodb';
 import Media from '@/models/Media';
 import { del } from '@vercel/blob';
 
+export const dynamic = 'force-dynamic';
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
