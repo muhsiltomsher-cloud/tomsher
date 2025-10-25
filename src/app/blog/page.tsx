@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { Calendar, Clock, User, ArrowRight, Tag } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -84,27 +83,6 @@ export default function BlogPage() {
   const featuredPost = filteredPosts.find(p => p.featuredImage) || filteredPosts[0]
   const regularPosts = filteredPosts.filter(p => p._id !== featuredPost?._id)
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5
-      }
-    }
-  }
-
   const calculateReadTime = (content: string) => {
     const wordsPerMinute = 200
     const words = content.split(/\s+/).length
@@ -128,12 +106,7 @@ export default function BlogPage() {
             <div className="absolute inset-0 bg-black/50" />
           )}
           <div className="container mx-auto px-4 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center max-w-3xl mx-auto"
-            >
+            <div className="text-center max-w-3xl mx-auto animate-slide-in">
               <h1 className={`text-4xl lg:text-6xl font-bold mb-6 ${pageContent.heroImage ? 'text-white' : ''}`}>
                 {pageContent.title.includes('Blog') ? (
                   <>
@@ -148,7 +121,7 @@ export default function BlogPage() {
                   {pageContent.subtitle}
                 </p>
               )}
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -187,11 +160,7 @@ export default function BlogPage() {
             {featuredPost && (
               <section className="py-16 bg-white">
                 <div className="container mx-auto px-4">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                  >
+                  <div className="animate-slide-in">
                     <Link href={`/blog/${featuredPost.slug}`}>
                       <div className="grid lg:grid-cols-2 gap-8 items-center bg-gradient-to-br from-gray-50 to-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group">
                         <div className="relative h-96 lg:h-full bg-gradient-to-br from-primary/20 to-secondary/20">
@@ -243,7 +212,7 @@ export default function BlogPage() {
                         </div>
                       </div>
                     </Link>
-                  </motion.div>
+                  </div>
                 </div>
               </section>
             )}
@@ -252,17 +221,12 @@ export default function BlogPage() {
             {regularPosts.length > 0 && (
               <section className="py-16 lg:py-24 bg-gray-50">
                 <div className="container mx-auto px-4">
-                  <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                  >
-                    {regularPosts.map((post) => (
-                      <motion.div
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {regularPosts.map((post, index) => (
+                      <div
                         key={post._id}
-                        variants={itemVariants}
-                        className="group"
+                        className="group animate-slide-in"
+                        style={{ animationDelay: `${index * 0.1}s` }}
                       >
                         <Link href={`/blog/${post.slug}`}>
                           <article className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
@@ -333,9 +297,9 @@ export default function BlogPage() {
                             </div>
                           </article>
                         </Link>
-                      </motion.div>
+                      </div>
                     ))}
-                  </motion.div>
+                  </div>
                 </div>
               </section>
             )}
@@ -345,13 +309,7 @@ export default function BlogPage() {
         {/* Newsletter Section */}
         <section className="py-16 lg:py-24 bg-gradient-to-br from-primary to-secondary text-white">
           <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="max-w-3xl mx-auto text-center"
-            >
+            <div className="max-w-3xl mx-auto text-center animate-slide-in">
               <h2 className="text-3xl lg:text-5xl font-bold mb-6">
                 Subscribe to Our Newsletter
               </h2>
@@ -371,7 +329,7 @@ export default function BlogPage() {
                   Subscribe
                 </button>
               </form>
-            </motion.div>
+            </div>
           </div>
         </section>
       </main>

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Menu, 
   X, 
@@ -185,18 +184,14 @@ export function Header() {
                         <span>{item.title}</span>
                         <ChevronDown className="h-4 w-4" />
                       </button>
-                      <AnimatePresence>
-                        {activeDropdown === item._id && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl border p-6 z-50"
-                            style={{ 
-                              width: `${Math.min(item.megaMenuColumns || 3, 6) * 250}px`,
-                              maxWidth: '90vw'
-                            }}
-                          >
+                      {activeDropdown === item._id && (
+                        <div
+                          className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-xl border p-6 z-50 animate-fade-in"
+                          style={{ 
+                            width: `${Math.min(item.megaMenuColumns || 3, 6) * 250}px`,
+                            maxWidth: '90vw'
+                          }}
+                        >
                             <div className={`grid gap-6`} style={{ gridTemplateColumns: `repeat(${item.megaMenuColumns || 3}, 1fr)` }}>
                               {item.megaMenuData.columns.map((column, idx) => (
                                 <div key={idx} className="space-y-3">
@@ -246,9 +241,8 @@ export function Header() {
                                 </div>
                               ))}
                             </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                        </div>
+                      )}
                     </div>
                   ) : item.children && item.children.length > 0 ? (
                     <div>
@@ -259,14 +253,10 @@ export function Header() {
                         <span>{item.title}</span>
                         <ChevronDown className="h-4 w-4" />
                       </button>
-                      <AnimatePresence>
-                        {activeDropdown === item._id && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border py-2 z-50"
-                          >
+                      {activeDropdown === item._id && (
+                        <div
+                          className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border py-2 z-50 animate-fade-in"
+                        >
                             {item.children.map((child) => (
                               <Link
                                 key={child._id}
@@ -277,9 +267,8 @@ export function Header() {
                                 {child.title}
                               </Link>
                             ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <Link
@@ -315,14 +304,10 @@ export function Header() {
         </div>
 
         {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-white border-t"
-            >
+        {isMobileMenuOpen && (
+          <div
+            className="lg:hidden bg-white border-t animate-slide-down"
+          >
               <div className="container mx-auto px-4 py-4">
                 <nav className="space-y-4">
                   {navigation.map((item) => (
@@ -340,14 +325,10 @@ export function Header() {
                               }`} 
                             />
                           </button>
-                          <AnimatePresence>
-                            {activeDropdown === item._id && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="pl-4 space-y-4 mt-2"
-                              >
+                          {activeDropdown === item._id && (
+                            <div
+                              className="pl-4 space-y-4 mt-2 animate-slide-down"
+                            >
                                 {item.megaMenuData.columns.map((column, idx) => (
                                   <div key={idx} className="space-y-2 pb-4 border-b last:border-b-0">
                                     <div className="font-bold text-gray-900">{column.title}</div>
@@ -387,9 +368,8 @@ export function Header() {
                                     )}
                                   </div>
                                 ))}
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
+                            </div>
+                          )}
                         </div>
                       ) : item.children && item.children.length > 0 ? (
                         <div>
@@ -404,14 +384,10 @@ export function Header() {
                               }`} 
                             />
                           </button>
-                          <AnimatePresence>
-                            {activeDropdown === item._id && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="pl-4 space-y-2 mt-2"
-                              >
+                          {activeDropdown === item._id && (
+                            <div
+                              className="pl-4 space-y-2 mt-2 animate-slide-down"
+                            >
                                 {item.children.map((child) => (
                                   <Link
                                     key={child._id}
@@ -425,9 +401,8 @@ export function Header() {
                                     {child.title}
                                   </Link>
                                 ))}
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <Link
@@ -449,9 +424,8 @@ export function Header() {
                   </div>
                 </nav>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          </div>
+        )}
       </header>
     </>
   )

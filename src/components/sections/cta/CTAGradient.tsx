@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { CTAVariantProps } from './types'
 
@@ -28,32 +27,26 @@ export default function CTAGradient({
   return (
     <section className="relative py-16 lg:py-24 bg-gradient-to-r from-accent via-primary to-secondary text-white">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-4xl mx-auto"
-        >
-          <h2 className={`${titleClass} text-4xl lg:text-6xl font-bold mb-6`}>{title}</h2>
-          <div className={`${descriptionClass} text-2xl mb-8`} dangerouslySetInnerHTML={{ __html: description }} />
+        <div className="text-center max-w-4xl mx-auto animate-scale-in">
+          <h2 className={`${titleClass} text-4xl lg:text-6xl font-bold mb-6 transition-colors duration-300`}>{title}</h2>
+          <div className={`${descriptionClass} text-2xl mb-8 transition-colors duration-300`} dangerouslySetInnerHTML={{ __html: description }} />
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
               href={ctaLink}
-              className={`${primaryButtonClass} px-10 py-5 rounded-full font-bold text-lg transition-colors duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105`}
+              className={`${primaryButtonClass} px-10 py-5 rounded-full font-bold text-lg shadow-2xl smooth-transition hover:-translate-y-1 hover:scale-105 active:translate-y-0 active:scale-100 inline-block`}
             >
               {ctaText}
             </Link>
             {secondaryCtaText && secondaryCtaLink && (
               <Link
                 href={secondaryCtaLink}
-                className={`${secondaryButtonClass} px-10 py-5 rounded-full font-bold text-lg transition-all duration-300`}
+                className={`${secondaryButtonClass} px-10 py-5 rounded-full font-bold text-lg smooth-transition hover:-translate-y-1 active:translate-y-0 inline-block`}
               >
                 {secondaryCtaText}
               </Link>
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { Send } from 'lucide-react'
 import { ContactFormVariantProps } from './types'
 
@@ -67,20 +66,14 @@ export default function ContactFormDefault({
   return (
     <section className="py-16 lg:py-24 bg-gray-50">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <p className="text-primary font-semibold mb-4">{subtitle}</p>
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">{title}</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">{description}</p>
-        </motion.div>
+        <div className="text-center mb-16 animate-slide-in">
+          <p className="text-primary font-semibold mb-4 transition-colors duration-300">{subtitle}</p>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6 transition-colors duration-300">{title}</h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto transition-colors duration-300">{description}</p>
+        </div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-xl p-8 lg:p-12">
+          <div className="bg-white rounded-3xl shadow-xl p-8 lg:p-12 smooth-transition hover:shadow-2xl animate-fade-in">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -93,11 +86,11 @@ export default function ContactFormDefault({
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 transition-colors duration-300">
                     Email *
                   </label>
                   <input
@@ -106,14 +99,14 @@ export default function ContactFormDefault({
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 transition-colors duration-300">
                     Phone
                   </label>
                   <input
@@ -121,11 +114,11 @@ export default function ContactFormDefault({
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 transition-colors duration-300">
                     Subject
                   </label>
                   <input
@@ -133,13 +126,13 @@ export default function ContactFormDefault({
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2 transition-colors duration-300">
                   Message *
                 </label>
                 <textarea
@@ -148,18 +141,18 @@ export default function ContactFormDefault({
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                 />
               </div>
 
               {error && (
-                <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg">
+                <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg animate-fade-in">
                   {error}
                 </div>
               )}
 
               {success && (
-                <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg">
+                <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg animate-fade-in">
                   Thank you! Your message has been sent successfully.
                 </div>
               )}
@@ -167,10 +160,10 @@ export default function ContactFormDefault({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary text-white px-8 py-4 rounded-full font-semibold hover:bg-primary/90 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-primary text-white px-8 py-4 rounded-full font-semibold smooth-transition hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {loading ? 'Sending...' : 'Send Message'}
-                <Send className="h-5 w-5" />
+                <Send className="h-5 w-5 transition-transform duration-300" />
               </button>
             </form>
           </div>

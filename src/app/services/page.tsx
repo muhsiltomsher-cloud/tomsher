@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { ArrowRight, Check } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -71,27 +70,6 @@ export default function ServicesPage() {
     }
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6
-      }
-    }
-  }
-
   return (
     <>
       <Header />
@@ -109,12 +87,7 @@ export default function ServicesPage() {
             <div className="absolute inset-0 bg-black/50" />
           )}
           <div className="container mx-auto px-4 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center max-w-3xl mx-auto"
-            >
+            <div className="text-center max-w-3xl mx-auto animate-slide-in">
               <h1 className={`text-4xl lg:text-6xl font-bold mb-6 ${pageContent.heroImage ? 'text-white' : ''}`}>
                 {pageContent.title.includes('Services') ? (
                   <>
@@ -129,7 +102,7 @@ export default function ServicesPage() {
                   {pageContent.subtitle}
                 </p>
               )}
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -145,17 +118,12 @@ export default function ServicesPage() {
                 <p className="text-xl text-gray-600">No services available at the moment.</p>
               </div>
             ) : (
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-              >
-                {services.map((service) => (
-                  <motion.div
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {services.map((service, index) => (
+                  <div
                     key={service._id}
-                    variants={itemVariants}
-                    className="group"
+                    className="group animate-slide-in"
+                    style={{ animationDelay: `${index * 0.15}s` }}
                   >
                     <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 h-full flex flex-col">
                       {/* Service Image */}
@@ -215,9 +183,9 @@ export default function ServicesPage() {
                         </Link>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
             )}
           </div>
         </section>
@@ -225,12 +193,7 @@ export default function ServicesPage() {
         {/* CTA Section */}
         <section className="py-16 lg:py-24 bg-gradient-to-br from-primary to-secondary text-white">
           <div className="container mx-auto px-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="animate-slide-in">
               <h2 className="text-3xl lg:text-5xl font-bold mb-6">
                 Ready to Get Started?
               </h2>
@@ -243,7 +206,7 @@ export default function ServicesPage() {
               >
                 Contact Us Today
               </Link>
-            </motion.div>
+            </div>
           </div>
         </section>
       </main>

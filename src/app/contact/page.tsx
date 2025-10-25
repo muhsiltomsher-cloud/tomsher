@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Send } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -117,12 +116,7 @@ export default function ContactPage() {
             <div className="absolute inset-0 bg-black/50" />
           )}
           <div className="container mx-auto px-4 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center max-w-3xl mx-auto"
-            >
+            <div className="text-center max-w-3xl mx-auto animate-slide-in">
               <h1 className={`text-4xl lg:text-6xl font-bold mb-6 ${pageContent.heroImage ? 'text-white' : ''}`}>
                 {pageContent.title}
               </h1>
@@ -131,7 +125,7 @@ export default function ContactPage() {
                   {pageContent.subtitle}
                 </p>
               )}
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -140,11 +134,7 @@ export default function ContactPage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Contact Information */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-              >
+              <div className="animate-slide-in">
                 <h2 className="text-3xl font-bold mb-6">Get in Touch</h2>
                 <p className="text-gray-600 mb-8">
                   Have a question or want to work together? We'd love to hear from you. 
@@ -206,14 +196,10 @@ export default function ContactPage() {
                     referrerPolicy="no-referrer-when-downgrade"
                   ></iframe>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Contact Form */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-              >
+              <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                 <div className="bg-gray-50 rounded-2xl p-8 shadow-lg">
                   <h2 className="text-3xl font-bold mb-6">Send us a Message</h2>
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -321,7 +307,7 @@ export default function ContactPage() {
                     </button>
                   </form>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>
