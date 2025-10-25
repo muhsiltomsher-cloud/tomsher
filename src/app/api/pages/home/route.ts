@@ -4,6 +4,7 @@ import Page from '@/models/Page';
 import PageSection from '@/models/PageSection';
 import Section from '@/models/Section';
 
+export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
     await connectDB();

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import PageContent from '@/models/PageContent';
 
+export const dynamic = 'force-dynamic';
 export async function GET(
   request: Request,
   { params }: { params: { pageType: string } }
