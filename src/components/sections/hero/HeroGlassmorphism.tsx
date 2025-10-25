@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { HeroVariantProps } from './types'
@@ -42,47 +41,45 @@ export default function HeroGlassmorphism({
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
       <div className="container mx-auto px-4 z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto"
+        <div
+          className="max-w-4xl mx-auto animate-slide-in"
           style={{
             background: 'rgba(255, 255, 255, 0.1)',
             backdropFilter: 'blur(10px)',
             border: '1px solid rgba(255, 255, 255, 0.2)',
             borderRadius: '24px',
             padding: '4rem',
-            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)'
+            boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
           }}
         >
-          <p className={`${subtitleClass} font-semibold mb-4 text-lg`}>
+          <p className={`${subtitleClass} font-semibold mb-4 text-lg transition-colors duration-300`}>
             {subtitle}
           </p>
-          <h1 className={`${titleClass} text-5xl lg:text-7xl font-bold mb-6 leading-tight`}>
+          <h1 className={`${titleClass} text-5xl lg:text-7xl font-bold mb-6 leading-tight transition-colors duration-300`}>
             {title}
           </h1>
           <div 
-            className={`${descriptionClass} text-xl mb-8`}
+            className={`${descriptionClass} text-xl mb-8 transition-colors duration-300`}
             dangerouslySetInnerHTML={{ __html: description }}
           />
           <div className="flex flex-wrap gap-4">
             <Link
               href={ctaLink}
-              className={`${primaryButtonClass} px-8 py-4 rounded-full font-semibold transition-all duration-300 shadow-xl`}
+              className={`${primaryButtonClass} px-8 py-4 rounded-full font-semibold shadow-xl smooth-transition hover:-translate-y-1 active:translate-y-0 inline-block`}
             >
               {ctaText}
             </Link>
             {secondaryCtaText && secondaryCtaLink && (
               <Link
                 href={secondaryCtaLink}
-                className={`${secondaryButtonClass} px-8 py-4 rounded-full font-semibold transition-all duration-300`}
+                className={`${secondaryButtonClass} px-8 py-4 rounded-full font-semibold smooth-transition hover:-translate-y-1 active:translate-y-0 inline-block`}
               >
                 {secondaryCtaText}
               </Link>
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   )

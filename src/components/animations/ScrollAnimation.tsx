@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { ReactNode } from 'react'
 
 interface ScrollAnimationProps {
@@ -18,44 +17,23 @@ export default function ScrollAnimation({
   duration = 0.6,
   className = '',
 }: ScrollAnimationProps) {
-  const variants = {
-    fadeIn: {
-      initial: { opacity: 0 },
-      whileInView: { opacity: 1 },
-    },
-    slideUp: {
-      initial: { opacity: 0, y: 40 },
-      whileInView: { opacity: 1, y: 0 },
-    },
-    slideLeft: {
-      initial: { opacity: 0, x: 40 },
-      whileInView: { opacity: 1, x: 0 },
-    },
-    slideRight: {
-      initial: { opacity: 0, x: -40 },
-      whileInView: { opacity: 1, x: 0 },
-    },
-    scale: {
-      initial: { opacity: 0, scale: 0.8 },
-      whileInView: { opacity: 1, scale: 1 },
-    },
-    none: {
-      initial: {},
-      whileInView: {},
-    },
+  const variantClasses = {
+    fadeIn: 'animate-fade-in',
+    slideUp: 'animate-slide-in',
+    slideLeft: 'animate-slide-in',
+    slideRight: 'animate-slide-in',
+    scale: 'animate-scale-in',
+    none: '',
   }
 
-  const selectedVariant = variants[variant]
+  const selectedClass = variantClasses[variant]
 
   return (
-    <motion.div
-      initial={selectedVariant.initial}
-      whileInView={selectedVariant.whileInView}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration, delay, ease: 'easeOut' }}
-      className={className}
+    <div
+      className={`${selectedClass} ${className}`}
+      style={{ animationDelay: `${delay}s`, animationDuration: `${duration}s` }}
     >
       {children}
-    </motion.div>
+    </div>
   )
 }

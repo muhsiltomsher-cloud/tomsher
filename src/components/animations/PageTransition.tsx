@@ -1,6 +1,5 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
 
@@ -12,42 +11,18 @@ interface PageTransitionProps {
 export default function PageTransition({ children, variant = 'fade' }: PageTransitionProps) {
   const pathname = usePathname()
 
-  const variants = {
-    fade: {
-      initial: { opacity: 0 },
-      animate: { opacity: 1 },
-      exit: { opacity: 0 },
-    },
-    slide: {
-      initial: { opacity: 0, x: -20 },
-      animate: { opacity: 1, x: 0 },
-      exit: { opacity: 0, x: 20 },
-    },
-    scale: {
-      initial: { opacity: 0, scale: 0.95 },
-      animate: { opacity: 1, scale: 1 },
-      exit: { opacity: 0, scale: 1.05 },
-    },
-    none: {
-      initial: {},
-      animate: {},
-      exit: {},
-    },
+  const variantClasses = {
+    fade: 'animate-fade-in',
+    slide: 'animate-slide-in',
+    scale: 'animate-scale-in',
+    none: '',
   }
 
-  const selectedVariant = variants[variant]
+  const selectedClass = variantClasses[variant]
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={pathname}
-        initial={selectedVariant.initial}
-        animate={selectedVariant.animate}
-        exit={selectedVariant.exit}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <div key={pathname} className={selectedClass}>
+      {children}
+    </div>
   )
 }

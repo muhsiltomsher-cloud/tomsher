@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 
@@ -114,12 +113,7 @@ export default function PrivacyPage() {
             <div className="absolute inset-0 bg-black/50" />
           )}
           <div className="container mx-auto px-4 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-center max-w-3xl mx-auto"
-            >
+            <div className="text-center max-w-3xl mx-auto animate-slide-in">
               <h1 className={`text-4xl lg:text-6xl font-bold mb-6 ${pageContent.heroImage ? 'text-white' : ''}`}>
                 {pageContent.title}
               </h1>
@@ -131,7 +125,7 @@ export default function PrivacyPage() {
               <p className={`text-sm ${pageContent.heroImage ? 'text-gray-300' : 'text-gray-500'}`}>
                 Last Updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -146,13 +140,10 @@ export default function PrivacyPage() {
               ) : (
                 <div className="space-y-12">
                   {sectionsToDisplay.map((section, index) => (
-                    <motion.div
+                    <div
                       key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      className="bg-gray-50 rounded-2xl p-8"
+                      className="bg-gray-50 rounded-2xl p-8 animate-slide-in"
+                      style={{ animationDelay: `${index * 0.1}s` }}
                     >
                       {section.title && (
                         <h2 className="text-2xl lg:text-3xl font-bold mb-4 text-gray-900">
@@ -169,7 +160,7 @@ export default function PrivacyPage() {
                           {section.content}
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}
@@ -180,13 +171,7 @@ export default function PrivacyPage() {
         {/* CTA Section */}
         <section className="py-16 lg:py-24 bg-gray-50">
           <div className="container mx-auto px-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="max-w-2xl mx-auto"
-            >
+            <div className="max-w-2xl mx-auto animate-slide-in">
               <h2 className="text-3xl lg:text-4xl font-bold mb-6">
                 Have Questions?
               </h2>
@@ -199,7 +184,7 @@ export default function PrivacyPage() {
               >
                 Contact Us
               </a>
-            </motion.div>
+            </div>
           </div>
         </section>
       </main>

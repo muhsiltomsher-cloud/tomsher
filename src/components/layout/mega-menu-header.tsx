@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Menu, 
   X, 
@@ -77,11 +76,8 @@ export function MegaMenuHeader() {
     const itemsPerColumn = Math.ceil(item.children.length / columns)
 
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 10 }}
-        className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-2xl border z-50"
+      <div
+        className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-2xl border z-50 animate-fade-in"
         style={{ minWidth: '800px', maxWidth: '1200px' }}
       >
         <div className="container mx-auto px-6 py-8">
@@ -139,7 +135,7 @@ export function MegaMenuHeader() {
             })}
           </div>
         </div>
-      </motion.div>
+      </div>
     )
   }
 
@@ -147,11 +143,8 @@ export function MegaMenuHeader() {
     if (!item.children || item.children.length === 0) return null
 
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 10 }}
-        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border py-2 z-50"
+      <div
+        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border py-2 z-50 animate-fade-in"
       >
         {item.children.map((child) => (
           <Link
@@ -170,7 +163,7 @@ export function MegaMenuHeader() {
             </div>
           </Link>
         ))}
-      </motion.div>
+      </div>
     )
   }
 
@@ -263,13 +256,11 @@ export function MegaMenuHeader() {
                         <span>{item.title}</span>
                         <ChevronDown className="h-4 w-4" />
                       </button>
-                      <AnimatePresence>
-                        {activeDropdown === item._id && (
-                          item.isMegaMenu 
-                            ? renderMegaMenu(item)
-                            : renderDropdown(item)
-                        )}
-                      </AnimatePresence>
+                      {activeDropdown === item._id && (
+                        item.isMegaMenu 
+                          ? renderMegaMenu(item)
+                          : renderDropdown(item)
+                      )}
                     </div>
                   ) : (
                     <Link
@@ -312,14 +303,10 @@ export function MegaMenuHeader() {
         </div>
 
         {/* Mobile Menu */}
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-white border-t"
-            >
+        {isMobileMenuOpen && (
+          <div
+            className="lg:hidden bg-white border-t animate-slide-down"
+          >
               <div className="container mx-auto px-4 py-4">
                 <nav className="space-y-4">
                   {menuItems.map((item) => (
@@ -337,14 +324,10 @@ export function MegaMenuHeader() {
                               }`} 
                             />
                           </button>
-                          <AnimatePresence>
-                            {activeDropdown === item._id && (
-                              <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="pl-4 space-y-2 mt-2"
-                              >
+                          {activeDropdown === item._id && (
+                            <div
+                              className="pl-4 space-y-2 mt-2 animate-slide-down"
+                            >
                                 {item.children.map((child) => (
                                   <Link
                                     key={child._id}
@@ -360,9 +343,8 @@ export function MegaMenuHeader() {
                                     {child.title}
                                   </Link>
                                 ))}
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
+                            </div>
+                          )}
                         </div>
                       ) : (
                         <Link
@@ -386,9 +368,8 @@ export function MegaMenuHeader() {
                   </div>
                 </nav>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          </div>
+        )}
       </header>
     </>
   )

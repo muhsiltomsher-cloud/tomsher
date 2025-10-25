@@ -102,9 +102,32 @@ export const theme = {
   },
   
   transitions: {
-    fast: '150ms',
-    base: '300ms',
-    slow: '500ms',
+    fast: '150ms cubic-bezier(0.4, 0, 0.2, 1)',
+    base: '300ms cubic-bezier(0.4, 0, 0.2, 1)',
+    slow: '500ms cubic-bezier(0.4, 0, 0.2, 1)',
+    smooth: '400ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    spring: '600ms cubic-bezier(0.34, 1.56, 0.64, 1)',
+  },
+  
+  animations: {
+    fadeIn: 'fadeIn 0.3s ease-in',
+    fadeOut: 'fadeOut 0.3s ease-out',
+    slideUp: 'slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    slideDown: 'slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    scaleIn: 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+  },
+  
+  hover: {
+    scale: 'scale(1.05)',
+    scaleSmall: 'scale(1.02)',
+    lift: 'translateY(-4px)',
+    liftSmall: 'translateY(-2px)',
+  },
+  
+  focus: {
+    ring: '0 0 0 3px rgba(0, 61, 136, 0.1)',
+    ringOffset: '0 0 0 2px white, 0 0 0 4px rgba(0, 61, 136, 0.2)',
   },
   
   breakpoints: {
@@ -122,6 +145,64 @@ export const withOpacity = (color: string, opacity: number): string => {
 
 export const createGradient = (from: string, to: string, direction: string = '135deg'): string => {
   return `linear-gradient(${direction}, ${from} 0%, ${to} 100%)`;
+};
+
+export const cssKeyframes = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideDown {
+    from { 
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    from { 
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+`;
+
+export const smoothTransition = (properties: string[] = ['all']): string => {
+  return properties.map(prop => `${prop} ${theme.transitions.base}`).join(', ');
+};
+
+export const hoverEffect = (type: 'scale' | 'lift' | 'scaleSmall' | 'liftSmall' = 'scale'): string => {
+  return theme.hover[type];
 };
 
 export default theme;

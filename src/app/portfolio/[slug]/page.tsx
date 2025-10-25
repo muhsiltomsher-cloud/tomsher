@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { ArrowLeft, ExternalLink, Calendar, User, Tag } from 'lucide-react'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
@@ -109,11 +108,7 @@ export default function PortfolioDetailPage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
               {/* Images Section */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6 }}
-              >
+              <div className="animate-slide-in">
                 {/* Main Image */}
                 <div className="relative h-[400px] lg:h-[500px] rounded-2xl overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 mb-4">
                   {selectedImage ? (
@@ -153,14 +148,10 @@ export default function PortfolioDetailPage() {
                     ))}
                   </div>
                 )}
-              </motion.div>
+              </div>
 
               {/* Project Info */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
+              <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
                 {/* Category & Featured Badge */}
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-sm font-semibold text-primary bg-primary/10 px-4 py-2 rounded-full">
@@ -257,7 +248,7 @@ export default function PortfolioDetailPage() {
                     <ExternalLink className="ml-2 h-5 w-5" />
                   </a>
                 )}
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>
@@ -265,20 +256,14 @@ export default function PortfolioDetailPage() {
         {/* Description Section */}
         <section className="py-12 lg:py-20">
           <div className="container mx-auto px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="max-w-4xl mx-auto"
-            >
+            <div className="max-w-4xl mx-auto animate-slide-in">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Project Overview</h2>
               <div className="prose prose-lg max-w-none">
                 <p className="text-gray-600 leading-relaxed whitespace-pre-line">
                   {portfolio.description}
                 </p>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -286,22 +271,14 @@ export default function PortfolioDetailPage() {
         {allImages.length > 1 && (
           <section className="py-12 lg:py-20 bg-white">
             <div className="container mx-auto px-4">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
+              <div className="animate-slide-in">
                 <h2 className="text-3xl font-bold mb-8 text-gray-900 text-center">Project Gallery</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {allImages.map((img, index) => (
-                    <motion.div
+                    <div
                       key={index}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
-                      className="relative h-80 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow cursor-pointer"
+                      className="relative h-80 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow cursor-pointer animate-scale-in"
+                      style={{ animationDelay: `${index * 0.1}s` }}
                       onClick={() => setSelectedImage(img)}
                     >
                       <Image
@@ -310,10 +287,10 @@ export default function PortfolioDetailPage() {
                         fill
                         className="object-cover hover:scale-110 transition-transform duration-500"
                       />
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             </div>
           </section>
         )}
@@ -321,12 +298,7 @@ export default function PortfolioDetailPage() {
         {/* CTA Section */}
         <section className="py-16 lg:py-24 bg-gradient-to-br from-primary to-secondary text-white">
           <div className="container mx-auto px-4 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div className="animate-slide-in">
               <h2 className="text-3xl lg:text-5xl font-bold mb-6">
                 Like What You See?
               </h2>
@@ -347,7 +319,7 @@ export default function PortfolioDetailPage() {
                   View More Projects
                 </Link>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
       </main>

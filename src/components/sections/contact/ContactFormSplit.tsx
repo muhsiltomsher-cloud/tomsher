@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Send } from 'lucide-react'
 import { ContactFormVariantProps } from './types'
 
@@ -77,44 +76,34 @@ export default function ContactFormSplit({
     <section className="py-16 lg:py-24 bg-white">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="text-primary font-semibold mb-4">{subtitle}</p>
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6">{title}</h2>
-            <p className="text-xl text-gray-600 mb-8">{description}</p>
+          <div className="animate-slide-in">
+            <p className="text-primary font-semibold mb-4 transition-colors duration-300">{subtitle}</p>
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6 transition-colors duration-300">{title}</h2>
+            <p className="text-xl text-gray-600 mb-8 transition-colors duration-300">{description}</p>
 
             <div className="space-y-6">
               {contactInfo.map((item, index) => {
                 const Icon = item.icon
                 return (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Icon className="h-6 w-6 text-primary" />
+                  <div key={index} className="flex items-start gap-4 animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 smooth-transition hover:scale-110">
+                      <Icon className="h-6 w-6 text-primary transition-transform duration-300" />
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">{item.label}</p>
-                      <p className="text-gray-600">{item.value}</p>
+                      <p className="font-semibold text-gray-900 transition-colors duration-300">{item.label}</p>
+                      <p className="text-gray-600 transition-colors duration-300">{item.value}</p>
                     </div>
                   </div>
                 )
               })}
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="bg-gray-50 rounded-3xl p-8">
+          <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="bg-gray-50 rounded-3xl p-8 smooth-transition hover:shadow-xl">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 transition-colors duration-300">
                     Name *
                   </label>
                   <input
@@ -123,12 +112,12 @@ export default function ContactFormSplit({
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 transition-colors duration-300">
                     Email *
                   </label>
                   <input
@@ -137,12 +126,12 @@ export default function ContactFormSplit({
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 transition-colors duration-300">
                     Phone
                   </label>
                   <input
@@ -150,12 +139,12 @@ export default function ContactFormSplit({
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 transition-colors duration-300">
                     Message *
                   </label>
                   <textarea
@@ -164,18 +153,18 @@ export default function ContactFormSplit({
                     onChange={handleChange}
                     required
                     rows={5}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent smooth-transition"
                   />
                 </div>
 
                 {error && (
-                  <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
+                  <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm animate-fade-in">
                     {error}
                   </div>
                 )}
 
                 {success && (
-                  <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg text-sm">
+                  <div className="bg-green-50 text-green-600 px-4 py-3 rounded-lg text-sm animate-fade-in">
                     Thank you! Your message has been sent successfully.
                   </div>
                 )}
@@ -183,14 +172,14 @@ export default function ContactFormSplit({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-primary text-white px-8 py-4 rounded-full font-semibold hover:bg-primary/90 transition-colors duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full bg-primary text-white px-8 py-4 rounded-full font-semibold smooth-transition hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {loading ? 'Sending...' : 'Send Message'}
-                  <Send className="h-5 w-5" />
+                  <Send className="h-5 w-5 transition-transform duration-300" />
                 </button>
               </form>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
