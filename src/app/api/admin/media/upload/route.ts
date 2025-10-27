@@ -13,6 +13,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.error('BLOB_READ_WRITE_TOKEN environment variable is not configured');
+      return NextResponse.json({ 
+        error: 'Blob storage not configured. Please contact administrator.' 
+      }, { status: 500 });
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
@@ -28,10 +35,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File size must be less than 10MB' }, { status: 400 });
     }
 
-    const blob = await put(file.name, file, {
-      access: 'public',
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-    });
+    let blob;
+    try {
+      blob = await put(file.name, file, {
+        access: 'public',
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+      });
+    } catch (blobError: any) {
+      console.error('Vercel Blob upload error:', {
+        message: blobError.message,
+        stack: blobError.stack,
+        name: blobError.name
+      });
+      return NextResponse.json({ 
+        error: 'Failed to upload to blob storage. Please try again or contact administrator.',
+        details: blobError.message 
+      }, { status: 500 });
+    }
 
     await connectDB();
     
@@ -45,8 +65,15 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(media, { status: 201 });
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Error uploading file:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    return NextResponse.json({ 
+      error: 'Failed to upload file. Please try again.',
+      details: error.message 
+    }, { status: 500 });
   }
 }
