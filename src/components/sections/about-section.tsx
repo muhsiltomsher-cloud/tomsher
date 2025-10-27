@@ -5,57 +5,36 @@ import SectionWrapper from '@/common/components/SectionWrapper'
 import Button from '@/common/components/Button'
 
 interface LeftContent {
-  yearsText: string
-  yearsLabel: string
-  tagline1: string
-  tagline2: string
-  tagline3: string
+  yearsText?: string
+  yearsLabel?: string
+  tagline1?: string
+  tagline2?: string
+  tagline3?: string
 }
 
 interface RightContent {
-  sectionLabel: string
-  title: string
-  titleHighlight: string
-  description: string
-  button1Text: string
-  button1Link: string
-  button2Text: string
-  button2Link: string
-  videoUrl: string
+  sectionLabel?: string
+  title?: string
+  titleHighlight?: string
+  description?: string
+  button1Text?: string
+  button1Link?: string
+  button2Text?: string
+  button2Link?: string
+  videoUrl?: string
 }
 
 interface AboutContent {
-  leftContent: LeftContent
-  rightContent: RightContent
+  leftContent?: LeftContent
+  rightContent?: RightContent
 }
 
 interface AboutSectionProps {
   data?: AboutContent
 }
 
-const defaultContent: AboutContent = {
-  leftContent: {
-    yearsText: '14+',
-    yearsLabel: 'years of excellence',
-    tagline1: 'Creative Designs.',
-    tagline2: 'Meaningful Impact.',
-    tagline3: 'Measurable Result.',
-  },
-  rightContent: {
-    sectionLabel: 'About tomsher',
-    title: 'Web Design',
-    titleHighlight: 'Company in Dubai',
-    description: 'Tomsher is a leading web software solutions provider based in the UAE, specializing in web design and digital marketing. As the best web design company in Dubai, we take pride in our expert in-house web development team, delivering top-notch, high-quality services to meet all your digital needs. We have been working with multinational, semi-government, corporate, SME and start-up companies from Middle East, Africa, Asia, Europe and America. Our majority of clients are from UAE and have clientele across 30+ countries around the globe.',
-    button1Text: 'Learn More',
-    button1Link: '/about',
-    button2Text: 'Contact us today',
-    button2Link: '/contact',
-    videoUrl: 'https://player.vimeo.com/video/1044576275?background=1&autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0'
-  }
-}
-
 export const AboutSection = ({ data }: AboutSectionProps = {}) => {
-  const [content, setContent] = useState<AboutContent>(data || defaultContent)
+  const [content, setContent] = useState<AboutContent | null>(data ?? null)
   const [loading, setLoading] = useState(!data)
 
   useEffect(() => {
@@ -71,30 +50,16 @@ export const AboutSection = ({ data }: AboutSectionProps = {}) => {
         if (response.ok) {
           const fetchedData = await response.json()
           if (fetchedData.homeAbout) {
-            setContent({
-              leftContent: {
-                yearsText: fetchedData.homeAbout.leftContent?.yearsText || defaultContent.leftContent.yearsText,
-                yearsLabel: fetchedData.homeAbout.leftContent?.yearsLabel || defaultContent.leftContent.yearsLabel,
-                tagline1: fetchedData.homeAbout.leftContent?.tagline1 || defaultContent.leftContent.tagline1,
-                tagline2: fetchedData.homeAbout.leftContent?.tagline2 || defaultContent.leftContent.tagline2,
-                tagline3: fetchedData.homeAbout.leftContent?.tagline3 || defaultContent.leftContent.tagline3,
-              },
-              rightContent: {
-                sectionLabel: fetchedData.homeAbout.rightContent?.sectionLabel || defaultContent.rightContent.sectionLabel,
-                title: fetchedData.homeAbout.rightContent?.title || defaultContent.rightContent.title,
-                titleHighlight: fetchedData.homeAbout.rightContent?.titleHighlight || defaultContent.rightContent.titleHighlight,
-                description: fetchedData.homeAbout.rightContent?.description || defaultContent.rightContent.description,
-                button1Text: fetchedData.homeAbout.rightContent?.button1Text || defaultContent.rightContent.button1Text,
-                button1Link: fetchedData.homeAbout.rightContent?.button1Link || defaultContent.rightContent.button1Link,
-                button2Text: fetchedData.homeAbout.rightContent?.button2Text || defaultContent.rightContent.button2Text,
-                button2Link: fetchedData.homeAbout.rightContent?.button2Link || defaultContent.rightContent.button2Link,
-                videoUrl: fetchedData.homeAbout.rightContent?.videoUrl || defaultContent.rightContent.videoUrl,
-              }
-            })
+            setContent(fetchedData.homeAbout)
+          } else {
+            setContent(null)
           }
+        } else {
+          setContent(null)
         }
       } catch (error) {
         console.error('Error fetching about content:', error)
+        setContent(null)
       } finally {
         setLoading(false)
       }
@@ -103,9 +68,12 @@ export const AboutSection = ({ data }: AboutSectionProps = {}) => {
     fetchContent()
   }, [data])
 
-  if (loading) {
+  if (loading || !content) {
     return null
   }
+
+  const leftContent = content.leftContent
+  const rightContent = content.rightContent
 
   return (
     <SectionWrapper className="!bg-white" containerClassName="py-[100px]">
@@ -113,61 +81,90 @@ export const AboutSection = ({ data }: AboutSectionProps = {}) => {
         {/* Header Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Left Section */}
-          <div className="flex gap-2">
-            <div className="flex flex-col">
-              <span className="text-[100px] font-thin text-primary leading-[80px]">
-                {content.leftContent.yearsText}
-              </span>
-              <span className="text-xs uppercase tracking-wider text-gray-500">
-                {content.leftContent.yearsLabel}
-              </span>
+          {leftContent && (leftContent.yearsText || leftContent.tagline1) && (
+            <div className="flex gap-2">
+              {leftContent.yearsText && (
+                <div className="flex flex-col">
+                  <span className="text-[100px] font-thin text-primary leading-[80px]">
+                    {leftContent.yearsText}
+                  </span>
+                  {leftContent.yearsLabel && (
+                    <span className="text-xs uppercase tracking-wider text-gray-500">
+                      {leftContent.yearsLabel}
+                    </span>
+                  )}
+                </div>
+              )}
+              {(leftContent.tagline1 || leftContent.tagline2 || leftContent.tagline3) && (
+                <h2 className="text-gray-500 text-2xl mb-0 leading-snug font-light">
+                  {leftContent.tagline1 && <>{leftContent.tagline1}<br /></>}
+                  {leftContent.tagline2 && <>{leftContent.tagline2}<br /></>}
+                  {leftContent.tagline3 && <>{leftContent.tagline3}</>}
+                </h2>
+              )}
             </div>
-            <h2 className="text-gray-500 text-2xl mb-0 leading-snug font-light">
-              {content.leftContent.tagline1}<br />
-              {content.leftContent.tagline2}<br />
-              {content.leftContent.tagline3}
-            </h2>
-          </div>
+          )}
 
           {/* Right Section */}
-          <div className="max-w-2xl">
-            <p className="text-[18px] pt-[15px] font-semibold text-primary leading-tight">
-              {content.rightContent.sectionLabel}
-            </p>
-            <h1 className="text-5xl pt-[15px] font-light text-black leading-tight">
-              {content.rightContent.title} <span className="text-primary">{content.rightContent.titleHighlight}</span> & Digital Marketing Company
-            </h1>
-          </div>
+          {rightContent && (rightContent.title || rightContent.sectionLabel) && (
+            <div className="max-w-2xl">
+              {rightContent.sectionLabel && (
+                <p className="text-[18px] pt-[15px] font-semibold text-primary leading-tight">
+                  {rightContent.sectionLabel}
+                </p>
+              )}
+              {(rightContent.title || rightContent.titleHighlight) && (
+                <h1 className="text-5xl pt-[15px] font-light text-black leading-tight">
+                  {rightContent.title && <>{rightContent.title} </>}
+                  {rightContent.titleHighlight && (
+                    <span className="text-primary">{rightContent.titleHighlight}</span>
+                  )}
+                </h1>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* Left Column - Video */}
-          <div className="overflow-hidden" style={{ padding: "56.25% 0 0 0", position: "relative" }}>
-            <iframe
-              src={content.rightContent.videoUrl}
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-              title="tomsher-about"
-            />
-          </div>
+          {rightContent?.videoUrl && (
+            <div className="overflow-hidden" style={{ padding: "56.25% 0 0 0", position: "relative" }}>
+              <iframe
+                src={rightContent.videoUrl}
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+                title="tomsher-about"
+              />
+            </div>
+          )}
 
           {/* Right Column - Content */}
-          <div className="space-y-3">
-            <p className="text-[16px] leading-[25px] text-gray-500 pt-[20px]">
-              {content.rightContent.description}
-            </p>
+          {rightContent && (rightContent.description || rightContent.button1Text || rightContent.button2Text) && (
+            <div className="space-y-3">
+              {rightContent.description && (
+                <p className="text-[16px] leading-[25px] text-gray-500 pt-[20px]">
+                  {rightContent.description}
+                </p>
+              )}
 
-            <div className="flex gap-4 !pt-7">
-              <Button customVariant="normal" size="medium" href={content.rightContent.button1Link}>
-                {content.rightContent.button1Text}
-              </Button>
-              <Button customVariant="outline" size="medium" href={content.rightContent.button2Link}>
-                {content.rightContent.button2Text}
-              </Button>
+              {(rightContent.button1Text || rightContent.button2Text) && (
+                <div className="flex gap-4 !pt-7">
+                  {rightContent.button1Text && rightContent.button1Link && (
+                    <Button customVariant="normal" size="medium" href={rightContent.button1Link}>
+                      {rightContent.button1Text}
+                    </Button>
+                  )}
+                  {rightContent.button2Text && rightContent.button2Link && (
+                    <Button customVariant="outline" size="medium" href={rightContent.button2Link}>
+                      {rightContent.button2Text}
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </SectionWrapper>
