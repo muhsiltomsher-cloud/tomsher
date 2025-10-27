@@ -106,6 +106,8 @@ export default function AdminLayout({
     setSidebarOpen((prev) => !prev)
   }
 
+  const sidebarWidth = sidebarOpen ? 272 : 78
+
   return (
     <SessionProvider>
       <NotificationProvider>
@@ -134,9 +136,9 @@ export default function AdminLayout({
                   display: 'flex',
                   flexDirection: 'column',
                   minHeight: '100vh',
-                  transition: 'padding 0.35s ease',
-                  pl: 0,
-                  pr: { xs: 2.5, sm: 3, md: 4 },
+                  transition: 'margin-left 0.35s ease',
+                  marginLeft: { xs: 0, lg: `${sidebarWidth}px` },
+                  px: { xs: 2.5, sm: 3, md: 4 },
                   py: { xs: 3, md: 4 },
                   gap: 3,
                 }}
