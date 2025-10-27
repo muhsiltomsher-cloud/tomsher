@@ -72,8 +72,27 @@ export const AboutSection = ({ data }: AboutSectionProps = {}) => {
     return null
   }
 
-  const leftContent = content.leftContent
-  const rightContent = content.rightContent
+  const isFlat = !content.leftContent && !content.rightContent
+  
+  const leftContent = isFlat ? {
+    yearsText: (content as any).yearsText,
+    yearsLabel: (content as any).yearsLabel,
+    tagline1: (content as any).tagline1,
+    tagline2: (content as any).tagline2,
+    tagline3: (content as any).tagline3,
+  } : content.leftContent
+  
+  const rightContent = isFlat ? {
+    sectionLabel: (content as any).sectionLabel,
+    title: (content as any).title,
+    titleHighlight: (content as any).titleHighlight,
+    description: (content as any).description,
+    button1Text: (content as any).button1Text,
+    button1Link: (content as any).button1Link,
+    button2Text: (content as any).button2Text,
+    button2Link: (content as any).button2Link,
+    videoUrl: (content as any).videoUrl,
+  } : content.rightContent
 
   return (
     <SectionWrapper className="!bg-white" containerClassName="py-[100px]">
