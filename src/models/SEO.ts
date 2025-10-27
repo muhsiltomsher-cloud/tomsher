@@ -8,7 +8,7 @@ const SEOSchema = new mongoose.Schema({
   contentType: {
     type: String,
     required: true,
-    enum: ['Page', 'BlogPost', 'Portfolio', 'Service', 'CustomPage'],
+    enum: ['Page', 'BlogPost', 'Portfolio', 'Service'],
   },
   
   metaTitle: {

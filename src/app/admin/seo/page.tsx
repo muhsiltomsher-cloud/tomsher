@@ -248,7 +248,6 @@ export default function SEOPage() {
                   label="Page Type"
                 >
                   <MenuItem value="Page">Page</MenuItem>
-                  <MenuItem value="CustomPage">Custom Page</MenuItem>
                   <MenuItem value="BlogPost">Blog Post</MenuItem>
                   <MenuItem value="Portfolio">Portfolio</MenuItem>
                   <MenuItem value="Service">Service</MenuItem>

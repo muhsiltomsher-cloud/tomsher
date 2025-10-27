@@ -27,7 +27,7 @@ import {
 import { Add, Edit, Delete, Visibility, VisibilityOff, ContentCopy } from '@mui/icons-material'
 import { useSession } from 'next-auth/react'
 
-interface CustomPage {
+interface PageData {
   _id: string
   title: string
   slug: string
@@ -35,7 +35,6 @@ interface CustomPage {
   type: string
   status: string
   sections: any[]
-  isPublished?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -43,7 +42,7 @@ interface CustomPage {
 export default function PageBuilderPage() {
   const router = useRouter()
   const { data: session, status } = useSession()
-  const [pages, setPages] = useState<CustomPage[]>([])
+  const [pages, setPages] = useState<PageData[]>([])
   const [loading, setLoading] = useState(true)
   const [openDialog, setOpenDialog] = useState(false)
   const [formData, setFormData] = useState({
@@ -147,12 +146,13 @@ export default function PageBuilderPage() {
     }
   }
 
-  const handleTogglePublish = async (page: CustomPage) => {
+  const handleTogglePublish = async (page: PageData) => {
     try {
+      const newStatus = page.status === 'PUBLISHED' ? false : true
       const response = await fetch(`/api/admin/page-builder/${page._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isPublished: !page.isPublished }),
+        body: JSON.stringify({ isPublished: newStatus }),
       })
 
       if (response.ok) {
@@ -164,7 +164,7 @@ export default function PageBuilderPage() {
     }
   }
 
-  const handleDuplicate = async (page: CustomPage) => {
+  const handleDuplicate = async (page: PageData) => {
     try {
       const response = await fetch('/api/admin/page-builder', {
         method: 'POST',
@@ -260,8 +260,8 @@ export default function PageBuilderPage() {
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={page.status === 'PUBLISHED' || page.isPublished ? 'Published' : 'Draft'}
-                      color={page.status === 'PUBLISHED' || page.isPublished ? 'success' : 'default'}
+                      label={page.status === 'PUBLISHED' ? 'Published' : 'Draft'}
+                      color={page.status === 'PUBLISHED' ? 'success' : 'default'}
                       size="small"
                     />
                   </TableCell>
@@ -279,9 +279,9 @@ export default function PageBuilderPage() {
                     <IconButton
                       size="small"
                       onClick={() => handleTogglePublish(page)}
-                      title={page.isPublished ? 'Unpublish' : 'Publish'}
+                      title={page.status === 'PUBLISHED' ? 'Unpublish' : 'Publish'}
                     >
-                      {page.isPublished ? <VisibilityOff /> : <Visibility />}
+                      {page.status === 'PUBLISHED' ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                     <IconButton
                       size="small"
