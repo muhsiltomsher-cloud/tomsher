@@ -1,306 +1,200 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import {
-  Box,
-  Card,
-  CardContent,
-  Typography,
-  Switch,
-  FormControlLabel,
-  Select,
-  MenuItem,
-  Button,
-  Grid,
-  Divider,
-  Alert,
-  FormControl,
-  InputLabel,
-} from '@mui/material'
-import { Save, Zap, Loader, Eye } from 'lucide-react'
-
-interface PerformanceSettings {
-  enableSkeletonLoaders: boolean
-  enablePageTransitions: boolean
-  pageTransitionVariant: 'fade' | 'slide' | 'scale' | 'none'
-  enableScrollAnimations: boolean
-  scrollAnimationVariant: 'fadeIn' | 'slideUp' | 'slideLeft' | 'slideRight' | 'scale' | 'none'
-  enableImageOptimization: boolean
-  enableLazyLoading: boolean
-  animationDuration: number
-  animationDelay: number
-}
+import { useState } from 'react'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function PerformancePage() {
-  const [settings, setSettings] = useState<PerformanceSettings>({
-    enableSkeletonLoaders: true,
-    enablePageTransitions: true,
-    pageTransitionVariant: 'fade',
-    enableScrollAnimations: true,
-    scrollAnimationVariant: 'slideUp',
-    enableImageOptimization: true,
-    enableLazyLoading: true,
-    animationDuration: 0.6,
-    animationDelay: 0,
-  })
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState('')
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [customPaths, setCustomPaths] = useState('')
 
-  useEffect(() => {
-    fetchSettings()
-  }, [])
-
-  const fetchSettings = async () => {
-    try {
-      const response = await fetch('/api/admin/settings/performance')
-      if (response.ok) {
-        const data = await response.json()
-        setSettings(data)
-      }
-    } catch (err) {
-      console.error('Failed to fetch settings:', err)
-    }
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    )
   }
 
-  const handleSave = async () => {
+  if (!session) {
+    router.push('/admin/login')
+    return null
+  }
+
+  const clearCache = async (options: { paths?: string[], tags?: string[], all?: boolean }) => {
     setLoading(true)
-    setError('')
-    setSuccess(false)
+    setMessage(null)
 
     try {
-      const response = await fetch('/api/admin/settings/performance', {
+      const response = await fetch('/api/admin/cache/clear', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(options),
       })
 
+      const data = await response.json()
+
       if (response.ok) {
-        setSuccess(true)
-        setTimeout(() => setSuccess(false), 3000)
+        setMessage({
+          type: 'success',
+          text: `Cache cleared successfully! Revalidated ${data.revalidated.paths.length} paths and ${data.revalidated.tags.length} tags.`
+        })
       } else {
-        setError('Failed to save settings')
+        setMessage({
+          type: 'error',
+          text: data.error || 'Failed to clear cache'
+        })
       }
-    } catch (err) {
-      setError('An error occurred while saving')
+    } catch (error) {
+      setMessage({
+        type: 'error',
+        text: 'An error occurred while clearing cache'
+      })
     } finally {
       setLoading(false)
     }
   }
 
+  const handleClearHomepage = () => {
+    clearCache({ paths: ['/'] })
+  }
+
+  const handleClearAllPages = () => {
+    clearCache({ all: true })
+  }
+
+  const handleClearCustomPaths = () => {
+    const paths = customPaths
+      .split('\n')
+      .map(p => p.trim())
+      .filter(p => p.length > 0 && p.startsWith('/'))
+
+    if (paths.length === 0) {
+      setMessage({
+        type: 'error',
+        text: 'Please enter at least one valid path (must start with /)'
+      })
+      return
+    }
+
+    clearCache({ paths })
+  }
+
   return (
-    <Box>
-      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4" component="h1">
-          Performance & Animations
-        </Typography>
-        <Button
-          variant="contained"
-          startIcon={<Save />}
-          onClick={handleSave}
-          disabled={loading}
-        >
-          {loading ? 'Saving...' : 'Save Settings'}
-        </Button>
-      </Box>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Performance & Cache Management</h1>
+          <p className="text-gray-600">
+            Clear cached pages to force refresh content on the frontend. Use this when updates don't appear immediately.
+          </p>
+        </div>
 
-      {success && (
-        <Alert severity="success" sx={{ mb: 3 }}>
-          Settings saved successfully!
-        </Alert>
-      )}
+        {message && (
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              message.type === 'success'
+                ? 'bg-green-50 text-green-800 border border-green-200'
+                : 'bg-red-50 text-red-800 border border-red-200'
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Loader className="mr-2" />
-                <Typography variant="h6">Loading States</Typography>
-              </Box>
-              <Divider sx={{ mb: 2 }} />
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={settings.enableSkeletonLoaders}
-                    onChange={(e) =>
-                      setSettings({ ...settings, enableSkeletonLoaders: e.target.checked })
-                    }
-                  />
-                }
-                label="Enable Skeleton Loaders"
-              />
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mb: 2 }}>
-                Show skeleton placeholders while content is loading
-              </Typography>
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={settings.enableLazyLoading}
-                    onChange={(e) =>
-                      setSettings({ ...settings, enableLazyLoading: e.target.checked })
-                    }
-                  />
-                }
-                label="Enable Lazy Loading"
-              />
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 4 }}>
-                Load images and components only when they enter the viewport
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Eye className="mr-2" />
-                <Typography variant="h6">Page Transitions</Typography>
-              </Box>
-              <Divider sx={{ mb: 2 }} />
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={settings.enablePageTransitions}
-                    onChange={(e) =>
-                      setSettings({ ...settings, enablePageTransitions: e.target.checked })
-                    }
-                  />
-                }
-                label="Enable Page Transitions"
-              />
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mb: 2 }}>
-                Smooth animations when navigating between pages
-              </Typography>
-
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Transition Style</InputLabel>
-                <Select
-                  value={settings.pageTransitionVariant}
-                  label="Transition Style"
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      pageTransitionVariant: e.target.value as any,
-                    })
-                  }
-                  disabled={!settings.enablePageTransitions}
+        <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+            
+            <div className="space-y-4">
+              <div className="flex items-start justify-between p-4 border border-gray-200 rounded-lg">
+                <div className="flex-1">
+                  <h3 className="font-medium text-gray-900 mb-1">Clear Homepage Cache</h3>
+                  <p className="text-sm text-gray-600">
+                    Revalidate the homepage (/) to show latest content
+                  </p>
+                </div>
+                <button
+                  onClick={handleClearHomepage}
+                  disabled={loading}
+                  className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
-                  <MenuItem value="fade">Fade</MenuItem>
-                  <MenuItem value="slide">Slide</MenuItem>
-                  <MenuItem value="scale">Scale</MenuItem>
-                  <MenuItem value="none">None</MenuItem>
-                </Select>
-              </FormControl>
-            </CardContent>
-          </Card>
-        </Grid>
+                  {loading ? 'Clearing...' : 'Clear Homepage'}
+                </button>
+              </div>
 
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Zap className="mr-2" />
-                <Typography variant="h6">Scroll Animations</Typography>
-              </Box>
-              <Divider sx={{ mb: 2 }} />
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={settings.enableScrollAnimations}
-                    onChange={(e) =>
-                      setSettings({ ...settings, enableScrollAnimations: e.target.checked })
-                    }
-                  />
-                }
-                label="Enable Scroll Animations"
-              />
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mb: 2 }}>
-                Animate elements as they scroll into view
-              </Typography>
-
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Animation Style</InputLabel>
-                <Select
-                  value={settings.scrollAnimationVariant}
-                  label="Animation Style"
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      scrollAnimationVariant: e.target.value as any,
-                    })
-                  }
-                  disabled={!settings.enableScrollAnimations}
+              <div className="flex items-start justify-between p-4 border border-gray-200 rounded-lg">
+                <div className="flex-1">
+                  <h3 className="font-medium text-gray-900 mb-1">Clear All Common Pages</h3>
+                  <p className="text-sm text-gray-600">
+                    Revalidate all common pages: /, /services, /portfolio, /blog, /contact, /terms, /privacy, /about
+                  </p>
+                </div>
+                <button
+                  onClick={handleClearAllPages}
+                  disabled={loading}
+                  className="ml-4 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
-                  <MenuItem value="fadeIn">Fade In</MenuItem>
-                  <MenuItem value="slideUp">Slide Up</MenuItem>
-                  <MenuItem value="slideLeft">Slide Left</MenuItem>
-                  <MenuItem value="slideRight">Slide Right</MenuItem>
-                  <MenuItem value="scale">Scale</MenuItem>
-                  <MenuItem value="none">None</MenuItem>
-                </Select>
-              </FormControl>
-            </CardContent>
-          </Card>
-        </Grid>
+                  {loading ? 'Clearing...' : 'Clear All Pages'}
+                </button>
+              </div>
+            </div>
+          </div>
 
-        <Grid item xs={12} md={6}>
-          <Card>
-            <CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Zap className="mr-2" />
-                <Typography variant="h6">Performance</Typography>
-              </Box>
-              <Divider sx={{ mb: 2 }} />
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Clear Specific Paths</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="customPaths" className="block text-sm font-medium text-gray-700 mb-2">
+                  Enter paths to clear (one per line)
+                </label>
+                <textarea
+                  id="customPaths"
+                  value={customPaths}
+                  onChange={(e) => setCustomPaths(e.target.value)}
+                  placeholder="/services&#10;/portfolio&#10;/blog/my-post"
+                  rows={6}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <p className="mt-2 text-sm text-gray-500">
+                  Enter full paths starting with /. For example: /services, /portfolio/my-project
+                </p>
+              </div>
 
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={settings.enableImageOptimization}
-                    onChange={(e) =>
-                      setSettings({ ...settings, enableImageOptimization: e.target.checked })
-                    }
-                  />
-                }
-                label="Enable Image Optimization"
-              />
-              <Typography variant="body2" color="text.secondary" sx={{ ml: 4, mb: 2 }}>
-                Automatically optimize images for faster loading
-              </Typography>
+              <button
+                onClick={handleClearCustomPaths}
+                disabled={loading || !customPaths.trim()}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              >
+                {loading ? 'Clearing...' : 'Clear Custom Paths'}
+              </button>
+            </div>
+          </div>
 
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Animation Duration (seconds)</InputLabel>
-                <Select
-                  value={settings.animationDuration}
-                  label="Animation Duration (seconds)"
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      animationDuration: e.target.value as number,
-                    })
-                  }
-                >
-                  <MenuItem value={0.3}>0.3s (Fast)</MenuItem>
-                  <MenuItem value={0.6}>0.6s (Normal)</MenuItem>
-                  <MenuItem value={0.9}>0.9s (Slow)</MenuItem>
-                  <MenuItem value={1.2}>1.2s (Very Slow)</MenuItem>
-                </Select>
-              </FormControl>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="font-medium text-blue-900 mb-2">💡 When to use cache clearing:</h3>
+            <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+              <li>After updating home sections in admin panel</li>
+              <li>After changing services, portfolio, or blog content</li>
+              <li>When frontend doesn't show latest changes immediately</li>
+              <li>After updating SEO settings or site configuration</li>
+            </ul>
+          </div>
+
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <h3 className="font-medium text-yellow-900 mb-2">⚠️ Note:</h3>
+            <p className="text-sm text-yellow-800">
+              Clearing cache forces Next.js to regenerate pages on the next visit. This may cause slightly slower initial load times for those pages.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
