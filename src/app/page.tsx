@@ -43,6 +43,7 @@ async function getHomePageData() {
 async function getHeroData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    
     const response = await fetch(`${baseUrl}/api/settings`, {
       cache: 'no-store',
     })
@@ -59,6 +60,7 @@ async function getHeroData() {
 async function getServicesData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    
     const response = await fetch(`${baseUrl}/api/public/services`, {
       cache: 'no-store',
     })

@@ -29,6 +29,10 @@ interface AboutContent {
   rightContent: RightContent
 }
 
+interface AboutSectionProps {
+  data?: AboutContent
+}
+
 const defaultContent: AboutContent = {
   leftContent: {
     yearsText: '14+',
@@ -50,35 +54,41 @@ const defaultContent: AboutContent = {
   }
 }
 
-export const AboutSection = () => {
-  const [content, setContent] = useState<AboutContent>(defaultContent)
-  const [loading, setLoading] = useState(true)
+export const AboutSection = ({ data }: AboutSectionProps = {}) => {
+  const [content, setContent] = useState<AboutContent>(data || defaultContent)
+  const [loading, setLoading] = useState(!data)
 
   useEffect(() => {
+    if (data) {
+      setContent(data)
+      setLoading(false)
+      return
+    }
+
     const fetchContent = async () => {
       try {
         const response = await fetch('/api/settings')
         if (response.ok) {
-          const data = await response.json()
-          if (data.homeAbout) {
+          const fetchedData = await response.json()
+          if (fetchedData.homeAbout) {
             setContent({
               leftContent: {
-                yearsText: data.homeAbout.leftContent?.yearsText || defaultContent.leftContent.yearsText,
-                yearsLabel: data.homeAbout.leftContent?.yearsLabel || defaultContent.leftContent.yearsLabel,
-                tagline1: data.homeAbout.leftContent?.tagline1 || defaultContent.leftContent.tagline1,
-                tagline2: data.homeAbout.leftContent?.tagline2 || defaultContent.leftContent.tagline2,
-                tagline3: data.homeAbout.leftContent?.tagline3 || defaultContent.leftContent.tagline3,
+                yearsText: fetchedData.homeAbout.leftContent?.yearsText || defaultContent.leftContent.yearsText,
+                yearsLabel: fetchedData.homeAbout.leftContent?.yearsLabel || defaultContent.leftContent.yearsLabel,
+                tagline1: fetchedData.homeAbout.leftContent?.tagline1 || defaultContent.leftContent.tagline1,
+                tagline2: fetchedData.homeAbout.leftContent?.tagline2 || defaultContent.leftContent.tagline2,
+                tagline3: fetchedData.homeAbout.leftContent?.tagline3 || defaultContent.leftContent.tagline3,
               },
               rightContent: {
-                sectionLabel: data.homeAbout.rightContent?.sectionLabel || defaultContent.rightContent.sectionLabel,
-                title: data.homeAbout.rightContent?.title || defaultContent.rightContent.title,
-                titleHighlight: data.homeAbout.rightContent?.titleHighlight || defaultContent.rightContent.titleHighlight,
-                description: data.homeAbout.rightContent?.description || defaultContent.rightContent.description,
-                button1Text: data.homeAbout.rightContent?.button1Text || defaultContent.rightContent.button1Text,
-                button1Link: data.homeAbout.rightContent?.button1Link || defaultContent.rightContent.button1Link,
-                button2Text: data.homeAbout.rightContent?.button2Text || defaultContent.rightContent.button2Text,
-                button2Link: data.homeAbout.rightContent?.button2Link || defaultContent.rightContent.button2Link,
-                videoUrl: data.homeAbout.rightContent?.videoUrl || defaultContent.rightContent.videoUrl,
+                sectionLabel: fetchedData.homeAbout.rightContent?.sectionLabel || defaultContent.rightContent.sectionLabel,
+                title: fetchedData.homeAbout.rightContent?.title || defaultContent.rightContent.title,
+                titleHighlight: fetchedData.homeAbout.rightContent?.titleHighlight || defaultContent.rightContent.titleHighlight,
+                description: fetchedData.homeAbout.rightContent?.description || defaultContent.rightContent.description,
+                button1Text: fetchedData.homeAbout.rightContent?.button1Text || defaultContent.rightContent.button1Text,
+                button1Link: fetchedData.homeAbout.rightContent?.button1Link || defaultContent.rightContent.button1Link,
+                button2Text: fetchedData.homeAbout.rightContent?.button2Text || defaultContent.rightContent.button2Text,
+                button2Link: fetchedData.homeAbout.rightContent?.button2Link || defaultContent.rightContent.button2Link,
+                videoUrl: fetchedData.homeAbout.rightContent?.videoUrl || defaultContent.rightContent.videoUrl,
               }
             })
           }
@@ -91,7 +101,7 @@ export const AboutSection = () => {
     }
 
     fetchContent()
-  }, [])
+  }, [data])
 
   if (loading) {
     return null
