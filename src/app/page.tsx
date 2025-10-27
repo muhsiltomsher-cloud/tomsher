@@ -33,16 +33,7 @@ async function getHomePageData() {
       }
     }
     
-    const response = await fetch(`${baseUrl}/api/pages/home`, {
-      cache: 'no-store',
-    })
-    
-    if (!response.ok) {
-      console.error('Failed to fetch home page data')
-      return null
-    }
-    
-    return await response.json()
+    return null
   } catch (error) {
     console.error('Error fetching home page:', error)
     return null

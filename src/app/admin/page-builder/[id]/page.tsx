@@ -35,13 +35,13 @@ interface PageSection {
   isVisible: boolean
 }
 
-interface CustomPage {
+interface PageData {
   _id: string
   title: string
   slug: string
   description?: string
   sections: PageSection[]
-  isPublished: boolean
+  status: string
   seoTitle?: string
   seoDescription?: string
 }
@@ -105,7 +105,7 @@ export default function PageBuilderEditor() {
   const { data: session, status } = useSession()
   const notification = useNotification()
   
-  const [page, setPage] = useState<CustomPage | null>(null)
+  const [page, setPage] = useState<PageData | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [showAddModal, setShowAddModal] = useState(false)
@@ -241,7 +241,7 @@ export default function PageBuilderEditor() {
     notification.success('Section reordered')
   }
 
-  const savePage = async (updates: Partial<CustomPage>) => {
+  const savePage = async (updates: Partial<PageData>) => {
     setSaving(true)
 
     try {
@@ -758,15 +758,15 @@ export default function PageBuilderEditor() {
             </div>
             <div className="flex items-center gap-3">
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                page.isPublished 
+                page.status === 'PUBLISHED' 
                   ? 'bg-green-100 text-green-800' 
                   : 'bg-gray-100 text-gray-800'
               }`}>
-                {page.isPublished ? 'Published' : 'Draft'}
+                {page.status === 'PUBLISHED' ? 'Published' : 'Draft'}
               </span>
               <button
                 onClick={() => window.open(`/${page.slug}`, '_blank')}
-                disabled={!page.isPublished}
+                disabled={page.status !== 'PUBLISHED'}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 <ExternalLink className="h-4 w-4" />

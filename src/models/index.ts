@@ -13,7 +13,6 @@ export { default as Media } from './Media';
 export { default as Settings, SettingType } from './Settings';
 export { default as SiteSettings } from './SiteSettings';
 export { default as MenuItem } from './Menu';
-export { default as CustomPage } from './CustomPage';
 export { default as FormSubmission } from './FormSubmission';
 export { default as SEO } from './SEO';
 export { default as Gallery } from './Gallery';
