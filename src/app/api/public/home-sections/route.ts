@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import SectionContent from '@/models/SectionContent';
 import SiteSettings from '@/models/SiteSettings';
+import { processVisualDefaults } from '@/lib/section-defaults';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,9 +64,18 @@ export async function GET(request: NextRequest) {
         }
         
         if (settings.homeDevelopmentProcess) {
+          const steps = (settings.homeDevelopmentProcess.steps || []).map((step: any, index: number) => ({
+            ...step,
+            ...processVisualDefaults[index % processVisualDefaults.length],
+            details: Array.isArray(step.details) ? step.details : [],
+          }));
+          
           normalizedSections.push({
             componentName: 'OurProcessSection',
-            content: settings.homeDevelopmentProcess,
+            content: {
+              ...settings.homeDevelopmentProcess,
+              steps
+            },
             order: 5,
             isActive: true,
             isVisible: true,

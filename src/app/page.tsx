@@ -5,7 +5,9 @@ import { getSectionComponent } from '@/components/sections/section-registry'
 
 async function getHomePageData() {
   try {
-    const sectionContentResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/public/home-sections?pageType=HOME`, {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    
+    const sectionContentResponse = await fetch(`${baseUrl}/api/public/home-sections?pageType=HOME`, {
       cache: 'no-store',
     })
     
@@ -19,7 +21,7 @@ async function getHomePageData() {
       }
     }
     
-    const pageContentResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/page-content/HOME`, {
+    const pageContentResponse = await fetch(`${baseUrl}/api/page-content/HOME`, {
       cache: 'no-store',
     })
     
@@ -40,7 +42,8 @@ async function getHomePageData() {
 
 async function getHeroData() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/settings`, {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/settings`, {
       cache: 'no-store',
     })
     if (response.ok) {
@@ -55,7 +58,8 @@ async function getHeroData() {
 
 async function getServicesData() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/public/services`, {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const response = await fetch(`${baseUrl}/api/public/services`, {
       cache: 'no-store',
     })
     if (response.ok) {
