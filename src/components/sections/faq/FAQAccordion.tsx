@@ -36,7 +36,7 @@ export default function FAQAccordion({ title, subtitle, faqs }: FAQVariantProps)
                   fontWeight: '600',
                 }}
               >
-                {faq.question}
+                {typeof faq.question === 'string' ? faq.question : ''}
                 <span style={{ 
                   transform: openIndex === index ? 'rotate(180deg)' : 'rotate(0)',
                   transition: 'transform 0.3s ease'
@@ -50,9 +50,11 @@ export default function FAQAccordion({ title, subtitle, faqs }: FAQVariantProps)
                   color: '#666',
                   lineHeight: '1.6',
                   animation: 'fadeIn 0.3s ease'
-                }}>
-                  {faq.answer}
-                </div>
+                }}
+                dangerouslySetInnerHTML={{ 
+                  __html: typeof faq.answer === 'string' ? faq.answer : '' 
+                }}
+                />
               )}
             </div>
           ))}
