@@ -131,17 +131,30 @@ export default function AdminLayout({
               />
               <Box
                 component="main"
-                sx={{
+                sx={(theme) => ({
                   flexGrow: 1,
                   display: 'flex',
                   flexDirection: 'column',
                   minHeight: '100vh',
-                  transition: 'margin-left 0.35s ease',
-                  marginLeft: { xs: 0, lg: `${sidebarWidth}px` },
                   px: { xs: 2.5, sm: 3, md: 4 },
                   py: { xs: 3, md: 4 },
                   gap: 3,
-                }}
+                  position: 'relative',
+                  background: theme.palette.mode === 'dark'
+                    ? 'linear-gradient(185deg, rgba(10, 18, 36, 0.96) 0%, rgba(16, 30, 54, 0.94) 55%, rgba(5, 10, 20, 0.94) 100%)'
+                    : 'linear-gradient(185deg, rgba(255, 255, 255, 0.97) 0%, rgba(244, 249, 255, 0.94) 60%, rgba(234, 244, 255, 0.92) 100%)',
+                  backdropFilter: 'blur(20px)',
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    inset: 0,
+                    pointerEvents: 'none',
+                    background: theme.palette.mode === 'dark'
+                      ? 'radial-gradient(circle at 12% 25%, rgba(66, 165, 245, 0.18), transparent 48%), radial-gradient(circle at 90% 8%, rgba(186, 104, 200, 0.18), transparent 52%)'
+                      : 'radial-gradient(circle at 12% 25%, rgba(66, 165, 245, 0.16), transparent 52%), radial-gradient(circle at 90% 8%, rgba(186, 104, 200, 0.14), transparent 52%)',
+                    opacity: 0.92,
+                  },
+                })}
               >
                 <Container
                   disableGutters

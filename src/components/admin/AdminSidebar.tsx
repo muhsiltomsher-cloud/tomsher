@@ -304,7 +304,7 @@ export default function AdminSidebar({
             <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ position: 'relative', zIndex: 1 }}>
               <Box>
                 <Typography variant="subtitle2" fontWeight={700} color="text.primary">
-                  Today’s dashboard glance
+                  Todayâ€™s dashboard glance
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Keep projects aligned and shipping on time
