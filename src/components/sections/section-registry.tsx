@@ -19,6 +19,8 @@ import OurProcessSection from './OurProcessSection'
 import PortfolioSectionNew from './PortfolioSectionNew'
 import FeaturesSection2 from './FeaturesSection'
 import TeamSection from './TeamSection'
+import PricingSection from './PricingSection'
+import NewsletterSection from './NewsletterSection'
 import { AchievementsSection } from './achievements-section'
 import { ClientsSection as ClientsSectionOld } from './clients-section'
 import { DevelopmentProcessSection } from './development-process-section'
@@ -35,15 +37,16 @@ export const sectionRegistry: Record<string, any> = {
   'features-section': FeaturesSection2,
   'team-section': TeamSection,
   
-  'HeroSection': HeroSection,
+  'HeroSection': HeroSectionNew,
   'AboutSection': AboutSection,
-  'ServicesSection': ServicesSection,
+  'ServicesSection': ServicesSectionNew,
   'StatsSection': StatsSection,
   'PortfolioSection': PortfolioSection,
   'TestimonialsSection': TestimonialsSection,
-  'CTASection': OldCTASection,
+  'CTASection': CTASectionNew,
   'ContactSection': ContactSection,
   'ClientsSection': ClientsSection,
+  'FAQSection': FAQSectionNew,
   'FAQSectionNew': FAQSectionNew,
   'OurProcessSection': OurProcessSection,
   'PortfolioSectionNew': PortfolioSectionNew,
@@ -53,14 +56,17 @@ export const sectionRegistry: Record<string, any> = {
   'ContactFormSection': ContactFormSection,
   'AchievementsSection': AchievementsSection,
   'DevelopmentProcessSection': DevelopmentProcessSection,
+  'TeamSection': TeamSection,
+  'PricingSection': PricingSection,
+  'NewsletterSection': NewsletterSection,
   
-  'Hero': HeroSection,
+  'Hero': HeroSectionNew,
   'About': AboutSection,
-  'Services': ServicesSection,
+  'Services': ServicesSectionNew,
   'Stats': StatsSection,
   'Portfolio': PortfolioSectionNew,
   'Testimonials': TestimonialsSection,
-  'CTA': OldCTASection,
+  'CTA': CTASectionNew,
   'Contact': ContactSection,
   'Clients': ClientsSection,
   'FAQ': FAQSectionNew,

@@ -52,7 +52,7 @@ export default async function CustomPage({ params }: PageProps) {
   }
 
   const visibleSections = page.sections
-    .filter((section: any) => section.isVisible)
+    .filter((section: any) => section.isVisible !== false)
     .sort((a: any, b: any) => a.order - b.order)
 
   return (

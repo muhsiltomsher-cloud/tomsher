@@ -7,7 +7,7 @@ async function getHomePageData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     
-    const sectionContentResponse = await fetch(`${baseUrl}/api/admin/section-content?pageType=HOME`, {
+    const sectionContentResponse = await fetch(`${baseUrl}/api/public/home-sections?pageType=HOME`, {
       cache: 'no-store',
     })
     
@@ -59,7 +59,7 @@ async function getHeroData() {
 async function getServicesData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/api/admin/services`, {
+    const response = await fetch(`${baseUrl}/api/public/services`, {
       cache: 'no-store',
     })
     if (response.ok) {
