@@ -98,7 +98,7 @@ const OurProcessSection: React.FC<OurProcessSectionProps> = ({ data }) => {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([])
   const indicatorRef = useRef<HTMLDivElement | null>(null)
 
-  const steps = data?.steps || defaultSteps
+  const steps = Array.isArray(data?.steps) && data.steps.length > 0 ? data.steps : defaultSteps
   const title = data?.title || 'Our Development Process'
   const subtitle = data?.subtitle || 'Transforming Ideas into Digital Excellence'
   const description = data?.description || 'At Tomsher, we follow a systematic approach to web development that combines creativity with technical expertise. Our proven four-phase methodology ensures successful project delivery.'
@@ -106,11 +106,12 @@ const OurProcessSection: React.FC<OurProcessSectionProps> = ({ data }) => {
   useEffect(() => {
     const activeTab = tabRefs.current[activeStep]
     const indicator = indicatorRef.current
+    const currentStep = steps[activeStep] || defaultSteps[0]
     if (activeTab && indicator) {
       const { offsetLeft, offsetWidth } = activeTab
       indicator.style.transform = `translateX(${offsetLeft}px)`
       indicator.style.width = `${offsetWidth}px`
-      indicator.style.backgroundColor = steps[activeStep].tabColor
+      indicator.style.backgroundColor = currentStep.tabColor || '#0EA5E9'
     }
   }, [activeStep, steps])
 
@@ -156,7 +157,7 @@ const OurProcessSection: React.FC<OurProcessSectionProps> = ({ data }) => {
               className="absolute bottom-2 top-2 left-0 rounded-full transition-all duration-300 z-0"
               style={{
                 width: '0px',
-                backgroundColor: steps[activeStep].tabColor,
+                backgroundColor: (steps[activeStep] || defaultSteps[0]).tabColor || '#0EA5E9',
               }}
             />
             {steps.map((step, index) => (
@@ -169,7 +170,7 @@ const OurProcessSection: React.FC<OurProcessSectionProps> = ({ data }) => {
                 className="z-[1] rounded-full px-6 py-3 font-mono font-medium capitalize transition-colors duration-300 whitespace-nowrap"
                 style={{
                   color: activeStep === index ? '#fff' : '#333',
-                  backgroundColor: activeStep === index ? steps[activeStep].tabColor : 'transparent',
+                  backgroundColor: activeStep === index ? ((steps[activeStep] || defaultSteps[0]).tabColor || '#0EA5E9') : 'transparent',
                 }}
               >
                 {step.title}
@@ -194,12 +195,12 @@ const OurProcessSection: React.FC<OurProcessSectionProps> = ({ data }) => {
             <SwiperSlide key={index}>
               <div
                 className="flex flex-col lg:flex-row gap-8 rounded-xl overflow-hidden"
-                style={{ backgroundColor: step.bgColor }}
+                style={{ backgroundColor: step.bgColor || '#F1F5F9' }}
               >
                 <div className="lg:w-1/2 space-y-6 p-[30px]">
                   <h2
                     className="text-[30px] font-bold"
-                    style={{ color: step.tabColor }}
+                    style={{ color: step.tabColor || '#0EA5E9' }}
                   >
                     0{index + 1}. {step.title}
                   </h2>
