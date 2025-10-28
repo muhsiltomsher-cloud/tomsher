@@ -18,9 +18,14 @@ export default function FAQGrid({ title, subtitle, faqs }: FAQVariantProps) {
               borderLeft: '4px solid #667eea'
             }}>
               <h3 style={{ marginBottom: '1rem', fontWeight: 'bold', color: '#333' }}>
-                {faq.question}
+                {typeof faq.question === 'string' ? faq.question : ''}
               </h3>
-              <p style={{ color: '#666', lineHeight: '1.6' }}>{faq.answer}</p>
+              <div 
+                style={{ color: '#666', lineHeight: '1.6' }}
+                dangerouslySetInnerHTML={{ 
+                  __html: typeof faq.answer === 'string' ? faq.answer : '' 
+                }}
+              />
             </div>
           ))}
         </div>
